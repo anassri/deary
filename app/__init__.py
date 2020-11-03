@@ -17,8 +17,32 @@ app = Flask(__name__)
 app.config.from_object(Config)
 app.register_blueprint(user.user_routes)
 app.register_blueprint(auth.auth_routes)
+
 db.init_app(app)
 migrate = Migrate(app, db)
+
+jwt = JWTManager(app)
+
+blacklist = set()
+
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    jti = decrypted_token['jti']
+    return jti in blacklist
+
+
+@app.route('/logout', methods=['DELETE'])
+@jwt_required
+def logout():
+    jti = get_raw_jwt()['jti']
+    blacklist.add(jti)
+    return {'msg': 'Logged out'}, 200
+
+
+@app.route('/verify_token', methods=['GET'])
+@jwt_required
+def verify_token():
+    return {'msg': 'OK'}, 200
 
 ## Application Security
 CORS(app)

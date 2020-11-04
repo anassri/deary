@@ -27,10 +27,17 @@ export default function Navigation(){
     const classes = useStyles();
     const user = useSelector(state => state.auth.user);
     const history = useHistory();
+
+    const handleProfileClick = () => {
+        history.push(`/profile/${user.id}`);
+    }
+    const handleLogoClick = () => {
+        history.push('/');
+    }
     return(
         <div className="navigation-container">
             <div className="logo-container">
-                <img src={logo} alt='website logo' height='55' onClick={history.push('/')} style={{cursor: 'pointer'}}/>
+                <img src={logo} alt='website logo' height='55' onClick={handleLogoClick} style={{cursor: 'pointer'}}/>
             </div>
             <div className="search-container">
                 <div className={classes.search}>
@@ -50,7 +57,7 @@ export default function Navigation(){
                 </div>
             </div>
             <div className="profile-link-container">
-                <Button className={classes.button}>
+                <Button className={classes.button} onClick={handleProfileClick}>
                     <img 
                         src={profilePicture} 
                         alt="profile placeholder" 

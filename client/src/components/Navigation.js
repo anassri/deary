@@ -58,7 +58,7 @@ export default function Navigation(){
                         height='36' 
                         style={{paddingRight: 10}}
                         />
-                    {user.firstName+ ' ' +user.lastName}
+                    {user.firstName}
                 </Button>
             </div>
         </div>

@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter, Switch, Route,Redirect, NavLink } from 'react-router-dom';
 import AuthContainer from './components/AuthContainer';
 import Home from './components/Home';
+import Navigation from './components/Navigation';
+import Profile from './components/Profile';
 
 import { logout } from './store/auth';
 
@@ -27,9 +29,11 @@ function App() {
     }
   return (
     <BrowserRouter>
+        <Navigation />
         <Switch>
             <Route path="/login" component={AuthContainer}/>
             <Route path="/signup" component={AuthContainer}/>
+            <PrivateRoute path="/profile/:id" needLogin={needLogin} component={Profile} />
             <PrivateRoute path="/" needLogin={needLogin} component={Home} />
         </Switch>
     </BrowserRouter>

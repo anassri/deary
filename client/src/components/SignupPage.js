@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadUser, signup } from '../store/auth';
+import '../css/auth.css'
+
 export default function SignupPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -10,7 +12,7 @@ export default function SignupPage() {
     const [errors, setErrors] = useState('');
 
     const dispatch = useDispatch();
-    const user = useSelector(state => state.auth.user);
+    const userId = useSelector(state => state.auth.user.id);
 
     const history = useHistory();
 
@@ -18,7 +20,7 @@ export default function SignupPage() {
         dispatch(loadUser());
     }, []);
 
-    if (user) history.push('/');
+    if (userId) history.push('/');
 
     const handleClick = async () => {
         const name = fullname.split(' ')
@@ -30,32 +32,51 @@ export default function SignupPage() {
     }
     return (
         <>  
-            {errors ? <p>{errors}</p> : null}
-            <input
-                type="text"
-                value={fullname}
-                onChange={e => setFullname(e.target.value)}
-                label="fullname"
-                placeholder="Full Name" />
-            <input
-                type="text"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                label="Email"
-                placeholder="Email" />
-            <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                label="Password"
-                placeholder="Password" />
-            <input
-                type="password"
-                value={confirmPassword}
-                onChange={e => setConfirmPassword(e.target.value)}
-                label="Confirm Password"
-                placeholder="Confirm Password" />
-            <button onClick={handleClick}>Signup</button>
+            <div>
+                {errors ? <p>{errors}</p> : null}
+            </div>
+            <div>
+                <input
+                    type="text"
+                    value={fullname}
+                    onChange={e => setFullname(e.target.value)}
+                    label="fullname"
+                    className="text-field"
+                    placeholder="Full Name" />
+            </div>
+            <div>
+                <input
+                    type="text"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    label="Email"
+                    className="text-field"
+                    placeholder="Email" />
+            </div>
+            <div>
+                <input
+                    type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    label="Password"
+                    className="text-field"
+                    placeholder="Password" />
+            </div>
+            <div>
+                <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={e => setConfirmPassword(e.target.value)}
+                    label="Confirm Password"
+                    className="text-field"
+                    placeholder="Confirm Password" />
+            </div>
+            <div>
+                <button  className="auth-button" onClick={handleClick}>Sign up</button>
+            </div>
+            <div className="login-signup-links-container">
+                <p>Already have an account? </p><a href="/login" className="link-text"> Log in</a>
+            </div>
 
         </>
     )

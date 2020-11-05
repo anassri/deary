@@ -1,6 +1,7 @@
 import setInLocalStorage from '../utils/setInLocalStorage';
 import getFromLocalStorage from '../utils/getFromLocalStorage';
 import deleteFromLocalStorage from '../utils/deleteFromLocalStorage';
+import fetchWithCSRF from '../utils/csrfFetch';
 
 const SET_USER = 'auth/SET_USER';
 const SET_TOKEN = 'auth/SET_TOKEN';
@@ -30,6 +31,7 @@ const handleReceivedData = async (res, dispatch) => {
 
 export const login = (email, password) => async dispatch => {
     try{
+        // const res = await fetchWithCSRF('/login', {
         const res = await fetch('/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

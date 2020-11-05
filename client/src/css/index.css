@@ -1,0 +1,11 @@
+/* TODO Add site wide styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+}
+h2 {
+    color: #33DD87;
+}
+p {
+    color: #AAAAAA;
+}

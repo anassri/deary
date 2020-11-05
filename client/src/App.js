@@ -1,10 +1,9 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BrowserRouter, Switch, Route,Redirect, NavLink, useHistory } from 'react-router-dom';
-import LoginPage from './components/LoginPage';
-import SignupPage from './components/SignupPage';
+import { BrowserRouter, Switch, Route,Redirect, NavLink } from 'react-router-dom';
+import AuthContainer from './components/AuthContainer';
+import Home from './components/Home';
 
-import UserList from './components/UsersList';
 import { logout } from './store/auth';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
@@ -13,7 +12,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     // useEffect(() => {
     //     dispatch(setLocation(location.pathname));
     // }, [location.pathname])
-    const history = useHistory();
     return <Route {...rest} render={(props) => (
         rest.needLogin === true
             ? <Redirect to='/login' />
@@ -24,32 +22,15 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 function App() {
     const dispatch = useDispatch();
     const needLogin = useSelector(state => !state.auth.user.id);
-
     const handleLogout = () =>{
         dispatch(logout());
     }
   return (
     <BrowserRouter>
-        <nav>
-            <ul>
-                <li><NavLink to="/" activeclass="active">Home</NavLink></li>
-                <li><NavLink to="/users" activeclass="active">Users</NavLink></li>
-                <li><NavLink to="/login" activeclass="active">Login</NavLink></li>
-                <li><NavLink to="/signup" activeclass="active">Signup</NavLink></li>
-                <li><button onClick={handleLogout} activeclass="active">Logout</button></li>
-
-            </ul>
-        </nav>
         <Switch>
-            <Route path="/users">
-                <UserList />
-            </Route>
-            <Route path="/login" component={LoginPage}/>
-            <Route path="/signup" component={SignupPage}/>
-
-            <Route path="/">
-                <h1>My Home Page</h1>
-            </Route>
+            <Route path="/login" component={AuthContainer}/>
+            <Route path="/signup" component={AuthContainer}/>
+            <PrivateRoute path="/" needLogin={needLogin} component={Home} />
         </Switch>
     </BrowserRouter>
   );

@@ -1,10 +1,13 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BrowserRouter, Switch, Route,Redirect, NavLink } from 'react-router-dom';
+import { BrowserRouter, Switch, Route,Redirect, useLocation } from 'react-router-dom';
 import AuthContainer from './components/AuthContainer';
 import Home from './components/Home';
-import Navigation from './components/Navigation';
+import Search from './components/Search';
 import Profile from './components/Profile';
+import { ThemeProvider } from '@material-ui/core/styles';
+import theme from './theme';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { logout } from './store/auth';
 
@@ -29,13 +32,16 @@ function App() {
     }
   return (
     <BrowserRouter>
-        <Navigation />
-        <Switch>
-            <Route path="/login" component={AuthContainer}/>
-            <Route path="/signup" component={AuthContainer}/>
-            <PrivateRoute path="/profile/:id" needLogin={needLogin} component={Profile} />
-            <PrivateRoute path="/" needLogin={needLogin} component={Home} />
-        </Switch>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Switch>
+                <Route path="/login" component={AuthContainer}/>
+                <Route path="/signup" component={AuthContainer}/>
+                <PrivateRoute path="/search/:idq=:value" needLogin={needLogin} component={Search} />
+                <PrivateRoute path="/profile/:id" needLogin={needLogin} component={Profile} />
+                <PrivateRoute path="/" needLogin={needLogin} component={Home} />
+            </Switch>
+        </ThemeProvider>
     </BrowserRouter>
   );
 }

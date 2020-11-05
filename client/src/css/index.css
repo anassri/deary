@@ -6,6 +6,10 @@ body {
 h2 {
     color: #33DD87;
 }
+h1, h3 {
+    margin: 0;
+}
 p {
     color: #AAAAAA;
+    margin: 0;
 }

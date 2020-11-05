@@ -9,3 +9,6 @@ class Config:
   JWT_ACCESS_TOKEN_EXPIRES = 604800
   JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
   JWT_BLACKLIST_ENABLED = True
+  S3_KEY=os.environ.get('S3_ACCESS_ID')
+  S3_SECRET=os.environ.get('S3_SECRET')
+  S3_BUCKET=os.environ.get('S3_BUCKET')

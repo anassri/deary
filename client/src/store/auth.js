@@ -18,27 +18,30 @@ const setToken = token => ({
 
 const removeAuth = () => ({ type: REMOVE_AUTH });
 
+const handleReceivedData = async (res, dispatch) => {
+    if (res.ok) {
+        const { token, user } = await res.json()
+        setInLocalStorage(token, user);
+        dispatch(setToken(token));
+        dispatch(setUser(user));
+        return { status: 200 };
+    } else throw { status: 400, message: (await res.json()).msg };
+}
 
 export const login = (email, password) => async dispatch => {
     try{
-        console.log(email,password)
         const res = await fetch('/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),   
         });
-        if (res.ok) {
-            const {token, user} = await res.json()
-            setInLocalStorage(token, user);
-            dispatch(setToken(token));
-            dispatch(setUser(user));
-            return {status: 200};
-        } else throw { status: 400, message: (await res.json()).msg };
+        handleReceivedData(res, dispatch);
     } catch (e) {
         console.error(e);
         return e;
     }
 }
+
 export const loadUser = () => async dispatch => {
     const { user, token } = getFromLocalStorage();
     if (!user || !token) return;

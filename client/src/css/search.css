@@ -1,0 +1,38 @@
+.content-container{
+    background-color: #EFEFEF;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.entry-container{
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 100px auto auto;
+    align-items: center;
+}
+.paper-container{
+    width: 750px;
+    margin-top: 40px;
+}
+.thumbnail-container, .add-button-container{
+    margin: 10px 20px;
+}
+.add-button-container{
+    justify-self: end;
+}
+.thumbnail-image{
+    object-fit: cover;
+    border-radius: 50%;
+}
+.fullname{
+    font-weight: bold;
+    color: #666;
+}
+.add-button.MuiButton-contained{
+    border-radius: 40px;
+}
+.divider{
+    border-bottom: 1px solid #EFEFEF;
+}

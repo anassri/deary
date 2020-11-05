@@ -16,8 +16,13 @@ class User(db.Model):
   cover_picture= db.Column(db.String(255))
   birthday= db.Column(db.Date)
   created_at = db.Column(db.DateTime, nullable = False)
+  bio = db.Column(db.Text)
+  city = db.Column(db.String(50))
+  state = db.Column(db.String(50))
+  country = db.Column(db.String(50))
 
   # circles = db.relationship('Circle', back_populates='users', secondary='circle_lists')
+  relationships = db.relationship("Relationship", primaryjoin='User.id == Relationship.friend_id', foreign_keys="Relationship.friend_id", backref='user_friends')
 
   def to_dict(self):
     return {
@@ -28,7 +33,11 @@ class User(db.Model):
       "profilePicture": self.profile_picture,
       "coverPicture": self.cover_picture,
       "birthday": self.birthday,
-      "createdAt": self.created_at
+      "createdAt": self.created_at,
+      "bio": self.bio,
+      "city": self.city,
+      "state": self.state,
+      "country": self.country,
     }
 
   @property
@@ -48,26 +57,31 @@ class User(db.Model):
   def check_password(self, password):
         return check_password_hash(self.password, password)
 
-# class Relationship(db.Model):
-#   __tablename__ = "relationships"
+class Relationship(db.Model):
+  __tablename__ = "relationships"
 
-#   id = db.Column(db.Integer, primary_key = True)
-#   user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-#   friend_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-#   status = db.Column(db.Integer, nullable=False)
-#   friends_since = db.Column(db.DateTime, nullable=False)
+  id = db.Column(db.Integer, primary_key = True)
+  user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+  friend_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+  status = db.Column(db.Integer, nullable=False)
+  friends_since = db.Column(db.DateTime, nullable=False)
 
-#   person = db.relationship("User", foreign_keys=user_id)
-#   friends = db.relationship("User", foreign_keys=friend_id)
+  person = db.relationship("User", backref = 'user', foreign_keys=user_id)
+  friends = db.relationship("User", backref = 'friends', foreign_keys=friend_id)
 
-#   def to_dict(self):
-#     return {
-#       "id": self.id,
-#       "user_id": self.user_id,
-#       "friend_id": self.friend_id,
-#       "status": self.status,
-#       "friends_since ": self.friends_since,
-#     }
+  # status
+  # 1: pending friend request
+  # 2: friends, accepted
+  # 3: blocked
+
+  def to_dict(self):
+    return {
+      "id": self.id,
+      "user_id": self.user_id,
+      "friend_id": self.friend_id,
+      "status": self.status,
+      "friends_since ": self.friends_since,
+    }
 
 # class PostType(db.Model):
 #   __tablename__ = "post_types"

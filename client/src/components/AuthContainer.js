@@ -6,8 +6,7 @@ import logo from '../images/logo.svg';
 import { useLocation } from 'react-router';
 
 export default function AuthContainer() {
-    const location = useLocation()
-    console.log(location.pathname)
+    const location = useLocation();
     return (
         <div className="auth-container">
             <div className="graphics-container">

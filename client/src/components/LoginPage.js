@@ -18,8 +18,8 @@ export default function LoginPage () {
 
     if (userId) history.push('/');
     
-    const handleClick = async () =>{
-        const res = await dispatch(login(email,password));
+    const handleClick = () =>{
+        const res = dispatch(login(email,password));
         if (res.status === 200) history.push('/');
     }
     return (

@@ -1,4 +1,5 @@
 import getFromLocalStorage from '../utils/getFromLocalStorage';
+import setInLocalStorage from '../utils/setInLocalStorage';
 
 const SET_USERS = 'user/SET_USERS';
 const SET_USER = 'user/SET_USER';
@@ -80,17 +81,45 @@ export const editUser = (data, id) => async dispatch => {
         console.log(data)
         const res = await fetch(`/api/users/${id}`, {
             method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
-            body: data
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify(data)
         });
         if (res.ok) {
-            const { data } = await res.json();
+            const data = await res.json();
+            console.log(data)
             dispatch(setUser(data));
+            // setInLocalStorage(data);
         }
     } catch (e) {
         console.error(e);
         return e;
     }
+}
+const updateUser = async (path, data, dispatch) =>{
+    const { token } = getFromLocalStorage();
+    if (!token) return;
+    try {
+        console.log(data)
+        const res = await fetch(path, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}` },
+            body: data
+        });
+        if (res.ok) {
+            const data = await res.json();
+            dispatch(setUser(data));
+            setInLocalStorage(token, data);
+        }
+    } catch (e) {
+        console.error(e);
+        return e;
+    }
+}
+export const editCover = (data, id) => async dispatch => {
+    updateUser(`/api/users/${id}/cover`, data, dispatch);
+}
+export const editPhoto = (data, id) => async dispatch => {
+    updateUser(`/api/users/${id}/photo`, data, dispatch);
 }
 
 export default function authReducer(state = { user: {}, relationships: []}, action) {
@@ -98,7 +127,7 @@ export default function authReducer(state = { user: {}, relationships: []}, acti
         case SET_USERS:
             return { ...state, users: action.users };
         case SET_USER:
-            return { ...state, user: action.user };
+            return { ...state, ...action.user };
         case SET_RELATIONSHIPS:
             return { ...state, relationships: action.relationships };
         default:

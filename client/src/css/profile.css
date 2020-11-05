@@ -1,7 +1,6 @@
 .profile-container{
     background-color: #EFEFEF;
     width: 100vw;
-    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -53,4 +52,12 @@
     position: absolute;
     top: 88%;
     right: 4%;
+}
+.hidden{
+    display: none;
+}
+.loading-container{
+    position: absolute;
+    margin: 10% 50%;
+    z-index: 1;
 }

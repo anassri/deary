@@ -83,17 +83,38 @@ class Relationship(db.Model):
       "friends_since ": self.friends_since,
     }
 
-# class PostType(db.Model):
-#   __tablename__ = "post_types"
+class PostType(db.Model):
+  __tablename__ = "post_types"
 
-#   id = db.Column(db.Integer, primary_key = True)
-#   type = db.Column(db.String(255), nullable = False)
+  id = db.Column(db.Integer, primary_key = True)
+  type = db.Column(db.String(255), nullable = False)
 
-#   def to_dict(self):
-#     return {
-#       "id": self.id,
-#       "type": self.type,
-#     }
+  def to_dict(self):
+    return {
+      "id": self.id,
+      "type": self.type,
+    }
+
+class Post(db.Model):
+  __tablename__ = "posts"
+
+  id = db.Column(db.Integer, primary_key = True)
+  user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
+  description = db.Column(db.Text)
+  type_id = db.Column(db.Integer, db.ForeignKey("post_types.id"), nullable = False)
+  created_at = db.Column(db.DateTime, nullable = False)
+
+  owner = db.relationship("User", foreign_keys=user_id)
+  type = db.relationship("PostType", foreign_keys=type_id)
+
+  def to_dict(self):
+    return {
+      "id": self.id,
+      "description": self.description,
+      "user_id": self.user_id,
+      "type_id": self.type_id,
+      "created_at": self.created_at,
+    }
 
 # class Photo(db.Model):
 #   __tablename__ = "photos"
@@ -213,26 +234,7 @@ class Relationship(db.Model):
 #       "type_id": self.type_id,
 #     }
 
-# class Post(db.Model):
-#   __tablename__ = "posts"
 
-#   id = db.Column(db.Integer, primary_key = True)
-#   user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
-#   description = db.Column(db.Text)
-#   type_id = db.Column(db.Integer, db.ForeignKey("post_types.id"), nullable = False)
-#   created_at = db.Column(db.DateTime, nullable = False)
-
-#   owner = db.relationship("User", foreign_keys=user_id)
-#   type = db.relationship("PostType", foreign_keys=type_id)
-
-#   def to_dict(self):
-#     return {
-#       "id": self.id,
-#       "description": self.description,
-#       "user_id": self.user_id,
-#       "type_id": self.type_id,
-#       "created_at": self.created_at,
-#     }
 
 # class NotificationType(db.Model):
 #   __tablename__ = "notification_types"

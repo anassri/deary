@@ -2,25 +2,38 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from app import app, db
-from app.models import User, Relationship, PostType, Post
+from app.models import User, Relationship, PostType, Post, Comment
 from datetime import datetime
+
+from random import randrange
+from datetime import timedelta
+
+def random_date():
+    start = datetime.strptime('6/1/2020 1:30 PM', '%m/%d/%Y %I:%M %p')
+    end = datetime.strptime('11/5/2020 4:50 AM', '%m/%d/%Y %I:%M %p')
+
+    delta = end - start
+    int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
+    random_second = randrange(int_delta)
+    return start + timedelta(seconds=random_second)
+
 
 with app.app_context():
   db.drop_all()
   db.create_all()
 
-  ian = User(first_name = 'Ian', last_name='james', password='password', created_at=datetime.now(),email = 'ian@aa.io', profile_picture="https://deary.s3.us-east-2.amazonaws.com/1-intro-photo-final.jpg", cover_picture="https://deary.s3.us-east-2.amazonaws.com/25d1a22a25a664cc9f428d236c064742.jpg")
-  javier = User(first_name = 'Javier', last_name='james', password='password', created_at=datetime.now(),email = 'javier@aa.io', profile_picture="https://deary.s3.us-east-2.amazonaws.com/2e2fac9d4a392456e511345021592dd2.jpg", cover_picture="https://deary.s3.us-east-2.amazonaws.com/funny-facebook-timeline-cover.jpg")
-  dean = User(first_name = 'Dean', last_name='james', password='password', created_at=datetime.now(),email = 'dean@aa.io', profile_picture="https://deary.s3.us-east-2.amazonaws.com/HuXMoVlIDzauXCp-800x450-noPad.jpg", cover_picture="https://deary.s3.us-east-2.amazonaws.com/images.jpeg")
-  angela = User(first_name = 'Angela', last_name='james', password='password', created_at=datetime.now(),email = 'angela@aa.io', profile_picture="https://deary.s3.us-east-2.amazonaws.com/Peter-Griffin-Instagram-ShockBlast-3.jpg", cover_picture="https://deary.s3.us-east-2.amazonaws.com/Just-Live-Facebook-Cover-851-x-315-768x284.jpg")
-  soonmi = User(first_name = 'Soon-Mi', last_name='james', password='password', created_at=datetime.now(),email = 'soonmi@aa.io', profile_picture="https://deary.s3.us-east-2.amazonaws.com/pexels-photo-220453.jpeg", cover_picture="https://deary.s3.us-east-2.amazonaws.com/nature-design.jpg")
-  alissa = User(first_name = 'Alissa', last_name='james', password='password', created_at=datetime.now(),email = 'alissa@aa.io', profile_picture="https://deary.s3.us-east-2.amazonaws.com/pexels-photo-771742.jpeg", cover_picture="https://deary.s3.us-east-2.amazonaws.com/kids-facebook-funny-and-simple-cover-photo.png")
-  ammar = User(first_name = 'ammar', last_name='nassri', password='password', created_at=datetime.now(),email = 'ammar@gmail.com', city="Atlanta", state="GA", country="USA", bio="this is me, deal with it", profile_picture="https://deary.s3.us-east-2.amazonaws.com/thumb-211603.jpg", cover_picture="https://deary.s3.us-east-2.amazonaws.com/to_visit_my_profile_facebook_cover_1351699956.jpg")
+  ian = User(first_name = 'Ian', last_name='james', password='password', created_at=random_date(),email = 'ian@aa.io', profile_picture="https://deary.s3.us-east-2.amazonaws.com/1-intro-photo-final.jpg", cover_picture="https://deary.s3.us-east-2.amazonaws.com/25d1a22a25a664cc9f428d236c064742.jpg")
+  javier = User(first_name = 'Javier', last_name='james', password='password', created_at=random_date(),email = 'javier@aa.io', profile_picture="https://deary.s3.us-east-2.amazonaws.com/2e2fac9d4a392456e511345021592dd2.jpg", cover_picture="https://deary.s3.us-east-2.amazonaws.com/funny-facebook-timeline-cover.jpg")
+  dean = User(first_name = 'Dean', last_name='james', password='password', created_at=random_date(),email = 'dean@aa.io', profile_picture="https://deary.s3.us-east-2.amazonaws.com/HuXMoVlIDzauXCp-800x450-noPad.jpg", cover_picture="https://deary.s3.us-east-2.amazonaws.com/images.jpeg")
+  angela = User(first_name = 'Angela', last_name='james', password='password', created_at=random_date(),email = 'angela@aa.io', profile_picture="https://deary.s3.us-east-2.amazonaws.com/Peter-Griffin-Instagram-ShockBlast-3.jpg", cover_picture="https://deary.s3.us-east-2.amazonaws.com/Just-Live-Facebook-Cover-851-x-315-768x284.jpg")
+  soonmi = User(first_name = 'Soon-Mi', last_name='james', password='password', created_at=random_date(),email = 'soonmi@aa.io', profile_picture="https://deary.s3.us-east-2.amazonaws.com/pexels-photo-220453.jpeg", cover_picture="https://deary.s3.us-east-2.amazonaws.com/nature-design.jpg")
+  alissa = User(first_name = 'Alissa', last_name='james', password='password', created_at=random_date(),email = 'alissa@aa.io', profile_picture="https://deary.s3.us-east-2.amazonaws.com/pexels-photo-771742.jpeg", cover_picture="https://deary.s3.us-east-2.amazonaws.com/kids-facebook-funny-and-simple-cover-photo.png")
+  ammar = User(first_name = 'ammar', last_name='nassri', password='password', created_at=random_date(),email = 'ammar@gmail.com', city="Atlanta", state="GA", country="USA", bio="this is me, deal with it", profile_picture="https://deary.s3.us-east-2.amazonaws.com/thumb-211603.jpg", cover_picture="https://deary.s3.us-east-2.amazonaws.com/to_visit_my_profile_facebook_cover_1351699956.jpg")
 
-  relationship1 = Relationship(user_id=7,friend_id=1, status=1, friends_since=datetime.now())
-  relationship2 = Relationship(user_id=7,friend_id=2, status=2, friends_since=datetime.now())
-  relationship3 = Relationship(user_id=7,friend_id=3, status=2, friends_since=datetime.now())
-  relationship4 = Relationship(user_id=7,friend_id=4, status=3, friends_since=datetime.now())
+  relationship1 = Relationship(user_id=7,friend_id=1, status=1, friends_since=random_date())
+  relationship2 = Relationship(user_id=7,friend_id=2, status=2, friends_since=random_date())
+  relationship3 = Relationship(user_id=7,friend_id=3, status=2, friends_since=random_date())
+  relationship4 = Relationship(user_id=7,friend_id=4, status=3, friends_since=random_date())
   
   post_types1 = PostType(type="work")
   post_types2 = PostType(type="education")
@@ -33,21 +46,41 @@ with app.app_context():
   post_types9 = PostType(type="achievements")
   post_types10 = PostType(type="rememberance")
   
-  post1 = Post(user_id=7, description="some weird description, bla bla bla", type_id=1, created_at=datetime.now())
-  post2 = Post(user_id=1, description="some weird description, bla bla bla", type_id=2, created_at=datetime.now())
-  post3 = Post(user_id=2, description="some weird description, bla bla bla", type_id=3, created_at=datetime.now())
-  post4 = Post(user_id=3, description="some weird description, bla bla bla", type_id=4, created_at=datetime.now())
-  post5 = Post(user_id=4, description="some weird description, bla bla bla", type_id=5, created_at=datetime.now())
-  post6 = Post(user_id=2, description="some weird description, bla bla bla", type_id=6, created_at=datetime.now())
-  post7 = Post(user_id=6, description="some weird description, bla bla bla", type_id=7, created_at=datetime.now())
-  post8 = Post(user_id=7, description="some weird description, bla bla bla", type_id=8, created_at=datetime.now())
-  post9 = Post(user_id=3, description="some weird description, bla bla bla", type_id=9, created_at=datetime.now())
-  post10 = Post(user_id=2, description="some weird description, bla bla bla", type_id=10, created_at=datetime.now())
-  post11 = Post(user_id=3, description="some weird description, bla bla bla", type_id=1, created_at=datetime.now())
-  post12 = Post(user_id=7, description="some weird description, bla bla bla", type_id=2, created_at=datetime.now())
-  post13 = Post(user_id=2, description="some weird description, bla bla bla", type_id=3, created_at=datetime.now())
-  post14 = Post(user_id=2, description="some weird description, bla bla bla", type_id=4, created_at=datetime.now())
-  post15 = Post(user_id=7, description="some weird description, bla bla bla", type_id=5, created_at=datetime.now())
+  post1 = Post(user_id=7, description="some weird description, bla bla bla", type_id=1, created_at=random_date())
+  post2 = Post(user_id=1, description="some weird description, bla bla bla", type_id=2, created_at=random_date())
+  post3 = Post(user_id=2, description="some weird description, bla bla bla", type_id=3, created_at=random_date())
+  post4 = Post(user_id=3, description="some weird description, bla bla bla", type_id=4, created_at=random_date())
+  post5 = Post(user_id=4, description="some weird description, bla bla bla", type_id=5, created_at=random_date())
+  post6 = Post(user_id=2, description="some weird description, bla bla bla", type_id=6, created_at=random_date())
+  post7 = Post(user_id=6, description="some weird description, bla bla bla", type_id=7, created_at=random_date())
+  post8 = Post(user_id=7, description="some weird description, bla bla bla", type_id=8, created_at=random_date())
+  post9 = Post(user_id=3, description="some weird description, bla bla bla", type_id=9, created_at=random_date())
+  post10 = Post(user_id=2, description="some weird description, bla bla bla", type_id=10, created_at=random_date())
+  post11 = Post(user_id=3, description="some weird description, bla bla bla", type_id=1, created_at=random_date())
+  post12 = Post(user_id=7, description="some weird description, bla bla bla", type_id=2, created_at=random_date())
+  post13 = Post(user_id=2, description="some weird description, bla bla bla", type_id=3, created_at=random_date())
+  post14 = Post(user_id=2, description="some weird description, bla bla bla", type_id=4, created_at=random_date())
+  post15 = Post(user_id=7, description="some weird description, bla bla bla", type_id=5, created_at=random_date())
+  
+  comment1= Comment(comment="this is some test comment 1", post_id=1, user_id=1, created_at=random_date())
+  comment2= Comment(comment="this is some test comment 2", post_id=2, user_id=2, created_at=random_date())
+  comment3= Comment(comment="this is some test comment 3", post_id=3, user_id=3, created_at=random_date())
+  comment4= Comment(comment="this is some test comment 4", post_id=4, user_id=4, created_at=random_date())
+  comment5= Comment(comment="this is some test comment 5", post_id=5, user_id=5, created_at=random_date())
+  comment6= Comment(comment="this is some test comment 6", post_id=6, user_id=6, created_at=random_date())
+  comment7= Comment(comment="this is some test comment 7", post_id=7, user_id=7, created_at=random_date())
+  comment8= Comment(comment="this is some test comment 8", post_id=8, user_id=1, created_at=random_date())
+  comment9= Comment(comment="this is some test comment 9", post_id=1, user_id=2, created_at=random_date())
+  comment10= Comment(comment="this is some test comment 10", post_id=1, user_id=3, created_at=random_date())
+  comment11= Comment(comment="this is some test comment 11", post_id=2, user_id=4, created_at=random_date())
+  comment12= Comment(comment="this is some test comment 12", post_id=2, user_id=5, created_at=random_date())
+  comment13= Comment(comment="this is some test comment 13", post_id=2, user_id=6, created_at=random_date())
+  comment14= Comment(comment="this is some test comment 14", post_id=2, user_id=7, created_at=random_date())
+  comment15= Comment(comment="this is some test comment 15", post_id=3, user_id=1, created_at=random_date())
+  comment16= Comment(comment="this is some test comment 16", post_id=9, user_id=2, created_at=random_date())
+  comment17= Comment(comment="this is some test comment 17", post_id=10, user_id=3, created_at=random_date())
+  comment18= Comment(comment="this is some test comment 18", post_id=11, user_id=4, created_at=random_date())
+  comment19= Comment(comment="this is some test comment 19", post_id=11, user_id=5, created_at=random_date())
   
   db.session.add(ian)
   db.session.add(javier)
@@ -88,5 +121,25 @@ with app.app_context():
   db.session.add(post13)
   db.session.add(post14)
   db.session.add(post15)
+
+  db.session.add(comment1)
+  db.session.add(comment2)
+  db.session.add(comment3)
+  db.session.add(comment4)
+  db.session.add(comment5)
+  db.session.add(comment6)
+  db.session.add(comment7)
+  db.session.add(comment8)
+  db.session.add(comment9)
+  db.session.add(comment10)
+  db.session.add(comment11)
+  db.session.add(comment12)
+  db.session.add(comment13)
+  db.session.add(comment14)
+  db.session.add(comment15)
+  db.session.add(comment16)
+  db.session.add(comment17)
+  db.session.add(comment18)
+  db.session.add(comment19)
 
   db.session.commit()

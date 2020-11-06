@@ -1,7 +1,6 @@
 import setInLocalStorage from '../utils/setInLocalStorage';
 import getFromLocalStorage from '../utils/getFromLocalStorage';
 import deleteFromLocalStorage from '../utils/deleteFromLocalStorage';
-import fetchWithCSRF from '../utils/csrfFetch';
 
 const SET_USER = 'auth/SET_USER';
 const SET_TOKEN = 'auth/SET_TOKEN';
@@ -29,15 +28,15 @@ const handleReceivedData = async (res, dispatch) => {
     } else throw { status: 400, message: (await res.json()).msg };
 }
 
-export const login = (email, password) => async dispatch => {
+export const login = (email, password) => async (dispatch, getState) => {
     try{
-        // const res = await fetchWithCSRF('/login', {
+        // const res = await getState.csrf.fetchWithCSRF('/login', {
         const res = await fetch('/login', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getState().csrf.token },
             body: JSON.stringify({ email, password }),   
         });
-        handleReceivedData(res, dispatch);
+        handleReceivedData(res, dispatch, getState);
     } catch (e) {
         console.error(e);
         return e;
@@ -78,11 +77,11 @@ export const logout = () => async (dispatch, getState) => {
         dispatch(removeAuth());
     }
 };
-export const signup = (firstName, lastName, email, password) => async dispatch => {
+export const signup = (firstName, lastName, email, password) => async (dispatch, getState) => {
     try {
         const res = await fetch('/signup', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getState().csrf.token },
             body: JSON.stringify({ firstName, lastName, email, password }),
         });
         // TODO: Refactor

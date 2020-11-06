@@ -54,14 +54,16 @@ export const loadUser = (id) => async dispatch => {
         return e;
     }
 }
-export const addFriend = (id, userId) => async dispatch => {
+export const addFriend = (id, userId) => async (dispatch, getState) => {
     const { token } = getFromLocalStorage();
     if (!token) return;
     console.log(id, userId);
     try {
         const res = await fetch(`/api/users/${id}/add`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            headers: { 'Content-Type': 'application/json', 
+                        Authorization: `Bearer ${token}`,
+                        'X-CSRFToken': getState().csrf.token },
             body: JSON.stringify(userId)
         });
         if (res.ok) {
@@ -74,14 +76,16 @@ export const addFriend = (id, userId) => async dispatch => {
     }
 }
 
-export const editUser = (data, id) => async dispatch => {
+export const editUser = (data, id) => async (dispatch, getState) => {
     const { token } = getFromLocalStorage();
     if (!token) return;
     try {
         console.log(data)
         const res = await fetch(`/api/users/${id}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            headers: { 'Content-Type': 'application/json', 
+                        Authorization: `Bearer ${token}`, 
+                        'X-CSRFToken': getState().csrf.token },
             body: JSON.stringify(data)
         });
         if (res.ok) {
@@ -95,14 +99,15 @@ export const editUser = (data, id) => async dispatch => {
         return e;
     }
 }
-const updateUser = async (path, data, dispatch) =>{
+const updateUser = async (path, data, dispatch, getState) =>{
     const { token } = getFromLocalStorage();
     if (!token) return;
     try {
         console.log(data)
         const res = await fetch(path, {
             method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${token}`, 
+            'X-CSRFToken': getState().csrf.token },
             body: data
         });
         if (res.ok) {
@@ -115,14 +120,14 @@ const updateUser = async (path, data, dispatch) =>{
         return e;
     }
 }
-export const editCover = (data, id) => async dispatch => {
-    updateUser(`/api/users/${id}/cover`, data, dispatch);
+export const editCover = (data, id) => async (dispatch, getState) => {
+    updateUser(`/api/users/${id}/cover`, data, dispatch, getState);
 }
-export const editPhoto = (data, id) => async dispatch => {
-    updateUser(`/api/users/${id}/photo`, data, dispatch);
+export const editPhoto = (data, id) => async (dispatch, getState) => {
+    updateUser(`/api/users/${id}/photo`, data, dispatch, getState);
 }
 
-export default function authReducer(state = { user: {}, relationships: []}, action) {
+export default function userReducer(state = { user: {}, relationships: []}, action) {
     switch (action.type) {
         case SET_USERS:
             return { ...state, users: action.users };

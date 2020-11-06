@@ -9,6 +9,16 @@ import coverPicturePlaceholder from '../images/cover-placeholder.jpg'
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import SendIcon from '@material-ui/icons/Send';
+import WorkIcon from '@material-ui/icons/Work';
+import SchoolIcon from '@material-ui/icons/School';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import HomeIcon from '@material-ui/icons/Home';
+import NatureIcon from '@material-ui/icons/Nature';
+import FlightTakeoffIcon from '@material-ui/icons/FlightTakeoff';
+import LocalActivityIcon from '@material-ui/icons/LocalActivity';
+import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
+import StarIcon from '@material-ui/icons/Star';
+import candleIcon from '../images/candle.svg';
 
 const useStyle = makeStyles({
     paper:{
@@ -22,10 +32,14 @@ const useStyle = makeStyles({
         borderRadius: 40,
         padding: 20,
     },
+    icons:{
+        fontSize: 60,
+        color: '#33DD87',
+    }
 
 })
 
-const CommentSection = ({user}) =>{
+const CommentSection = ({owner, post}) =>{
     const classes = useStyle()
     const [comment, setComment] = useState('');
 
@@ -37,7 +51,7 @@ const CommentSection = ({user}) =>{
             <div className="divider" />
             <div className="comment-section">
                 <div className="comment-input-section">
-                    <ProfilePic user={user} size={40}/>
+                    <ProfilePic user={owner} size={40}/>
                     <div className="input-container">
                         <div className={classes.comment}>
                             <InputBase
@@ -60,30 +74,37 @@ const CommentSection = ({user}) =>{
                         </div>
                     </div>
                 </div>
-                <DisplayComments user={user} />
-                <DisplayComments user={user} />
+                {post.comments.map(comment => <DisplayComments key={comment.id} comment={comment} />)}                   
+                
             </div>
         </>
     )
 }
-const DisplayComments =({user}) => {
+const DisplayComments =({comment}) => {
+    const posted = formatDistanceToNowStrict(new Date(comment.created_at), { addSuffix: true });
+
     const [likeClicked, setLikeClicked] = useState(false);
     return (
         <div className="comment-display-section">
-            <ProfilePic user={user} size={40} />
+            <ProfilePic user={comment.owner} size={40} />
             <div className="comment-area">
-                <div className="left-comment-side">
-                    <Fullname user={user} />
-                    <div className="comment-container">
-                        <p className="comment">some comment i wrote as a place holder </p>
+                <div className="top-comment-side">
+                    <div className="left-comment-side">
+                        <Fullname user={comment.owner} />
+                        <div className="comment-container">
+                            <p className="comment">{comment.comment}</p>
+                        </div>
+                    </div>
+                    <div className="right-comment-side">
+                        <ThumbUpAltIcon
+                            className="comment-like-button"
+                            style={{ cursor: 'pointer' }}
+                            color={likeClicked ? "primary" : "secondary"}
+                            onClick={() => likeClicked ? setLikeClicked(false) : setLikeClicked(true)} />
                     </div>
                 </div>
-                <div className="right-comment-side">
-                    <ThumbUpAltIcon
-                        className="comment-like-button"
-                        style={{ cursor: 'pointer' }}
-                        color={likeClicked ? "primary" : "secondary"}
-                        onClick={() => likeClicked ? setLikeClicked(false) : setLikeClicked(true)} />
+                <div className="bottom-comment-side">
+                    <p className="comment-timestamp">{posted}</p>
                 </div>
             </div>
 
@@ -129,20 +150,36 @@ const ProfilePic = ({user, size=60})=>{
         </div>
     )
 }
-export default function PostCard({user}){
+export default function PostCard({user, post}){
     const [likeClicked, setLikeClicked] = useState(false);
     const [commentClicked, setCommentClicked] = useState(false);
     const classes = useStyle()
-    const history = useHistory()
-    const posted = formatDistanceToNowStrict(new Date(user.createdAt), { addSuffix: true });
+    const posted = formatDistanceToNowStrict(new Date(post.created_at), { addSuffix: true });
+    const eventsIcons = {
+        "work": <WorkIcon className={classes.icons}/>,
+        "education": <SchoolIcon className={classes.icons}/>,
+        "relationship": <FavoriteIcon className={classes.icons}/>,
+        "home": <HomeIcon className={classes.icons}/>,
+        "family": <NatureIcon className={classes.icons}/>,
+        "travel": <FlightTakeoffIcon className={classes.icons}/>,
+        "activities": <LocalActivityIcon className={classes.icons}/>,
+        "health": <DirectionsRunIcon className={classes.icons}/>,
+        "achievements": <StarIcon className={classes.icons}/>,
+        "rememberance": <img
+                    src={candleIcon}
+                    alt="candle icon"
+                    height="60"
+                    className="event-icon"
+                />,
+    }
     return (
         <div className={classes.paper}>
             <Paper className="paper-card">
                 <div className="header-container">
                     <div className="left-side-container">
-                        <ProfilePic user={user} />
+                        <ProfilePic user={post.owner} />
                         <div className="name-time-container">
-                            <Fullname user={user}/>
+                            <Fullname user={post.owner}/>
                             <div className="time-container">
                                 <p>{posted}</p>
                             </div>
@@ -154,13 +191,17 @@ export default function PostCard({user}){
                 </div>
                 <div className="body-container">
                     <div className="body-description-container">
-                        <p className="description">some text to test the caption section of the post, this is where all the text is gonna go. looks pretty nice so far.</p>
+                        <div className="event-type-container">
+                            {eventsIcons[post.type.type]}
+                        </div>
+                        <p className="icon-tag">{post.type.type.toUpperCase()}</p>
+                        <p className="description">{post.description}</p>
                     </div>
                     <div className="body-photo-container">
                         <img
-                            src={user.coverPicture ? user.coverPicture : coverPicturePlaceholder}
+                            src={post.owner.coverPicture ? post.owner.coverPicture : coverPicturePlaceholder}
                             alt="cover placeholder"
-                            className="cover-picture-post"
+                            className="body-photo"
                         />
                     </div>
                 </div>
@@ -184,7 +225,7 @@ export default function PostCard({user}){
                     </div>
                     <div>
                         {commentClicked 
-                            ? <CommentSection user={user} />
+                            ? <CommentSection owner={user} post={post} />
                             : null
                         }
                     </div>

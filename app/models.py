@@ -23,6 +23,7 @@ class User(db.Model):
 
   # circles = db.relationship('Circle', back_populates='users', secondary='circle_lists')
   relationships = db.relationship("Relationship", primaryjoin='User.id == Relationship.friend_id', foreign_keys="Relationship.friend_id", backref='user_friends')
+  posts = db.relationship("Post", primaryjoin='User.id == Post.user_id', foreign_keys="Post.user_id", backref='user_posts')
 
   def to_dict(self):
     return {
@@ -106,6 +107,7 @@ class Post(db.Model):
 
   owner = db.relationship("User", foreign_keys=user_id)
   type = db.relationship("PostType", foreign_keys=type_id)
+  comments = db.relationship("Comment", primaryjoin='Post.id == Comment.post_id', foreign_keys="Comment.post_id", backref='post_comments')
 
   def to_dict(self):
     return {
@@ -115,6 +117,27 @@ class Post(db.Model):
       "type_id": self.type_id,
       "created_at": self.created_at,
     }
+
+class Comment(db.Model):
+  __tablename__ = "comments"
+
+  id = db.Column(db.Integer, primary_key = True)
+  comment = db.Column(db.Text, nullable = False)
+  post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable = False)
+  user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
+  created_at = db.Column(db.DateTime, nullable = False)
+
+  post = db.relationship("Post", foreign_keys=post_id, cascade="all, delete")
+  owner = db.relationship("User", foreign_keys=user_id)
+
+  def to_dict(self):
+    return {
+      "id": self.id,
+      "comment": self.comment,
+      "post_id": self.post_id,
+      "user_id": self.user_id,
+      "created_at": self.created_at,
+    } 
 
 # class Photo(db.Model):
 #   __tablename__ = "photos"
@@ -147,26 +170,7 @@ class Post(db.Model):
 #       "post_id": self.post_id,
 #     }  
 
-# class Comment(db.Model):
-#   __tablename__ = "comments"
 
-#   id = db.Column(db.Integer, primary_key = True)
-#   comment = db.Column(db.Text, nullable = False)
-#   post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable = False)
-#   user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
-#   created_at = db.Column(db.DateTime, nullable = False)
-
-#   post = db.relationship("Post", foreign_keys=post_id, cascade="all, delete")
-#   owner = db.relationship("User", foreign_keys=user_id)
-
-#   def to_dict(self):
-#     return {
-#       "id": self.id,
-#       "comment": self.comment,
-#       "post_id": self.post_id,
-#       "user_id": self.user_id,
-#       "created_at": self.created_at,
-#     } 
 
 # class Like(db.Model):
 #   __tablename__ = "likes"

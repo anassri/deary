@@ -3,10 +3,14 @@ import thunk from 'redux-thunk';
 
 import auth from './auth';
 import user from './user';
+import csrf from './csrf';
+import post from './post';
 
 const rootReducer = combineReducers({
     auth,
-    user
+    user,
+    csrf,
+    post
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

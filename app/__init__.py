@@ -8,6 +8,7 @@ from flask_jwt_extended import JWTManager, jwt_required, get_raw_jwt
 
 from app.models import db, User
 from .api import user
+from .api import post
 from .routes import auth
 
 from app.config import Config
@@ -16,6 +17,7 @@ app = Flask(__name__)
 
 app.config.from_object(Config)
 app.register_blueprint(user.user_routes)
+app.register_blueprint(post.post_routes)
 app.register_blueprint(auth.auth_routes)
 
 db.init_app(app)
@@ -63,3 +65,28 @@ def react_root(path):
     if path == 'favicon.ico':
         return app.send_static_file('favicon.ico')
     return app.send_static_file('index.html')
+
+@app.route('/api/csrf/restore')
+def restore_csrf():
+    return {'csrf_token': generate_csrf()}
+
+
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     if not request.is_json:
+#         return jsonify({"msg": "Missing JSON in request"}), 400
+
+#     username = request.json.get('username', None)
+#     password = request.json.get('password', None)
+
+#     if not username or not password:
+#         return {"errors": ["Missing required parameters"]}, 400
+
+#     authenticated, user = User.authenticate(username, password)
+#     print(authenticated)
+#     print(user)
+#     if authenticated:
+#         login_user(user)
+#         return {"current_user_id": current_user.id}
+
+#     return {"errors": ["Invalid username or password"]}, 401

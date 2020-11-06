@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter, Switch, Route,Redirect, useLocation } from 'react-router-dom';
 import AuthContainer from './components/AuthContainer';
@@ -10,6 +10,7 @@ import theme from './theme';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { logout } from './store/auth';
+import { restoreCSRF } from './store/csrf';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
     // const dispatch = useDispatch();
@@ -30,6 +31,9 @@ function App() {
     const handleLogout = () =>{
         dispatch(logout());
     }
+    useEffect(()=>{
+        dispatch(restoreCSRF());
+    }, [])
   return (
     <BrowserRouter>
         <ThemeProvider theme={theme}>

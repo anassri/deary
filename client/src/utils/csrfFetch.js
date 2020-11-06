@@ -1,6 +1,6 @@
-let fetchWithCSRF = null
 
 async function restoreCSRF() {
+    let fetchWithCSRF;
     const response = await fetch('/api/csrf/restore', {
         method: 'GET',
         credentials: 'include'
@@ -20,8 +20,9 @@ async function restoreCSRF() {
             }
         };
     }
+    return fetchWithCSRF;
 }
 
-restoreCSRF();
+const fetchWithCSRF = restoreCSRF();
 
 export default fetchWithCSRF;

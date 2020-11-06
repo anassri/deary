@@ -59,26 +59,34 @@ function CheckRelationShip({userId, relationships}){
     
 }
 function SearchEntry({user, relationships}){
+    const history = useHistory();
     return (
         <>
             <div className="entry-container">
-                <div className="thumbnail-container">
+                <div className="thumbnail-container" style={{cursor: 'pointer'}}>
                     {user.profilePicture 
                         ? <img
                             src={user.profilePicture}
                             alt="profile placeholder"
                             className="thumbnail-image"
                             height='60'
+                            width='60'
+                            onClick={()=> history.push(`/profile/${user.id}`)}
                             />
                         : <img
                             src={profilePicturePlaceholder}
                             alt="profile placeholder"
                             className="thumbnail-image"
                             height='60'
+                            width='60'
+                            onClick={() => history.push(`/profile/${user.id}`)}
                         />}
                 </div>
                 <div className="name-container">
-                    <p className="fullname">{user.firstName + " " + user.lastName} </p>
+                    <p className="fullname" 
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => history.push(`/profile/${user.id}`)}>
+                        {user.firstName + " " + user.lastName} </p>
                 </div>
                 <div className="add-button-container">
                     <CheckRelationShip userId={user.id} relationships={relationships}/>

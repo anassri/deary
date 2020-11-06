@@ -20,22 +20,55 @@ def find_user(id):
 @user_routes.route('/<int:id>', methods=['POST'])
 @jwt_required
 def update_user(id):
-  # incoming = request.get_json()
-  # print(incoming)
   user = User.query.get(id)
-  
-  cover_photo = request.files["file"]
-  
-  # user.first_name = incoming["firstName"]
-  # user.last_name = incoming["lastName"]
-  # user.bio = incoming["bio"]
-  # user.city = incoming["city"]
-  # user.state = incoming["state"]
-  # user.country = incoming["country"]
+  incoming = request.get_json()
+
+  user.first_name = incoming["firstName"]
+  user.last_name = incoming["lastName"]
+  user.bio = incoming["bio"]
+  user.city = incoming["city"]
+  user.state = incoming["state"]
+  user.country = incoming["country"]
+
   db.session.commit()
 
-  token = create_access_token(identity=user.email)
-  return jsonify(user=user.to_dict(), token=token)
+  return user.to_dict()
+
+# Update cover photo for one user
+@user_routes.route('/<int:id>/cover', methods=['POST'])
+@jwt_required
+def update_cover_photo(id):
+  user = User.query.get(id)
+  if "coverPicture" not in request.files:
+        return "No file key in request.files"
+  cover_photo = request.files['coverPicture']
+  if cover_photo:
+    cover_photo_link = upload_file_to_s3(cover_photo)
+    user.cover_picture = cover_photo_link
+  else:
+    return "No file key in request.files"
+  db.session.commit()
+
+  return user.to_dict()
+
+# Update profile photo for one user
+@user_routes.route('/<int:id>/photo', methods=['POST'])
+@jwt_required
+def update_profile_photo(id):
+  user = User.query.get(id)
+  if "profilePicture" not in request.files:
+        return "No file key in request.files"
+  profile_photo = request.files['profilePicture']
+  if profile_photo:
+    profile_photo_link = upload_file_to_s3(profile_photo)
+    user.profile_picture = profile_photo_link
+  else:
+    return "No file key in request.files"
+  db.session.commit()
+
+  return user.to_dict()
+
+
 # Grab all users and relationships for the search function
 @user_routes.route('/<int:id>q=<string:value>', methods=['GET'])
 @jwt_required

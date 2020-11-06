@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { InputBase, Button, InputAdornment, IconButton} from '@material-ui/core/';
 import SearchIcon from '@material-ui/icons/Search';
 import SendIcon from '@material-ui/icons/Send';
-import profilePicture from '../images/profile-placeholder.png'
+import profilePicturePlaceholder from '../images/profile-placeholder.png'
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 const useStyles = makeStyles((theme) => ({
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Navigation(){
     const classes = useStyles();
-    const user = useSelector(state => state.auth.user);
+    const user = JSON.parse(window.localStorage.getItem('auth/USER'));
     const history = useHistory();
     const dispatch = useDispatch()
     const [search, setSearch] = useState('');
@@ -81,10 +81,11 @@ export default function Navigation(){
             <div className="profile-link-container">
                 <Button className={classes.button} onClick={handleProfileClick}>
                     <img 
-                        src={profilePicture} 
+                        src={user.profilePicture ? user.profilePicture : profilePicturePlaceholder}
                         alt="profile placeholder" 
                         className="thumb-profile-picture" 
                         height='36' 
+                        width='36' 
                         style={{marginRight: 10}}
                         />
                     {user.firstName}

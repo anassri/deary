@@ -16,6 +16,7 @@
 }
 .cover-picture{
     object-fit: cover;
+    max-width: 940px;
 }
 .profile-picture{
     object-fit: cover;

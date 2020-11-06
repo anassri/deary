@@ -16,7 +16,7 @@ import {
     DialogActions } from '@material-ui/core';
 import Navigation from './Navigation';
 import DateRangeIcon from '@material-ui/icons/DateRange';
-import { formatDistanceToNowStrict } from 'date-fns';
+import { formatDistanceToNowStrict, parse } from 'date-fns';
 import EditIcon from '@material-ui/icons/Edit';
 import { loadUser, editUser, editCover, editPhoto } from '../store/user';
 import { useParams } from 'react-router';
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export function Profile({user}){
+export function Profile({ user, authUser}){
     const [open, setOpen] = useState(false);
     const [fullName, setFullName] = useState('');
     const [bio, setBio] = useState('');
@@ -64,9 +64,11 @@ export function Profile({user}){
         setCity(user.city);
         setState(user.state);
         setCountry(user.country);
-        setOwner(user.id === parseInt(id));
+        setOwner(authUser.id === parseInt(id));
     }, [])
-    
+    console.log(authUser.id);
+    console.log(parseInt(id))
+    console.log('owner??', authUser.id === parseInt(id))
     useEffect(()=>{
         if (profilePictureFile) savePhoto();
     }, [profilePictureFile]);
@@ -294,6 +296,7 @@ export function Profile({user}){
 
 export default function ProfileContainer(){
     const user = useSelector(state => state.user);
+    const authUser = useSelector( state => state.auth.user)
     const { id } = useParams();
     const dispatch = useDispatch();
 
@@ -301,5 +304,5 @@ export default function ProfileContainer(){
         dispatch(loadUser(id))
     },[])
     if(!user.id) return null;
-    return <Profile user={user}/>
+    return <Profile user={user} authUser={authUser}/>
 }

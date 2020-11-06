@@ -1,0 +1,85 @@
+.header-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 0;
+}
+.photo-container{
+    padding: 0 20px ;
+}
+.fullname{
+    font-weight: bold;
+    color: #666;
+    font-size: 19px;
+}
+.left-side-container{
+    display: flex;
+    align-items: center;
+}
+.right-side-container{
+    padding: 0 40px;
+}
+.paper-card.MuiPaper-rounded{
+   border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+.cover-picture-post{
+    object-fit: cover;
+    max-width: 840px;
+    overflow: hidden;
+}
+.description {
+    font-size: 19px;
+    color: #666;
+    padding: 0 20px;
+}
+.button-section{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.footer-left-side, .footer-right-side{
+    margin: 20px 35px
+}
+.footer-buttons{
+    margin-right: 30px;
+}
+.footer-buttons:active { 
+    transform: scale(0.9); 
+}
+.comment-section{
+   text-align: center;
+   padding: 20px 0;
+
+}
+.comment-input-section{
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.comment-display-section{
+    display: flex;
+    align-items: center;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+.comment-area{
+    background-color: #EFEFEF;
+    width: 87%;
+    height: 100%;
+    border-radius: 20px;
+    padding: 10px 20px;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.comment{
+    color: #666;
+}
+.comment-like-button{
+    margin-right: 10px ;
+}

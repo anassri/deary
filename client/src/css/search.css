@@ -29,10 +29,11 @@
 .fullname{
     font-weight: bold;
     color: #666;
+    font-size: 19px;
 }
 .add-button.MuiButton-contained{
     border-radius: 40px;
 }
 .divider{
-    border-bottom: 1px solid #EFEFEF;
+    border-bottom: 1px solid #DDD;
 }

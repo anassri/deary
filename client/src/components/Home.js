@@ -17,10 +17,15 @@ export default function Home(){
     return (
         <>
             <Navigation />
-            <div className="body-container">
-                {sortedPosts.map(post => <PostCard key={post.id} user={user} post={post}/>)}
+            <div className="home-body-container">
+                <h1>Welcome Home!</h1>
+                <div className="body-container">
+                    <div className="posts-body-container">
+                        {sortedPosts.map(post => <PostCard key={post.id} user={user} post={post}/>)}
+                    </div>
+                </div>
+                <h1>Friends list</h1>
             </div>
-            <h1>Welcome Home!</h1>
         </>
     )
 }

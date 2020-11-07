@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import '../css/post.css';
 import { Paper, Button, makeStyles, InputBase, InputAdornment, IconButton } from '@material-ui/core/';
 import { useHistory } from 'react-router';
-import { formatDistanceToNowStrict } from 'date-fns';
+import { formatDistanceToNowStrict, parse } from 'date-fns';
 import profilePicturePlaceholder from '../images/profile-placeholder.png'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import coverPicturePlaceholder from '../images/cover-placeholder.jpg'
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
-import SendIcon from '@material-ui/icons/Send';
 import WorkIcon from '@material-ui/icons/Work';
 import SchoolIcon from '@material-ui/icons/School';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -19,15 +18,17 @@ import LocalActivityIcon from '@material-ui/icons/LocalActivity';
 import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import StarIcon from '@material-ui/icons/Star';
 import candleIcon from '../images/candle.svg';
+import Comments from './Comments';
 
 const useStyle = makeStyles({
     paper:{
-        width: 840,
-        marginTop: 20,
+        width: 680,
+        marginBottom: 20,
+        marginRight: 20
     },
     inputRoot: {
         backgroundColor: '#EFEFEF',
-        width: 735,
+        width: 580,
         height: 52,
         borderRadius: 40,
         padding: 20,
@@ -39,79 +40,7 @@ const useStyle = makeStyles({
 
 })
 
-const CommentSection = ({owner, post}) =>{
-    const classes = useStyle()
-    const [comment, setComment] = useState('');
-
-    const handleComment = () =>{
-
-    }
-    return(
-        <>
-            <div className="divider" />
-            <div className="comment-section">
-                <div className="comment-input-section">
-                    <ProfilePic user={owner} size={40}/>
-                    <div className="input-container">
-                        <div className={classes.comment}>
-                            <InputBase
-                                placeholder="Write a comment..."
-                                className={classes.inputRoot}
-                                inputProps={{ 'aria-label': 'search' }}
-                                onChange={e => setComment(e.target.value)}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            variant="contained"
-                                            color="default"
-                                            type="file"
-                                            onClick={handleComment}
-                                        >
-                                            <SendIcon className={classes.icon} />
-                                        </IconButton>
-                                    </InputAdornment>}
-                            />
-                        </div>
-                    </div>
-                </div>
-                {post.comments.map(comment => <DisplayComments key={comment.id} comment={comment} />)}                   
-                
-            </div>
-        </>
-    )
-}
-const DisplayComments =({comment}) => {
-    const posted = formatDistanceToNowStrict(new Date(comment.created_at), { addSuffix: true });
-
-    const [likeClicked, setLikeClicked] = useState(false);
-    return (
-        <div className="comment-display-section">
-            <ProfilePic user={comment.owner} size={40} />
-            <div className="comment-area">
-                <div className="top-comment-side">
-                    <div className="left-comment-side">
-                        <Fullname user={comment.owner} />
-                        <div className="comment-container">
-                            <p className="comment">{comment.comment}</p>
-                        </div>
-                    </div>
-                    <div className="right-comment-side">
-                        <ThumbUpAltIcon
-                            className="comment-like-button"
-                            style={{ cursor: 'pointer' }}
-                            color={likeClicked ? "primary" : "secondary"}
-                            onClick={() => likeClicked ? setLikeClicked(false) : setLikeClicked(true)} />
-                    </div>
-                </div>
-                <div className="bottom-comment-side">
-                    <p className="comment-timestamp">{posted}</p>
-                </div>
-            </div>
-
-        </div>
-    )
-}
-const Fullname = ({user}) => {
+export const Fullname = ({user}) => {
     const firstname = user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1)
     const lastname = user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)
     const history = useHistory()
@@ -125,7 +54,7 @@ const Fullname = ({user}) => {
         </div>
     )
 }
-const ProfilePic = ({user, size=60})=>{
+export const ProfilePic = ({user, size=60})=>{
     const history = useHistory()
 
     return (
@@ -217,7 +146,8 @@ export default function PostCard({user, post}){
                                 className="footer-buttons"
                                 style={{ cursor: 'pointer' }}
                                 color="secondary"
-                                onClick={() => commentClicked ? setCommentClicked(false) : setCommentClicked(true)}/>
+                                onClick={() => commentClicked ? setCommentClicked(false) : setCommentClicked(true)}
+                                />
                         </div>
                         <div className="footer-right-side">
                             <ChatBubbleIcon />
@@ -225,7 +155,7 @@ export default function PostCard({user, post}){
                     </div>
                     <div>
                         {commentClicked 
-                            ? <CommentSection owner={user} post={post} />
+                            ? <Comments owner={user} post={post} />
                             : null
                         }
                     </div>

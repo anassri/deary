@@ -44,6 +44,45 @@ export const addComment = (data, id) => async (dispatch, getState) => {
         return e;
     }
 }
+
+export const addLike = (data, id) => async (dispatch, getState) => {
+    const { token } = getFromLocalStorage();
+    if (!token) return;
+    console.log('adding like')
+    try {
+        const res = await fetch(`/api/likes/${id}/add`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+                'X-CSRFToken': getState().csrf.token
+            },
+            body: JSON.stringify(data)
+        });
+    } catch (e) {
+        console.error(e);
+        return e;
+    }
+}
+export const deleteLike = (data, id) => async (dispatch, getState) => {
+    const { token } = getFromLocalStorage();
+    if (!token) return;
+    console.log('deleting like')
+    try {
+        const res = await fetch(`/api/likes/${id}/delete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+                'X-CSRFToken': getState().csrf.token
+            },
+            body: JSON.stringify(data)
+        });
+    } catch (e) {
+        console.error(e);
+        return e;
+    }
+}
 export const editComment = (data, id) => async (dispatch, getState) => {
     const { token } = getFromLocalStorage();
     if (!token) return;
@@ -80,7 +119,7 @@ export const deleteComment = (id, postId) => async (dispatch, getState) => {
     }
 }
 
-export default function postReducer(state = { posts: [], comments: [] }, action) {
+export default function postReducer(state = { posts: [] }, action) {
     switch (action.type) {
         case SET_POSTS:
             return { ...state, posts: action.posts };

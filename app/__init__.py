@@ -10,6 +10,7 @@ from app.models import db, User
 from .api import user
 from .api import post
 from .api import comment
+from .api import like
 from .routes import auth
 
 from app.config import Config
@@ -19,6 +20,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 app.register_blueprint(user.user_routes)
 app.register_blueprint(post.post_routes)
+app.register_blueprint(like.like_routes)
 app.register_blueprint(comment.comment_routes)
 app.register_blueprint(auth.auth_routes)
 

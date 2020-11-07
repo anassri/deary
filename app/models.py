@@ -108,6 +108,7 @@ class Post(db.Model):
   owner = db.relationship("User", foreign_keys=user_id)
   type = db.relationship("PostType", foreign_keys=type_id)
   comments = db.relationship("Comment", primaryjoin='Post.id == Comment.post_id', foreign_keys="Comment.post_id", backref='post_comments', cascade="all, delete")
+  likes = db.relationship("Like", primaryjoin='Post.id == Like.post_id', foreign_keys="Like.post_id", backref='post_likes', cascade="all, delete")
 
   def to_dict(self):
     return {
@@ -137,6 +138,23 @@ class Comment(db.Model):
       "post_id": self.post_id,
       "user_id": self.user_id,
       "created_at": self.created_at,
+    } 
+
+class Like(db.Model):
+  __tablename__ = "likes"
+
+  id = db.Column(db.Integer, primary_key = True)
+  post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable = False)
+  user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
+
+  post = db.relationship("Post", foreign_keys=post_id)
+  owner = db.relationship("User", foreign_keys=user_id)
+
+  def to_dict(self):
+    return {
+      "id": self.id,
+      "post_id": self.post_id,
+      "user_id": self.user_id,
     } 
 
 # class Photo(db.Model):
@@ -172,22 +190,7 @@ class Comment(db.Model):
 
 
 
-# class Like(db.Model):
-#   __tablename__ = "likes"
 
-#   id = db.Column(db.Integer, primary_key = True)
-#   post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable = False)
-#   user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
-
-#   post = db.relationship("Post", foreign_keys=post_id, cascade="all, delete")
-#   owner = db.relationship("User", foreign_keys=user_id)
-
-#   def to_dict(self):
-#     return {
-#       "id": self.id,
-#       "post_id": self.post_id,
-#       "user_id": self.user_id,
-#     } 
 
 # class CommentLike(db.Model):
 #   __tablename__ = "comment_likes"

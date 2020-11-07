@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../css/post.css';
 import { Paper, Button, makeStyles, InputBase, InputAdornment, IconButton } from '@material-ui/core/';
 import { useHistory } from 'react-router';
@@ -19,6 +19,8 @@ import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import StarIcon from '@material-ui/icons/Star';
 import candleIcon from '../images/candle.svg';
 import Comments from './Comments';
+import { addLike, deleteLike, loadPosts } from '../store/post';
+import { useDispatch } from 'react-redux';
 
 const useStyle = makeStyles({
     paper:{
@@ -81,9 +83,41 @@ export const ProfilePic = ({user, size=60})=>{
 }
 export default function PostCard({user, post}){
     const [likeClicked, setLikeClicked] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
     const [commentClicked, setCommentClicked] = useState(false);
+    const [syncData, setSyncData] = useState(false);
+    const dispatch = useDispatch()
     const classes = useStyle()
     const posted = formatDistanceToNowStrict(new Date(post.created_at), { addSuffix: true });
+    
+    useEffect(()=>{
+        post.likes.map(like => {
+            if (like.user_id === user.id) setLikeClicked(true);
+        });
+        
+        dispatch(loadPosts(user.id))
+        setLikeCount(post.likes.length)
+        // setSyncData(false);
+        console.log("hit hit")
+    }, [likeClicked])
+    
+    useEffect(()=>{
+        console.log("hit")
+    }, [likeClicked])
+    
+    const handleLiked = async () =>{
+        if (likeClicked){
+            setLikeClicked(false);
+            await dispatch(deleteLike(post.id, user.id));
+        } else {
+            setLikeClicked(true);
+            await dispatch(addLike(post.id, user.id));
+        }
+        setSyncData(true);
+        // await setSyncData(true);
+    }
+
+
     const eventsIcons = {
         "work": <WorkIcon className={classes.icons}/>,
         "education": <SchoolIcon className={classes.icons}/>,
@@ -141,7 +175,7 @@ export default function PostCard({user, post}){
                                 className="footer-buttons"
                                 style={{cursor: 'pointer'}}
                                 color={likeClicked ? "primary" : "secondary"}
-                                onClick={() => likeClicked ? setLikeClicked(false) : setLikeClicked(true)}/>
+                                onClick={handleLiked}/>
                             <ChatBubbleIcon
                                 className="footer-buttons"
                                 style={{ cursor: 'pointer' }}
@@ -150,7 +184,12 @@ export default function PostCard({user, post}){
                                 />
                         </div>
                         <div className="footer-right-side">
-                            <ChatBubbleIcon />
+                            <div className="likes-count-tag">
+                                <p>{likeCount ? likeCount + ' Likes' : null}</p>
+                            </div>
+                            <div className="comments-count-tag">
+
+                            </div>
                         </div>
                     </div>
                     <div>

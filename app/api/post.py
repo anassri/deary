@@ -23,19 +23,27 @@ def find_all_posts(id):
                         .options(joinedload(Relationship.friends) \
                                 .joinedload(User.posts) \
                                 .joinedload(Post.owner)) \
+                        .options(joinedload(Relationship.friends) \
+                                .joinedload(User.posts) \
+                                .joinedload(Post.likes)) \
                         .all()
     
     data=[]
     for relationship in relationships:
         for post in relationship.friends.posts:
             comments = []
+            likes = []
             for comment in post.comments:
                 comm = {**comment.to_dict(), "owner": comment.owner.to_dict()}
                 comments.append(comm)
+            for like in post.likes:
+                lik = like.to_dict()
+                likes.append(lik)
             dic = {**post.to_dict(),
                 "comments": comments,
                 "type": post.type.to_dict(),
-                "owner": post.owner.to_dict()}
+                "owner": post.owner.to_dict(),
+                "likes": likes}
             data.append(dic)
         
 

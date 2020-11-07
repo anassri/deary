@@ -28,7 +28,7 @@
     border-bottom-left-radius: 10px;
 }
 .body-photo{
-    width: 680px;
+    width: 780px;
     height: 100%;
     object-fit: cover;
 }
@@ -78,7 +78,7 @@
     align-items: center;
 }
 .comment-area{
-    width: 85%;
+    width: 86%;
     text-align: left;
 }
 .comment-timestamp{

@@ -17,7 +17,7 @@ const useStyle = makeStyles({
     },
     inputRoot: {
         backgroundColor: '#EFEFEF',
-        width: 580,
+        width: 670,
         height: 52,
         borderRadius: 40,
         padding: 20,

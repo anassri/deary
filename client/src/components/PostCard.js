@@ -22,7 +22,7 @@ import Comments from './Comments';
 
 const useStyle = makeStyles({
     paper:{
-        width: 680,
+        width: 780,
         marginBottom: 20,
         marginRight: 20
     },

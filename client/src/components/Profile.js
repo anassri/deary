@@ -16,7 +16,7 @@ import {
     DialogActions } from '@material-ui/core';
 import Navigation from './Navigation';
 import DateRangeIcon from '@material-ui/icons/DateRange';
-import { formatDistanceToNowStrict, parse } from 'date-fns';
+import { formatDistanceToNowStrict } from 'date-fns';
 import EditIcon from '@material-ui/icons/Edit';
 import { loadUser, editUser, editCover, editPhoto } from '../store/user';
 import { useParams } from 'react-router';
@@ -66,9 +66,6 @@ export function Profile({ user, authUser}){
         setCountry(user.country);
         setOwner(authUser.id === parseInt(id));
     }, [])
-    console.log(authUser.id);
-    console.log(parseInt(id))
-    console.log('owner??', authUser.id === parseInt(id))
     useEffect(()=>{
         if (profilePictureFile) savePhoto();
     }, [profilePictureFile]);

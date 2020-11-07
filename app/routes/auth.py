@@ -8,6 +8,9 @@ auth_routes = Blueprint('auth', __name__, url_prefix='/')
 
 @auth_routes.route('/login', methods=['POST'])
 def login():
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+        
     incoming = request.get_json()
     user = User.query.filter_by(email=incoming['email']).one()
     if user and user.check_password(incoming['password']):

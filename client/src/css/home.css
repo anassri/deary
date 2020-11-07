@@ -3,3 +3,43 @@
     flex-direction: column;
     align-items: center;
 }
+.home-body-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.body-container{
+    /* height: 1080px; */
+}
+.posts-body-container{
+    overflow-y: auto;
+    height: 90.5vh;
+    margin-top: 5px;
+}
+
+::-webkit-scrollbar { 
+    width: 10px; 
+} 
+
+/* Track */ 
+::-webkit-scrollbar-track { 
+    background:rgba(0,0,0,0); 
+    border-radius: 5px; 
+} 
+
+/* Handle */ 
+::-webkit-scrollbar-thumb { 
+    background: #666; 
+    border-radius: 5px; 
+} 
+
+/* Handle on hover */ 
+::-webkit-scrollbar-thumb:hover { 
+    background: #33DD87; 
+}
+.left-nav-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 20px;
+}

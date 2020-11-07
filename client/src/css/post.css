@@ -3,7 +3,8 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 0;
+    padding-top: 20px;
+    padding-bottom: 0px;
 }
 .photo-container{
     padding: 0 20px ;
@@ -26,15 +27,16 @@
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
 }
-.cover-picture-post{
+.body-photo{
+    width: 780px;
+    height: 100%;
     object-fit: cover;
-    max-width: 840px;
-    overflow: hidden;
 }
 .description {
     font-size: 19px;
     color: #666;
     padding: 0 20px;
+    padding-bottom: 12px;
 }
 .button-section{
     display: flex;
@@ -66,20 +68,55 @@
     margin-top: 0;
     margin-bottom: 10px;
 }
-.comment-area{
+.bg-area{
     background-color: #EFEFEF;
-    width: 87%;
-    height: 100%;
     border-radius: 20px;
     padding: 10px 20px;
     text-align: left;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+
+}
+.comment-menu-container{
+    cursor: pointer;
+    margin-left: 10px;
+}
+.comment-menu-container:active { 
+    transform: scale(0.9); 
+}
+.top-comment-side{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.comment-area{
+    width: 86%;
+    text-align: left;
+}
+.comment-timestamp{
+    font-size: 0.8em;
+    margin-left: 20px;
+    margin-top: 3px ;
 }
 .comment{
     color: #666;
 }
 .comment-like-button{
     margin-right: 10px ;
+}
+.body-description-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.event-icon{
+    color: #33DD87;
+}
+.icon-tag{
+    color: #33DD87;
+    font-weight: bold;
+    margin-bottom: 10px;
+
 }

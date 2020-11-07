@@ -1,96 +1,48 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../css/post.css';
 import { Paper, Button, makeStyles, InputBase, InputAdornment, IconButton } from '@material-ui/core/';
 import { useHistory } from 'react-router';
-import { formatDistanceToNowStrict } from 'date-fns';
+import { formatDistanceToNowStrict, parse } from 'date-fns';
 import profilePicturePlaceholder from '../images/profile-placeholder.png'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import coverPicturePlaceholder from '../images/cover-placeholder.jpg'
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
-import SendIcon from '@material-ui/icons/Send';
+import WorkIcon from '@material-ui/icons/Work';
+import SchoolIcon from '@material-ui/icons/School';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import HomeIcon from '@material-ui/icons/Home';
+import NatureIcon from '@material-ui/icons/Nature';
+import FlightTakeoffIcon from '@material-ui/icons/FlightTakeoff';
+import LocalActivityIcon from '@material-ui/icons/LocalActivity';
+import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
+import StarIcon from '@material-ui/icons/Star';
+import candleIcon from '../images/candle.svg';
+import Comments from './Comments';
+import { addLike, deleteLike, loadPosts } from '../store/post';
+import { useDispatch } from 'react-redux';
 
 const useStyle = makeStyles({
     paper:{
-        width: 840,
-        marginTop: 20,
+        width: 780,
+        marginBottom: 20,
+        marginRight: 20
     },
     inputRoot: {
         backgroundColor: '#EFEFEF',
-        width: 735,
+        width: 580,
         height: 52,
         borderRadius: 40,
         padding: 20,
     },
+    icons:{
+        fontSize: 60,
+        color: '#33DD87',
+    }
 
 })
 
-const CommentSection = ({user}) =>{
-    const classes = useStyle()
-    const [comment, setComment] = useState('');
-
-    const handleComment = () =>{
-
-    }
-    return(
-        <>
-            <div className="divider" />
-            <div className="comment-section">
-                <div className="comment-input-section">
-                    <ProfilePic user={user} size={40}/>
-                    <div className="input-container">
-                        <div className={classes.comment}>
-                            <InputBase
-                                placeholder="Write a comment..."
-                                className={classes.inputRoot}
-                                inputProps={{ 'aria-label': 'search' }}
-                                onChange={e => setComment(e.target.value)}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            variant="contained"
-                                            color="default"
-                                            type="file"
-                                            onClick={handleComment}
-                                        >
-                                            <SendIcon className={classes.icon} />
-                                        </IconButton>
-                                    </InputAdornment>}
-                            />
-                        </div>
-                    </div>
-                </div>
-                <DisplayComments user={user} />
-                <DisplayComments user={user} />
-            </div>
-        </>
-    )
-}
-const DisplayComments =({user}) => {
-    const [likeClicked, setLikeClicked] = useState(false);
-    return (
-        <div className="comment-display-section">
-            <ProfilePic user={user} size={40} />
-            <div className="comment-area">
-                <div className="left-comment-side">
-                    <Fullname user={user} />
-                    <div className="comment-container">
-                        <p className="comment">some comment i wrote as a place holder </p>
-                    </div>
-                </div>
-                <div className="right-comment-side">
-                    <ThumbUpAltIcon
-                        className="comment-like-button"
-                        style={{ cursor: 'pointer' }}
-                        color={likeClicked ? "primary" : "secondary"}
-                        onClick={() => likeClicked ? setLikeClicked(false) : setLikeClicked(true)} />
-                </div>
-            </div>
-
-        </div>
-    )
-}
-const Fullname = ({user}) => {
+export const Fullname = ({user}) => {
     const firstname = user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1)
     const lastname = user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)
     const history = useHistory()
@@ -104,7 +56,7 @@ const Fullname = ({user}) => {
         </div>
     )
 }
-const ProfilePic = ({user, size=60})=>{
+export const ProfilePic = ({user, size=60})=>{
     const history = useHistory()
 
     return (
@@ -129,20 +81,68 @@ const ProfilePic = ({user, size=60})=>{
         </div>
     )
 }
-export default function PostCard({user}){
+export default function PostCard({user, post}){
     const [likeClicked, setLikeClicked] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
     const [commentClicked, setCommentClicked] = useState(false);
+    const [syncData, setSyncData] = useState(false);
+    const dispatch = useDispatch()
     const classes = useStyle()
-    const history = useHistory()
-    const posted = formatDistanceToNowStrict(new Date(user.createdAt), { addSuffix: true });
+    const posted = formatDistanceToNowStrict(new Date(post.created_at), { addSuffix: true });
+    
+    useEffect(()=>{
+        post.likes.map(like => {
+            if (like.user_id === user.id) setLikeClicked(true);
+        });
+        
+        dispatch(loadPosts(user.id))
+        setLikeCount(post.likes.length)
+        // setSyncData(false);
+        console.log("hit hit")
+    }, [likeClicked])
+    
+    useEffect(()=>{
+        console.log("hit")
+    }, [likeClicked])
+    
+    const handleLiked = async () =>{
+        if (likeClicked){
+            setLikeClicked(false);
+            await dispatch(deleteLike(post.id, user.id));
+        } else {
+            setLikeClicked(true);
+            await dispatch(addLike(post.id, user.id));
+        }
+        setSyncData(true);
+        // await setSyncData(true);
+    }
+
+
+    const eventsIcons = {
+        "work": <WorkIcon className={classes.icons}/>,
+        "education": <SchoolIcon className={classes.icons}/>,
+        "relationship": <FavoriteIcon className={classes.icons}/>,
+        "home": <HomeIcon className={classes.icons}/>,
+        "family": <NatureIcon className={classes.icons}/>,
+        "travel": <FlightTakeoffIcon className={classes.icons}/>,
+        "activities": <LocalActivityIcon className={classes.icons}/>,
+        "health": <DirectionsRunIcon className={classes.icons}/>,
+        "achievements": <StarIcon className={classes.icons}/>,
+        "rememberance": <img
+                    src={candleIcon}
+                    alt="candle icon"
+                    height="60"
+                    className="event-icon"
+                />,
+    }
     return (
         <div className={classes.paper}>
             <Paper className="paper-card">
                 <div className="header-container">
                     <div className="left-side-container">
-                        <ProfilePic user={user} />
+                        <ProfilePic user={post.owner} />
                         <div className="name-time-container">
-                            <Fullname user={user}/>
+                            <Fullname user={post.owner}/>
                             <div className="time-container">
                                 <p>{posted}</p>
                             </div>
@@ -154,13 +154,17 @@ export default function PostCard({user}){
                 </div>
                 <div className="body-container">
                     <div className="body-description-container">
-                        <p className="description">some text to test the caption section of the post, this is where all the text is gonna go. looks pretty nice so far.</p>
+                        <div className="event-type-container">
+                            {eventsIcons[post.type.type]}
+                        </div>
+                        <p className="icon-tag">{post.type.type.toUpperCase()}</p>
+                        <p className="description">{post.description}</p>
                     </div>
                     <div className="body-photo-container">
                         <img
-                            src={user.coverPicture ? user.coverPicture : coverPicturePlaceholder}
+                            src={post.owner.coverPicture ? post.owner.coverPicture : coverPicturePlaceholder}
                             alt="cover placeholder"
-                            className="cover-picture-post"
+                            className="body-photo"
                         />
                     </div>
                 </div>
@@ -171,20 +175,26 @@ export default function PostCard({user}){
                                 className="footer-buttons"
                                 style={{cursor: 'pointer'}}
                                 color={likeClicked ? "primary" : "secondary"}
-                                onClick={() => likeClicked ? setLikeClicked(false) : setLikeClicked(true)}/>
+                                onClick={handleLiked}/>
                             <ChatBubbleIcon
                                 className="footer-buttons"
                                 style={{ cursor: 'pointer' }}
                                 color="secondary"
-                                onClick={() => commentClicked ? setCommentClicked(false) : setCommentClicked(true)}/>
+                                onClick={() => commentClicked ? setCommentClicked(false) : setCommentClicked(true)}
+                                />
                         </div>
                         <div className="footer-right-side">
-                            <ChatBubbleIcon />
+                            <div className="likes-count-tag">
+                                <p>{likeCount ? likeCount + ' Likes' : null}</p>
+                            </div>
+                            <div className="comments-count-tag">
+
+                            </div>
                         </div>
                     </div>
                     <div>
                         {commentClicked 
-                            ? <CommentSection user={user} />
+                            ? <Comments owner={user} post={post} />
                             : null
                         }
                     </div>

@@ -18,7 +18,7 @@ export default function SignupPage() {
 
     useEffect(() => {
         dispatch(loadUser());
-    }, []);
+    },[]);
 
     if (userId) history.push('/');
 

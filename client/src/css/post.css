@@ -68,11 +68,25 @@
     margin-top: 0;
     margin-bottom: 10px;
 }
-.top-comment-side{
+.bg-area{
     background-color: #EFEFEF;
     border-radius: 20px;
     padding: 10px 20px;
     text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+}
+.comment-menu-container{
+    cursor: pointer;
+    margin-left: 10px;
+}
+.comment-menu-container:active { 
+    transform: scale(0.9); 
+}
+.top-comment-side{
     display: flex;
     justify-content: space-between;
     align-items: center;

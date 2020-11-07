@@ -8,7 +8,7 @@ import Profile from './components/Profile';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from './theme';
 import CssBaseline from '@material-ui/core/CssBaseline';
-
+import { ConfirmProvider } from 'material-ui-confirm';
 import { logout } from './store/auth';
 import { restoreCSRF } from './store/csrf';
 
@@ -37,14 +37,16 @@ function App() {
   return (
     <BrowserRouter>
         <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Switch>
-                <Route path="/login" component={AuthContainer}/>
-                <Route path="/signup" component={AuthContainer}/>
-                <PrivateRoute path="/search/:idq=:value" needLogin={needLogin} component={Search} />
-                <PrivateRoute path="/profile/:id" needLogin={needLogin} component={Profile} />
-                <PrivateRoute path="/" needLogin={needLogin} component={Home} />
-            </Switch>
+            <ConfirmProvider>
+                <CssBaseline />
+                <Switch>
+                    <Route path="/login" component={AuthContainer}/>
+                    <Route path="/signup" component={AuthContainer}/>
+                    <PrivateRoute path="/search/:idq=:value" needLogin={needLogin} component={Search} />
+                    <PrivateRoute path="/profile/:id" needLogin={needLogin} component={Profile} />
+                    <PrivateRoute path="/" needLogin={needLogin} component={Home} />
+                </Switch>
+            </ConfirmProvider>
         </ThemeProvider>
     </BrowserRouter>
   );

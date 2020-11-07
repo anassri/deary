@@ -15,6 +15,10 @@ def find_all_posts(id):
                         .filter(and_(Relationship.user_id==id, Relationship.status==2)) \
                         .options(joinedload(Relationship.friends) \
                                 .joinedload(User.posts) \
+                                .joinedload(Post.comments) \
+                                .joinedload(Comment.owner)) \
+                        .options(joinedload(Relationship.friends) \
+                                .joinedload(User.posts) \
                                 .joinedload(Post.type)) \
                         .options(joinedload(Relationship.friends) \
                                 .joinedload(User.posts) \
@@ -24,7 +28,12 @@ def find_all_posts(id):
     data=[]
     for relationship in relationships:
         for post in relationship.friends.posts:
+            comments = []
+            for comment in post.comments:
+                comm = {**comment.to_dict(), "owner": comment.owner.to_dict()}
+                comments.append(comm)
             dic = {**post.to_dict(),
+                "comments": comments,
                 "type": post.type.to_dict(),
                 "owner": post.owner.to_dict()}
             data.append(dic)

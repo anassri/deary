@@ -107,7 +107,7 @@ class Post(db.Model):
 
   owner = db.relationship("User", foreign_keys=user_id)
   type = db.relationship("PostType", foreign_keys=type_id)
-  comments = db.relationship("Comment", primaryjoin='Post.id == Comment.post_id', foreign_keys="Comment.post_id", backref='post_comments')
+  comments = db.relationship("Comment", primaryjoin='Post.id == Comment.post_id', foreign_keys="Comment.post_id", backref='post_comments', cascade="all, delete")
 
   def to_dict(self):
     return {
@@ -127,7 +127,7 @@ class Comment(db.Model):
   user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
   created_at = db.Column(db.DateTime, nullable = False)
 
-  post = db.relationship("Post", foreign_keys=post_id, cascade="all, delete")
+  post = db.relationship("Post", foreign_keys=post_id)
   owner = db.relationship("User", foreign_keys=user_id)
 
   def to_dict(self):

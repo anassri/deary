@@ -25,7 +25,7 @@ const handleReceivedData = async (res, dispatch) => {
         dispatch(setToken(token));
         dispatch(setUser(user));
         return { status: 200 };
-    } else throw { status: 400, message: (await res.json()).msg };
+    } else return { status: 400, message: (await res.json()).msg };
 }
 
 export const login = (email, password) => async (dispatch, getState) => {

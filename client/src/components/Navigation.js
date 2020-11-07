@@ -7,7 +7,7 @@ import { InputBase, Button, InputAdornment, IconButton} from '@material-ui/core/
 import SearchIcon from '@material-ui/icons/Search';
 import SendIcon from '@material-ui/icons/Send';
 import profilePicturePlaceholder from '../images/profile-placeholder.png'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 const useStyles = makeStyles((theme) => ({
     inputRoot: {

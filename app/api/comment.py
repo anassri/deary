@@ -37,3 +37,20 @@ def create_comment(id):
 def find_comments(id):
     data = query_comments(id)
     return jsonify(data=data)
+
+@comment_routes.route('/<int:id>/delete', methods=['DELETE'])
+@jwt_required
+def delete_comments(id):
+    comment = Comment.query.get(id)
+    db.session.delete(comment)
+    db.session.commit()
+    return jsonify({"msg": f'{comment.comment} deleted'})
+
+@comment_routes.route('/<int:id>/edit', methods=['POST'])
+@jwt_required
+def edit_comments(id):
+    incoming = request.get_json()
+    comment = Comment.query.get(id)
+    comment.comment = incoming; 
+    db.session.commit()
+    return jsonify({"msg": f'{comment.comment} edit successful'})

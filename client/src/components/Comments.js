@@ -1,13 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import {ProfilePic, Fullname} from './PostCard'
 import '../css/post.css';
-import { formatDistanceToNowStrict, parse } from 'date-fns';
-import { addComment, loadComments } from '../store/post';
+import { formatDistanceToNowStrict } from 'date-fns';
+import { addComment, deleteComment, loadPosts, editComment } from '../store/post';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles, InputBase, InputAdornment, IconButton } from '@material-ui/core/';
+import { 
+    makeStyles, 
+    InputBase, 
+    InputAdornment, 
+    IconButton, 
+    MenuItem, 
+    Menu, 
+    Button,
+    TextField,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+     } from '@material-ui/core/';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
-
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SendIcon from '@material-ui/icons/Send';
+import { useConfirm } from 'material-ui-confirm';
 
 const useStyle = makeStyles({
     paper: {
@@ -29,13 +44,14 @@ const useStyle = makeStyles({
 
 })
 export default function Comments({ owner, post }) {
-    const comments = useSelector(state => state.post.comments)
     const classes = useStyle()
+    const [postSyncNeeded, setPostSyncNeeded] = useState(false);
+    useEffect(() => {
+        dispatch(loadPosts(owner.id))
+    }, [postSyncNeeded])
+
     const [comment, setComment] = useState('');
     const dispatch = useDispatch()
-    useEffect(()=>{
-        dispatch(loadComments(post.id))
-    },[])
     const handleComment = () => {
         const id = owner.id;
         const postId = post.id;
@@ -44,6 +60,7 @@ export default function Comments({ owner, post }) {
             postId
         }
         setComment('')
+        setPostSyncNeeded(true);
         dispatch(addComment(data, id))
     }
     return (
@@ -75,38 +92,120 @@ export default function Comments({ owner, post }) {
                         </div>
                     </div>
                 </div>
-                {comments.map(comment => <DisplayComments key={comment.id} comment={comment} />)}
+                {post.comments.map(comment => <DisplayComments key={comment.id} comment={comment} postId={post.id}/>)}
 
             </div>
         </>
     )
 }
-const DisplayComments = ({ comment }) => {
+const DisplayComments = ({ comment, postId }) => {
+    const user = useSelector(state => state.auth.user)
     const posted = formatDistanceToNowStrict(new Date(comment.created_at), { addSuffix: true });
-    // console.log(parse(comment.created_at,
-    //     'MM/DD/YYYY',
-    //     new Date()));
-    // console.log(comment.created_at);
-    // console.log(new Date(comment.created_at));
-    // console.log(posted);
     const [likeClicked, setLikeClicked] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const confirm = useConfirm();
+    const dispatch = useDispatch();
+    const [postSyncNeeded, setPostSyncNeeded] = useState(false);
+    const [open, setOpen] = React.useState(false);
+    const [commentArea, setCommentArea] = useState('')
+
+    useEffect(()=>{
+        dispatch(loadPosts(user.id))
+    }, [postSyncNeeded])
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    const handleDelete = async () => {
+        setAnchorEl(null);
+        const id = comment.id
+        try {
+            await confirm({
+                title: 'Are you sure?',
+                description: 'This action is permanent!',
+                confirmationText: 'Delete',
+                cancellationText: 'Cancel',
+                dialogProps: { maxWidth: 'sm' } });
+            await dispatch(deleteComment(id, postId));
+            setPostSyncNeeded(true)
+        } catch (e) {
+            console.error(e);
+        }
+    };
+    const handleEdit = () => {
+        setOpen(false);
+        dispatch(editComment(commentArea, comment.id))
+        setPostSyncNeeded(true)
+    };
     return (
         <div className="comment-display-section">
             <ProfilePic user={comment.owner} size={40} />
             <div className="comment-area">
                 <div className="top-comment-side">
-                    <div className="left-comment-side">
-                        <Fullname user={comment.owner} />
-                        <div className="comment-container">
-                            <p className="comment">{comment.comment}</p>
+                    <div className="bg-area">
+                        <div className="left-comment-side">
+                            <Fullname user={comment.owner} />
+                            <div className="comment-container">
+                                <p className="comment">{comment.comment}</p>
+                            </div>
+                        </div>
+                        <div className="right-comment-side">
+                            <ThumbUpAltIcon
+                                className="comment-like-button"
+                                style={{ cursor: 'pointer' }}
+                                color={likeClicked ? "primary" : "secondary"}
+                                onClick={() => likeClicked ? setLikeClicked(false) : setLikeClicked(true)} />
                         </div>
                     </div>
-                    <div className="right-comment-side">
-                        <ThumbUpAltIcon
-                            className="comment-like-button"
-                            style={{ cursor: 'pointer' }}
-                            color={likeClicked ? "primary" : "secondary"}
-                            onClick={() => likeClicked ? setLikeClicked(false) : setLikeClicked(true)} />
+                    <div className="comment-menu-container">
+                        <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+                            <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                            id="simple-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            <MenuItem onClick={() => {
+                                setOpen(true);
+                                setAnchorEl(null);
+                                setCommentArea(comment.comment);}}>Edit</MenuItem>
+                            <MenuItem onClick={handleDelete} style={{ color: '#FF0000'}}>Delete</MenuItem>
+                        </Menu>
+                        <Dialog 
+                            open={open} 
+                            onClose={handleClose} 
+                            maxWidth='sm'
+                            fullWidth
+                            aria-labelledby="form-dialog-title">
+                            <DialogTitle id="form-dialog-title">
+                                    Edit Comment</DialogTitle>
+                            <DialogContent>
+                                <TextField
+                                    autoFocus
+                                    margin="dense"
+                                    id="name"
+                                    type="email"
+                                    value={commentArea}
+                                    onChange={e => setCommentArea(e.target.value)}
+                                    maxWidth='md'
+                                    fullWidth
+                                />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => setOpen(false)} color="primary">
+                                    Cancel
+                                </Button>
+                                <Button onClick={handleEdit} color="primary">
+                                    Edit
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
                     </div>
                 </div>
                 <div className="bottom-comment-side">

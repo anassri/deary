@@ -2,9 +2,6 @@ from flask import Blueprint, jsonify, request
 from app.models import User, Relationship, Post, Comment, Like, db
 from flask_jwt_extended import jwt_required, create_access_token
 from sqlalchemy.orm import joinedload
-from sqlalchemy import and_, or_, not_
-from datetime import datetime
-import pytz
 
 like_routes = Blueprint('likes', __name__, url_prefix='/api/likes')
 

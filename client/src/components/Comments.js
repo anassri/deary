@@ -16,7 +16,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle,
      } from '@material-ui/core/';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
@@ -106,7 +105,7 @@ const DisplayComments = ({ comment, postId }) => {
     const confirm = useConfirm();
     const dispatch = useDispatch();
     const [postSyncNeeded, setPostSyncNeeded] = useState(false);
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const [commentArea, setCommentArea] = useState('')
 
     useEffect(()=>{

@@ -35,6 +35,7 @@ export default function Navigation(){
 
     const handleProfileClick = () => {
         history.push(`/profile/${user.id}`);
+        
     }
     const handleLogoClick = () => {
         history.push('/');

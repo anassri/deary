@@ -4,6 +4,7 @@ import Navigation from './Navigation';
 import PostCard from './PostCard';
 import '../css/home.css';
 import { loadPosts } from '../store/post';
+import { loadFriends } from '../store/user';
 import { Button } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
 import CirclesIcon from '../images/circles.svg';
@@ -12,6 +13,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import BookmarkIcon from '@material-ui/icons/Bookmark';
 import PersonIcon from '@material-ui/icons/Person';
 import { makeStyles } from '@material-ui/styles';
+import Friends from './Friends';
 const useStyles = makeStyles({
     icons: {
         color: '#666',
@@ -20,11 +22,13 @@ const useStyles = makeStyles({
 export default function Home(){
     const user = useSelector(state => state.auth.user)
     const posts = useSelector(state => state.post.posts)
+    const friends = useSelector(state => state.user.friends)
     const sortedPosts = posts.sort((a, b) => (a.id > b.id ? 1 : -1));
     const classes = useStyles();
     const dispatch = useDispatch();
     useEffect(()=>{
         dispatch(loadPosts(user.id));
+        dispatch(loadFriends(user.id))
     }, [])
 
     return (
@@ -67,7 +71,9 @@ export default function Home(){
                         {sortedPosts.map(post => <PostCard key={post.id} user={user} post={post}/>)}
                     </div>
                 </div>
-                <h1>Friends list</h1>
+                <div className="right-nav-container">
+                    <Friends friends={friends}/>
+                </div>
             </div>
         </>
     )

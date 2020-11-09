@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {ProfilePic, Fullname} from './PostCard';
-import { loadFriends} from '../store/user';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core/';
+import '../css/friends.css';
+
 const useStyles = makeStyles((theme) => ({
     button: {
         borderRadius: 40,
-        alignItems: 'center',
-        fontSize: 10
+        fontSize: 10,
+        textTransform: 'none',
     },
     icon: {
         marginLeft: 17,
@@ -22,8 +22,14 @@ export default function Friends({friends}){
         <>
             {friends.map(friend => 
                 <Button className={classes.button} >
-                    <ProfilePic user={friend} size={30}/>
-                    <Fullname user={friend}/>
+                    <div className="button-content-container">
+                        <div className="profile-picture-friends">
+                            <ProfilePic user={friend} size={30}/>
+                        </div>
+                        <div className="fullname friends">
+                            <Fullname user={friend}/>
+                        </div>
+                    </div>
                 </Button>
             )}
         </>

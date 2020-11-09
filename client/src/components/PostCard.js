@@ -29,7 +29,7 @@ import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import StarIcon from '@material-ui/icons/Star';
 import candleIcon from '../images/candle.svg';
 import Comments from './Comments';
-import { addLike, deleteLike, loadPosts } from '../store/post';
+import { addLike, deleteLike } from '../store/post';
 import { useDispatch } from 'react-redux';
 
 const useStyle = makeStyles({
@@ -70,7 +70,7 @@ export const ProfilePic = ({user, size=60})=>{
     const history = useHistory()
 
     return (
-        <div className="photo-container" style={{ cursor: 'pointer' }}>
+        <>
             {user.profilePicture
                 ? <img
                     src={user.profilePicture}
@@ -88,14 +88,14 @@ export const ProfilePic = ({user, size=60})=>{
                     width={size}
                     onClick={() => history.push(`/profile/${user.id}`)}
                 />}
-        </div>
+        </>
     )
 }
 export default function PostCard({user, post}){
     const [likeClicked, setLikeClicked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
+    const [commentCount, setCommentCount] = useState(0);
     const [commentClicked, setCommentClicked] = useState(false);
-    const [syncData, setSyncData] = useState(false);
     const dispatch = useDispatch()
     const classes = useStyle()
     const posted = formatDistanceToNowStrict(new Date(post.created_at), { addSuffix: true });
@@ -104,31 +104,25 @@ export default function PostCard({user, post}){
     const [anchorEl, setAnchorEl] = useState(null);
     const [postSyncNeeded, setPostSyncNeeded] = useState(false);
     const [commentArea, setCommentArea] = useState('')
-
+    
     useEffect(()=>{
+        setLikeCount(post.likes.length)
+        setCommentCount(post.comments.length)
         post.likes.map(like => {
             if (like.user_id === user.id) setLikeClicked(true);
         });
-        
-        dispatch(loadPosts(user.id))
-        setLikeCount(post.likes.length)
-        // setSyncData(false);
-        console.log("hit hit")
-    }, [likeClicked])
-    
-    useEffect(()=>{
-        console.log("hit")
-    }, [likeClicked])
+    }, [])
     
     const handleLiked = async () =>{
         if (likeClicked){
             setLikeClicked(false);
+            setLikeCount((previousCount) => previousCount-1)
             await dispatch(deleteLike(post.id, user.id));
         } else {
             setLikeClicked(true);
+            setLikeCount((previousCount) => previousCount+1)
             await dispatch(addLike(post.id, user.id));
         }
-        setSyncData(true);
     }
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -181,7 +175,9 @@ export default function PostCard({user, post}){
             <Paper className="paper-card">
                 <div className="header-container">
                     <div className="left-side-container">
-                        <ProfilePic user={post.owner} />
+                        <div className="photo-container" style={{ cursor: 'pointer' }}>
+                            <ProfilePic user={post.owner} />
+                        </div>
                         <div className="name-time-container">
                             <Fullname user={post.owner}/>
                             <div className="time-container">
@@ -238,7 +234,7 @@ export default function PostCard({user, post}){
                         </Dialog>
                     </div>
                 </div>
-                <div className="body-container">
+                <div className="body-container-post">
                     <div className="body-description-container">
                         <div className="event-type-container">
                             {eventsIcons[post.type.type]}
@@ -270,12 +266,32 @@ export default function PostCard({user, post}){
                                 />
                         </div>
                         <div className="footer-right-side">
-                            <div className="likes-count-tag">
-                                <p>{likeCount ? likeCount + ' Likes' : null}</p>
-                            </div>
-                            <div className="comments-count-tag">
-
-                            </div>
+                            {likeCount === 1
+                            ?   <div className="likes-count-tag">
+                                    <p>{likeCount} Like </p>
+                                </div>  
+                            : likeCount > 1
+                            ? <div className="likes-count-tag">
+                                    <p>{likeCount} Likes </p>
+                                </div>
+                            : null  }
+    
+                            {commentCount === 1
+                                ? <div className="comments-count-tag">
+                                    <p 
+                                        onClick={() => commentClicked ? setCommentClicked(false) : setCommentClicked(true)}
+                                        style={{cursor: 'pointer'}}
+                                        >{commentCount} Comment </p>
+                                </div>  
+                            : commentCount > 1
+                            ? <div className="comments-count-tag">
+                                        <p 
+                                            onClick={() => commentClicked ? setCommentClicked(false) : setCommentClicked(true)} 
+                                            style={{ cursor: 'pointer' }}
+                                            >{commentCount} Comments </p>
+                                </div>
+                            : null  }
+                            
                         </div>
                     </div>
                     <div>

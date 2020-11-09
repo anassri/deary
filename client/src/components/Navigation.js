@@ -58,6 +58,7 @@ export default function Navigation(){
                             input: classes.inputInput,
                         }}
                         inputProps={{ 'aria-label': 'search' }}
+                        onKeyDown={e => e.keyCode == 13 ? handleSearchButton() : null }
                         startAdornment={
                             <InputAdornment position="start">
                                 <SearchIcon className={classes.icon}/>

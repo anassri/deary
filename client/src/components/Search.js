@@ -83,7 +83,7 @@ function SearchEntry({user, relationships}){
                         />}
                 </div>
                 <div className="name-container">
-                    <p className="fullname" 
+                    <p className="fullname search" 
                         style={{ cursor: 'pointer' }}
                         onClick={() => history.push(`/profile/${user.id}`)}>
                         {user.firstName + " " + user.lastName} </p>

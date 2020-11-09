@@ -14,6 +14,7 @@ import BookmarkIcon from '@material-ui/icons/Bookmark';
 import PersonIcon from '@material-ui/icons/Person';
 import { makeStyles } from '@material-ui/styles';
 import Friends from './Friends';
+import CreatePost from './CreatePost';
 const useStyles = makeStyles({
     icons: {
         color: '#666',
@@ -67,11 +68,15 @@ export default function Home(){
                             Profile</Button>
                 </div>
                 <div className="body-container">
+                    <CreatePost />
                     <div className="posts-body-container">
                         {sortedPosts.map(post => <PostCard key={post.id} user={user} post={post}/>)}
                     </div>
                 </div>
                 <div className="right-nav-container">
+                    <div className="friends-container-title">
+                        Friends
+                    </div>
                     <Friends friends={friends}/>
                 </div>
             </div>

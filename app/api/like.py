@@ -22,7 +22,7 @@ def add_like(id):
 def delete_like(id):
     incoming = request.get_json()
     like = Like.query.filter_by(user_id=id, post_id=incoming).first()
-
+    print(like)
     db.session.delete(like)
     db.session.commit()
     return jsonify({"msg": 'Like deleted'})

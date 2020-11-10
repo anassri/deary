@@ -47,7 +47,7 @@ export default function Comments({ owner, post }) {
     const [comments, setComments] = useState([]);
     useEffect(() => {
         setComments([...post.comments]);
-    }, [post])
+    }, [post, post.comments])
 
     const [comment, setComment] = useState('');
     const dispatch = useDispatch()
@@ -99,7 +99,7 @@ export default function Comments({ owner, post }) {
                         </div>
                     </div>
                 </div>
-                {comments.slice(0).reverse().map(comment => <DisplayComments key={comment.id} comment={comment} postId={post.id}/>)}
+                {comments.map(comment => <DisplayComments key={comment.id} comment={comment} postId={post.id}/>)}
 
             </div>
         </>
@@ -118,7 +118,6 @@ const DisplayComments = ({ comment, postId }) => {
 
     useEffect(()=>{
         dispatch(loadPosts(user.id))
-        console.log('hit')
     }, [postSyncNeeded])
 
     const handleClick = (event) => {

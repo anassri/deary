@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app.models import User, Relationship, db
+from app.models import User, Relationship, Post, Comment, Like, db
 from flask_jwt_extended import jwt_required, create_access_token
 from app.aws_s3 import upload_file_to_s3
 from sqlalchemy.orm import joinedload
@@ -109,4 +109,34 @@ def add_friend(id):
 
   return jsonify(friends=friends)
 
+# Grab all posts belonging to the user
+@user_routes.route('/<int:id>/profile', methods=['GET'])
+@jwt_required
+def find_all_posts(id):
+    posts = Post.query \
+                .filter(Post.user_id==id) \
+                .options(joinedload(Post.comments) \
+                          .joinedload(Comment.owner)) \
+                .options(joinedload(Post.type)) \
+                .options(joinedload(Post.likes)) \
+                .all()
+    
+    data=[]
+    for post in posts:
+        comments = []
+        likes = []
+        for comment in post.comments:
+            comm = {**comment.to_dict(), "owner": comment.owner.to_dict()}
+            comments.append(comm)
+        for like in post.likes:
+            lik = like.to_dict()
+            likes.append(lik)
+        dic = {**post.to_dict(),
+            "comments": comments,
+            "type": post.type.to_dict(),
+            "owner": post.owner.to_dict(),
+            "likes": likes}
+        data.append(dic)
+        
 
+    return jsonify(data=data)

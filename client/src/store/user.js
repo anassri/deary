@@ -1,10 +1,20 @@
 import getFromLocalStorage from '../utils/getFromLocalStorage';
 import setInLocalStorage from '../utils/setInLocalStorage';
 
+const SET_FRIENDS = 'user/SET_FRIENDS';
+const SET_POSTS = 'user/SET_POSTS';
 const SET_USERS = 'user/SET_USERS';
 const SET_USER = 'user/SET_USER';
 const SET_RELATIONSHIPS = 'user/SET_RELATIONSHIPS';
 
+const setFriends = friends => ({
+    type: SET_FRIENDS,
+    friends,
+});
+const setPosts = posts => ({
+    type: SET_POSTS,
+    posts,
+});
 const setUsers = users => ({
     type: SET_USERS,
     users,
@@ -18,6 +28,40 @@ const setRelationships = relationships => ({
     relationships,
 });
 
+export const loadFriends = (id) => async dispatch => {
+    const { token } = getFromLocalStorage();
+    if (!token) return;
+    try {
+        const res = await fetch(`/api/friends/${id}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        });
+        if(res.ok){
+            const {data} = await res.json();
+            dispatch(setFriends(data));
+        }
+    } catch (e) {
+        console.error(e);
+        return e;
+    }
+}
+export const loadPosts = (id) => async dispatch => {
+    const { token } = getFromLocalStorage();
+    if (!token) return;
+    try {
+        const res = await fetch(`/api/users/${id}/profile`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        });
+        if(res.ok){
+            const {data} = await res.json();
+            dispatch(setPosts(data));
+        }
+    } catch (e) {
+        console.error(e);
+        return e;
+    }
+}
 export const loadUsers = (id, value) => async dispatch => {
     const { token } = getFromLocalStorage();
     if (!token) return;
@@ -127,8 +171,12 @@ export const editPhoto = (data, id) => async (dispatch, getState) => {
     updateUser(`/api/users/${id}/photo`, data, dispatch, getState);
 }
 
-export default function userReducer(state = { user: {}, relationships: []}, action) {
+export default function userReducer(state = { user: {}, relationships: [], posts: [], friends: []}, action) {
     switch (action.type) {
+        case SET_FRIENDS:
+            return { ...state, friends: action.friends };
+        case SET_POSTS:
+            return { ...state, posts: action.posts };
         case SET_USERS:
             return { ...state, users: action.users };
         case SET_USER:

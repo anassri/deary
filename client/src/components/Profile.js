@@ -18,8 +18,9 @@ import Navigation from './Navigation';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import { formatDistanceToNowStrict } from 'date-fns';
 import EditIcon from '@material-ui/icons/Edit';
-import { loadUser, editUser, editCover, editPhoto } from '../store/user';
+import { loadUser, editUser, editCover, editPhoto, loadPosts } from '../store/user';
 import { useParams } from 'react-router';
+import PostCard from './PostCard';
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export function Profile({ user, authUser}){
+export function Profile({ user, authUser, posts}){
     const [open, setOpen] = useState(false);
     const [fullName, setFullName] = useState('');
     const [bio, setBio] = useState('');
@@ -286,6 +287,9 @@ export function Profile({ user, authUser}){
                         }
                     </div>
                 </div>
+                    <div className="profile-body-container">
+                        {posts.map(post=><PostCard post={post} user={user}/>)}
+                    </div>
             </div>
         </>
     )
@@ -294,12 +298,15 @@ export function Profile({ user, authUser}){
 export default function ProfileContainer(){
     const user = useSelector(state => state.user);
     const authUser = useSelector( state => state.auth.user)
+    const posts = useSelector(state => state.user.posts);
+
     const { id } = useParams();
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(loadUser(id))
-    },[])
+        dispatch(loadPosts(id));
+    }, [id])
     if(!user.id) return null;
-    return <Profile user={user} authUser={authUser}/>
+    return <Profile user={user} authUser={authUser} posts={posts}/>
 }

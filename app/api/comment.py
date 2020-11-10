@@ -21,11 +21,10 @@ def query_comments(id):
 @jwt_required
 def create_comment(id):
     incoming = request.get_json()
-    date = datetime.now(pytz.utc)
     comment = Comment(user_id=id,
                             post_id=incoming["postId"],
                             comment=incoming["comment"],
-                            created_at=date)
+                            created_at=incoming["created_at"])
     db.session.add(comment)
     db.session.commit()
 

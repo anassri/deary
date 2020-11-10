@@ -10,9 +10,8 @@
     padding: 0 20px ;
 }
 .fullname{
-    font-weight: bold;
+    font-weight: 500;
     color: #666;
-    font-size: 19px;
 }
 .left-side-container{
     display: flex;
@@ -118,5 +117,13 @@
     color: #33DD87;
     font-weight: bold;
     margin-bottom: 10px;
-
+}
+.name-time-container{
+    font-size: 19px;
+}
+.footer-right-side{
+    display: flex;
+}
+.comments-count-tag{
+    margin-left: 30px;
 }

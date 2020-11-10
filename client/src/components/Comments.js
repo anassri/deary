@@ -16,7 +16,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle,
      } from '@material-ui/core/';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
@@ -45,10 +44,10 @@ const useStyle = makeStyles({
 })
 export default function Comments({ owner, post }) {
     const classes = useStyle()
-    const [postSyncNeeded, setPostSyncNeeded] = useState(false);
+    const [comments, setComments] = useState([]);
     useEffect(() => {
-        dispatch(loadPosts(owner.id))
-    }, [postSyncNeeded])
+        setComments([...post.comments]);
+    }, [post])
 
     const [comment, setComment] = useState('');
     const dispatch = useDispatch()
@@ -57,10 +56,16 @@ export default function Comments({ owner, post }) {
         const postId = post.id;
         const data = {
             comment,
+            "created_at" : new Date(),
             postId
         }
+        const commentObj = {
+            comment,
+            "created_at" : new Date(),
+            owner,
+        }
         setComment('')
-        setPostSyncNeeded(true);
+        setComments([commentObj, ...comments])
         dispatch(addComment(data, id))
     }
     return (
@@ -68,7 +73,9 @@ export default function Comments({ owner, post }) {
             <div className="divider" />
             <div className="comment-section">
                 <div className="comment-input-section">
-                    <ProfilePic user={owner} size={40} />
+                    <div className="photo-container" style={{ cursor: 'pointer' }}>
+                        <ProfilePic user={owner} size={40} />
+                    </div>
                     <div className="input-container">
                         <div className={classes.comment}>
                             <InputBase
@@ -92,7 +99,7 @@ export default function Comments({ owner, post }) {
                         </div>
                     </div>
                 </div>
-                {post.comments.map(comment => <DisplayComments key={comment.id} comment={comment} postId={post.id}/>)}
+                {comments.slice(0).reverse().map(comment => <DisplayComments key={comment.id} comment={comment} postId={post.id}/>)}
 
             </div>
         </>
@@ -100,17 +107,18 @@ export default function Comments({ owner, post }) {
 }
 const DisplayComments = ({ comment, postId }) => {
     const user = useSelector(state => state.auth.user)
-    const posted = formatDistanceToNowStrict(new Date(comment.created_at), { addSuffix: true });
     const [likeClicked, setLikeClicked] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const confirm = useConfirm();
     const dispatch = useDispatch();
     const [postSyncNeeded, setPostSyncNeeded] = useState(false);
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const [commentArea, setCommentArea] = useState('')
+    const posted = formatDistanceToNowStrict(new Date(comment.created_at), { addSuffix: true });
 
     useEffect(()=>{
         dispatch(loadPosts(user.id))
+        console.log('hit')
     }, [postSyncNeeded])
 
     const handleClick = (event) => {
@@ -142,7 +150,9 @@ const DisplayComments = ({ comment, postId }) => {
     };
     return (
         <div className="comment-display-section">
-            <ProfilePic user={comment.owner} size={40} />
+            <div className="photo-container" style={{ cursor: 'pointer' }}>
+                <ProfilePic user={comment.owner} size={40} />
+            </div>
             <div className="comment-area">
                 <div className="top-comment-side">
                     <div className="bg-area">

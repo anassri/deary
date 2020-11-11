@@ -5,8 +5,13 @@ from app.aws_s3 import upload_file_to_s3
 from sqlalchemy.orm import joinedload
 from sqlalchemy import and_, or_, not_
 from datetime import datetime
+from app.config import Config
+import requests
+
 
 post_routes = Blueprint('posts', __name__, url_prefix='/api/posts')
+
+token = Config.GEOCODING_TOKEN
 
 @post_routes.route('/<int:id>', methods=['GET'])
 @jwt_required
@@ -47,4 +52,12 @@ def find_all_posts(id):
             data.append(dic)
         
 
+    return jsonify(data=data)
+
+@post_routes.route('/location/<string:value>', methods=['GET'])
+@jwt_required
+def get_location(value):
+    # r = requests.get(f'https://api.locationiq.com/v1/autocomplete.php?key={token}&q={value}&tag=place%3Acity%2Cplace%3Atown%2Cplace%3Avillage')
+    r = requests.get(f'https://api.locationiq.com/v1/autocomplete.php?key={token}&q={value}&city={value}')
+    data = r.json()
     return jsonify(data=data)

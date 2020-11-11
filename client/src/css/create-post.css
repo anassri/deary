@@ -4,13 +4,13 @@
     border-radius: 10px;
     box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
     margin: 15px 0;
-    cursor: pointer;
     
 }
 .expand-create-button-container{
     padding: 20px;
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 .create-button-icon{
     width: 70px;
@@ -36,8 +36,93 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 20px 40px;
+    margin: 20px 25px;
+    width: 80px;
 }
-.event-post-icon{
-    fill: #666;
+.chosen-icon-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 0 0 20px;
+}
+.icon-label{
+    color: #666;
+}
+.add-more-buttons-container{
+    margin: 5px;
+    display: flex;
+}
+.form-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.post-button.MuiButton-contained{
+    align-self: center;
+    width: 250px;
+    border-radius: 40px;
+    margin: 10px 0;
+}
+.location-auto-complete{
+    margin-top: 8px;
+    margin-left: 10px;
+}
+.green-icon-label{
+    color: #33DD87;
+}
+.description-text-field{
+    width: 95%;
+    margin: 10px 20px 0 20px;
+    height: 100%;
+    border: none;
+    /* background-color: #000; */
+    font-size: 30px;
+    color: #666;
+    overflow:hidden;
+    font-family: inherit;
+}
+.description-text-field:focus{
+    outline: none;
+}
+.photo-preview-container{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.close-button-container{
+    position: absolute;
+    margin: 10px; 
+}
+.uploaded-photo{
+   width: 100%;
+}
+.location-text-container{
+    display: flex;
+    align-items: center;
+}
+.search-location-container{
+    position: relative;
+}
+.search-field-input{
+    margin-top: 7px;
+
+}
+.location-text{
+    color: #666;
+    margin: 10px 25px;
+    font-size: 18px;
+}
+.search-dropdown-container{
+    position: absolute;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 10px;
+    box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+    z-index: 5;
+    width: 450px;
+
 }

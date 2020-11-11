@@ -68,8 +68,8 @@ export default function Home(){
                             Profile</Button>
                 </div>
                 <div className="body-container">
-                    <CreatePost />
                     <div className="posts-body-container">
+                    <CreatePost />
                         {sortedPosts.map(post => <PostCard key={post.id} user={user} post={post}/>)}
                     </div>
                 </div>

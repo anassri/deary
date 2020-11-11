@@ -111,7 +111,7 @@ export default function PostCard({user, post}){
         post.likes.map(like => {
             if (like.user_id === user.id) setLikeClicked(true);
         });
-    }, [])
+    }, [post.comments])
     
     const handleLiked = async () =>{
         if (likeClicked){

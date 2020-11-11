@@ -14,7 +14,7 @@ import { restoreCSRF } from './store/csrf';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
     return <Route {...rest} render={(props) => (
-        rest.needLogin === true
+        rest.needLogin
             ? <Redirect to='/login' />
             : <Component {...props} />
     )} />

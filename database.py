@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from app import app, db
-from app.models import User, Relationship, PostType, Post, Comment,Like
+from app.models import User, Relationship, PostType, Post, Photo, Location, TaggedFriend, Comment,Like
 from datetime import datetime
 
 from random import randrange
@@ -32,6 +32,8 @@ with app.app_context():
 
   relationship1 = Relationship(user_id=7,friend_id=1, status=1, friends_since=random_date())
   relationship2 = Relationship(user_id=7,friend_id=2, status=2, friends_since=random_date())
+  relationship2 = Relationship(user_id=7,friend_id=5, status=2, friends_since=random_date())
+  relationship2 = Relationship(user_id=7,friend_id=6, status=2, friends_since=random_date())
   relationship3 = Relationship(user_id=7,friend_id=3, status=2, friends_since=random_date())
   relationship4 = Relationship(user_id=7,friend_id=4, status=3, friends_since=random_date())
   
@@ -46,22 +48,46 @@ with app.app_context():
   post_types9 = PostType(type="achievements")
   post_types10 = PostType(type="rememberance")
   
-  post1 = Post(user_id=7, description="some weird description, bla bla bla", type_id=1, created_at=random_date())
-  post2 = Post(user_id=1, description="some weird description, bla bla bla", type_id=2, created_at=random_date())
+  post1 = Post(user_id=7, description="some weird description, bla bla bla", type_id=1, location_id=2, created_at=random_date())
+  post2 = Post(user_id=1, description="some weird description, bla bla bla", type_id=2, location_id=1, created_at=random_date())
   post3 = Post(user_id=2, description="some weird description, bla bla bla", type_id=3, created_at=random_date())
-  post4 = Post(user_id=3, description="some weird description, bla bla bla", type_id=4, created_at=random_date())
-  post5 = Post(user_id=4, description="some weird description, bla bla bla", type_id=5, created_at=random_date())
+  post4 = Post(user_id=3, description="some weird description, bla bla bla", type_id=4, location_id=3,created_at=random_date())
+  post5 = Post(user_id=4, description="some weird description, bla bla bla", type_id=5, location_id=4,created_at=random_date())
   post6 = Post(user_id=2, description="some weird description, bla bla bla", type_id=6, created_at=random_date())
-  post7 = Post(user_id=6, description="some weird description, bla bla bla", type_id=7, created_at=random_date())
+  post7 = Post(user_id=6, description="some weird description, bla bla bla", type_id=7, location_id=5,created_at=random_date())
   post8 = Post(user_id=7, description="some weird description, bla bla bla", type_id=8, created_at=random_date())
-  post9 = Post(user_id=3, description="some weird description, bla bla bla", type_id=9, created_at=random_date())
+  post9 = Post(user_id=3, description="some weird description, bla bla bla", type_id=9, location_id=4,created_at=random_date())
   post10 = Post(user_id=2, description="some weird description, bla bla bla", type_id=10, created_at=random_date())
-  post11 = Post(user_id=3, description="some weird description, bla bla bla", type_id=1, created_at=random_date())
-  post12 = Post(user_id=7, description="some weird description, bla bla bla", type_id=2, created_at=random_date())
+  post11 = Post(user_id=3, description="some weird description, bla bla bla", type_id=1, location_id=1,created_at=random_date())
+  post12 = Post(user_id=7, description="some weird description, bla bla bla", type_id=2, location_id=2,created_at=random_date())
   post13 = Post(user_id=2, description="some weird description, bla bla bla", type_id=3, created_at=random_date())
-  post14 = Post(user_id=2, description="some weird description, bla bla bla", type_id=4, created_at=random_date())
+  post14 = Post(user_id=2, description="some weird description, bla bla bla", type_id=4, location_id=3,created_at=random_date())
   post15 = Post(user_id=7, description="some weird description, bla bla bla", type_id=5, created_at=random_date())
   
+  photo1 = Photo(path="https://deary.s3.us-east-2.amazonaws.com/5ad2252c1ef10ed961fe23a88d63e613.jpg", post_id=1)
+  photo2 = Photo(path="https://deary.s3.us-east-2.amazonaws.com/5bb48b07fa6e3840bb3afa2bc821b882.jpg", post_id=3)
+  photo3 = Photo(path="https://deary.s3.us-east-2.amazonaws.com/Random-Funny-Pictures-14-08-2018-27.jpg", post_id=4)
+  photo4 = Photo(path="https://deary.s3.us-east-2.amazonaws.com/cover1.jpg", post_id=6)
+  photo5 = Photo(path="https://deary.s3.us-east-2.amazonaws.com/flnirv5p08x11.jpg", post_id=7)
+  photo6 = Photo(path="https://deary.s3.us-east-2.amazonaws.com/going+to+work+majorgeeks.jpg", post_id=9)
+  photo7 = Photo(path="https://deary.s3.us-east-2.amazonaws.com/photo-1494253109108-2e30c049369b.jpeg", post_id=11)
+  photo8 = Photo(path="https://deary.s3.us-east-2.amazonaws.com/photo-1508138221679-760a23a2285b.jpeg", post_id=12)
+  photo9 = Photo(path="https://deary.s3.us-east-2.amazonaws.com/random-pictures-116.jpg", post_id=13)
+  photo10 = Photo(path="https://deary.s3.us-east-2.amazonaws.com/random.jpg", post_id=15)
+
+  location1 = Location(location="Atlanta, GA USA")
+  location2 = Location(location="New York, NY USA")
+  location3 = Location(location="Madrid, Spain")
+  location4 = Location(location="London, England")
+  location5 = Location(location="Cairo, Egypt")
+
+  tagged_friend1 = TaggedFriend(user_id=1, post_id=1)
+  tagged_friend2 = TaggedFriend(user_id=2, post_id=1)
+  tagged_friend3 = TaggedFriend(user_id=3, post_id=4)
+  tagged_friend4 = TaggedFriend(user_id=4, post_id=3)
+  tagged_friend5 = TaggedFriend(user_id=5, post_id=9)
+  tagged_friend6 = TaggedFriend(user_id=6, post_id=6)
+
   comment1= Comment(comment="this is some test comment 1", post_id=1, user_id=1, created_at=random_date())
   comment2= Comment(comment="this is some test comment 2", post_id=2, user_id=2, created_at=random_date())
   comment3= Comment(comment="this is some test comment 3", post_id=3, user_id=3, created_at=random_date())
@@ -258,5 +284,28 @@ with app.app_context():
   db.session.add(like56)
   db.session.add(like57)
 
+  db.session.add(photo1)
+  db.session.add(photo2)
+  db.session.add(photo3)
+  db.session.add(photo4)
+  db.session.add(photo5)
+  db.session.add(photo6)
+  db.session.add(photo7)
+  db.session.add(photo8)
+  db.session.add(photo9)
+  db.session.add(photo10)
+
+  db.session.add(location1)
+  db.session.add(location2)
+  db.session.add(location3)
+  db.session.add(location4)
+  db.session.add(location5)
+
+  db.session.add(tagged_friend1)
+  db.session.add(tagged_friend2)
+  db.session.add(tagged_friend3)
+  db.session.add(tagged_friend4)
+  db.session.add(tagged_friend5)
+  db.session.add(tagged_friend6)
 
   db.session.commit()

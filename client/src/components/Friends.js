@@ -21,7 +21,7 @@ export default function Friends({friends}){
     return (
         <>
             {friends.map(friend => 
-                <Button className={classes.button} >
+                <Button key={friend.id} className={classes.button} >
                     <div className="button-content-container">
                         <div className="profile-picture-friends">
                             <ProfilePic user={friend} size={30}/>

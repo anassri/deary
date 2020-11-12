@@ -25,7 +25,9 @@ export default function Home(){
     const user = useSelector(state => state.auth.user)
     const posts = useSelector(state => state.post.posts)
     const friends = useSelector(state => state.user.friends)
-    const sortedPosts = posts.sort((a, b) => (a.id > b.id ? 1 : -1));
+    const sortedPosts = posts.slice().sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
+    console.log(sortedPosts)
+    console.log(posts)
     const classes = useStyles();
     const dispatch = useDispatch()
     const history = useHistory();

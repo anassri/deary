@@ -295,7 +295,7 @@ export function Profile({ user, authUser, posts}){
                         <div className="create-post-profile">
                             <CreatePost />
                         </div>
-                        {posts.map(post=><PostCard post={post} user={user}/>)}
+                    {posts.map(post=><PostCard key={post.id} post={post} user={user}/>)}
                     </div>
             </div>
         </>
@@ -307,6 +307,8 @@ export default function ProfileContainer(){
     const authUser = useSelector( state => state.auth.user)
     const posts = useSelector(state => state.user.posts);
 
+    const sortedPosts = posts.slice().sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
+
     const { id } = useParams();
     const dispatch = useDispatch();
 
@@ -315,5 +317,5 @@ export default function ProfileContainer(){
         dispatch(loadPosts(id));
     }, [id])
     if(!user.id) return null;
-    return <Profile user={user} authUser={authUser} posts={posts}/>
+    return <Profile user={user} authUser={authUser} posts={sortedPosts}/>
 }

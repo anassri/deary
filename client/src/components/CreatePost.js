@@ -21,6 +21,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { useDispatch, useSelector } from 'react-redux';
 import { createPost } from '../store/post';
+import { loadPosts as userPosts } from '../store/user';
+import { loadPosts as friendsPosts } from '../store/post';
 
 const useStyle = makeStyles({
     icon:{
@@ -70,7 +72,7 @@ export default function CreatePost(){
     const [locations, setLocations] = useState([]);
     const [photoPreview, setPhotoPreview] = useState(null);
     const [selectedFriends, setSelectedFriends] = useState([]);
-    
+    const [sync, setSync] = useState(false);
     
     const [eventType, setEventType] = useState("");
     const [selectedLocation, setSelectedLocation] = useState("");
@@ -159,15 +161,17 @@ export default function CreatePost(){
     const handlePost = () => {
         const data = new FormData();
         const date = new Date();
-        data.append("photo", photo);
+        if (photo) data.append("photo", photo);
+
         data.append("post_type", eventType);
-        data.append("tagged_friends", selectedFriendsIds);
-        data.append("location", selectedLocation);
+        if (selectedFriendsIds.length) data.append("tagged_friends", selectedFriendsIds);
+        if (selectedLocation) data.append("location", selectedLocation);
         data.append("description", description);
         data.append("user_id", userId);
-        data.append("created_at", date);
+        data.append("created_at", `${date}`);
         setClicked(false);
         dispatch(createPost(data));
+        setSync(true);
 
     }
     const handleLocationClear = () =>{

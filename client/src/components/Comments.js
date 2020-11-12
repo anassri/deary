@@ -99,7 +99,7 @@ export default function Comments({ owner, post }) {
                         </div>
                     </div>
                 </div>
-                {comments.map(comment => <DisplayComments key={comment.id} comment={comment} postId={post.id}/>)}
+                {comments.slice(0).reverse().map(comment => <DisplayComments key={comment.id} comment={comment} postId={post.id}/>)}
 
             </div>
         </>

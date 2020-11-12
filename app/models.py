@@ -104,7 +104,7 @@ class Post(db.Model):
   user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
   description = db.Column(db.Text)
   type_id = db.Column(db.Integer, db.ForeignKey("post_types.id"), nullable = False)
-  created_at = db.Column(db.DateTime, nullable = False)
+  created_at = db.Column(db.String(100), nullable = False)
   location_id = db.Column(db.Integer, db.ForeignKey("locations.id"))
 
   owner = db.relationship("User", foreign_keys=user_id)

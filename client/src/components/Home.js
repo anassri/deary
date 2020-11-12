@@ -15,6 +15,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import { makeStyles } from '@material-ui/styles';
 import Friends from './Friends';
 import CreatePost from './CreatePost';
+import { useHistory } from 'react-router-dom';
 const useStyles = makeStyles({
     icons: {
         color: '#666',
@@ -26,12 +27,14 @@ export default function Home(){
     const friends = useSelector(state => state.user.friends)
     const sortedPosts = posts.sort((a, b) => (a.id > b.id ? 1 : -1));
     const classes = useStyles();
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
+    const history = useHistory();
     useEffect(()=>{
         dispatch(loadPosts(user.id));
         dispatch(loadFriends(user.id))
     }, [])
 
+    // if (!user && !posts) return null;
     return (
         <>
             <Navigation />
@@ -39,9 +42,11 @@ export default function Home(){
                 <div className="left-nav-container">
                     <Button className={classes.icons}
                         size="large"
-                        startIcon={<HomeIcon />}>
+                        startIcon={<HomeIcon />}
+                        onClick={()=> history.push('/')}
+                        >
                             Home</Button>
-                    <Button className={classes.icons}
+                    {/* <Button className={classes.icons}
                         size="large"
                         startIcon={<img
                             src={CirclesIcon}
@@ -61,10 +66,12 @@ export default function Home(){
                     <Button className={classes.icons}
                         size="large"
                         startIcon={<BookmarkIcon />}>
-                            Bookmarks</Button>
+                            Bookmarks</Button> */}
                     <Button className={classes.icons}
                         size="large"
-                        startIcon={<PersonIcon />}>
+                        startIcon={<PersonIcon />}
+                        onClick={()=> history.push(`/profile/${user.id}`)}
+                        >
                             Profile</Button>
                 </div>
                 <div className="body-container">

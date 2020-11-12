@@ -119,23 +119,38 @@ def find_all_posts(id):
                           .joinedload(Comment.owner)) \
                 .options(joinedload(Post.type)) \
                 .options(joinedload(Post.likes)) \
+                .options(joinedload(Post.photos)) \
+                .options(joinedload(Post.tagged_friends)) \
                 .all()
     
     data=[]
     for post in posts:
         comments = []
         likes = []
+        tagged_people = []
         for comment in post.comments:
             comm = {**comment.to_dict(), "owner": comment.owner.to_dict()}
             comments.append(comm)
         for like in post.likes:
             lik = like.to_dict()
             likes.append(lik)
+        for friend in post.tagged_friends:
+            person = friend.users.to_dict()
+            tagged_people.append(person)
+        location = None
+        photo = None
+        if post.location:
+            location = post.location.to_dict()
+        if post.photos:
+            photo = post.photos[0].to_dict()
         dic = {**post.to_dict(),
             "comments": comments,
             "type": post.type.to_dict(),
             "owner": post.owner.to_dict(),
-            "likes": likes}
+            "likes": likes,
+            "photo": photo,
+            "location": location,
+            "taggedFriends": tagged_people}
         data.append(dic)
         
 

@@ -58,12 +58,12 @@ export const Fullname = ({user}) => {
     const history = useHistory()
 
     return(
-        <div className="name-container">
+        // <div className="name-container">
             <p className="fullname"
                 style={{ cursor: 'pointer' }}
                 onClick={() => history.push(`/profile/${user.id}`)}>
                 {firstname + " " + lastname} </p>
-        </div>
+        // </div>
     )
 }
 export const ProfilePic = ({user, size=60})=>{
@@ -99,6 +99,7 @@ export default function PostCard({user, post}){
     const dispatch = useDispatch()
     const classes = useStyle()
     const posted = formatDistanceToNowStrict(new Date(post.created_at), { addSuffix: true });
+    // const posted = post.created_at
     const [descriptionArea, setDescriptionArea] = useState('')
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -152,6 +153,7 @@ export default function PostCard({user, post}){
         // dispatch(editComment(commentArea, comment.id))
         setPostSyncNeeded(true)
     };
+    if (!user && !post) return null;
 
     const eventsIcons = {
         "work": <WorkIcon className={classes.icons}/>,
@@ -181,8 +183,13 @@ export default function PostCard({user, post}){
                         <div className="name-time-container">
                             <Fullname user={post.owner}/>
                             <div className="time-container">
-                                <p>{posted}</p>
+                                <p className="post-timestamp">{posted}</p>
                             </div>
+                        </div>
+                        <div className="middle-side-container">
+                            {post.taggedFriends.length
+                                ? <><p className="filler-word">with</p> {post.taggedFriends.map(friend => <Fullname key={friend.id} user={friend} />)}</>
+                            : null}
                         </div>
                     </div>
                     <div className="right-side-container">
@@ -242,13 +249,16 @@ export default function PostCard({user, post}){
                         <p className="icon-tag">{post.type.type.toUpperCase()}</p>
                         <p className="description">{post.description}</p>
                     </div>
-                    <div className="body-photo-container">
-                        <img
-                            src={post.owner.coverPicture ? post.owner.coverPicture : coverPicturePlaceholder}
-                            alt="cover placeholder"
-                            className="body-photo"
-                        />
-                    </div>
+                    {post.photo 
+                    ?   <div className="body-photo-container">
+                            <img
+                                src={post.photo.path}
+                                alt="cover placeholder"
+                                className="body-photo"
+                            />
+                        </div> 
+                    : null}
+                    
                 </div>
                 <div className="footer-container">
                     <div className="button-section">

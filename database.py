@@ -32,10 +32,10 @@ with app.app_context():
 
   relationship1 = Relationship(user_id=7,friend_id=1, status=1, friends_since=random_date())
   relationship2 = Relationship(user_id=7,friend_id=2, status=2, friends_since=random_date())
-  relationship2 = Relationship(user_id=7,friend_id=5, status=2, friends_since=random_date())
-  relationship2 = Relationship(user_id=7,friend_id=6, status=2, friends_since=random_date())
-  relationship3 = Relationship(user_id=7,friend_id=3, status=2, friends_since=random_date())
-  relationship4 = Relationship(user_id=7,friend_id=4, status=3, friends_since=random_date())
+  relationship3 = Relationship(user_id=7,friend_id=5, status=2, friends_since=random_date())
+  relationship4= Relationship(user_id=7,friend_id=6, status=2, friends_since=random_date())
+  relationship5 = Relationship(user_id=7,friend_id=3, status=2, friends_since=random_date())
+  relationship6 = Relationship(user_id=7,friend_id=4, status=3, friends_since=random_date())
   
   post_types1 = PostType(type="work")
   post_types2 = PostType(type="education")
@@ -178,6 +178,8 @@ with app.app_context():
   db.session.add(relationship2)
   db.session.add(relationship3)
   db.session.add(relationship4)
+  db.session.add(relationship5)
+  db.session.add(relationship6)
 
   db.session.add(post_types1)
   db.session.add(post_types2)

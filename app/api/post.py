@@ -42,16 +42,16 @@ def find_all_posts(id):
                                 .joinedload(Post.tagged_friends) \
                                 .joinedload(TaggedFriend.users)) \
                         .all()
-    # print(relationships[0].friends.posts[0].photos[0].to_dict())
-    # print(relationships[0].friends.posts[0].location.to_dict())
+    print(relationships[0].friends.posts[0].location)
+    print(relationships[0].friends.posts[0].photos)
+    print(relationships[0].friends.posts[0].tagged_friends)
     data=[]
     for relationship in relationships:
         for post in relationship.friends.posts:
             comments = []
             likes = []
             tagged_people = []
-            photos = []
-            tagged_people = []
+            # photos = []
             for comment in post.comments:
                 comm = {**comment.to_dict(), "owner": comment.owner.to_dict()}
                 comments.append(comm)
@@ -59,15 +59,21 @@ def find_all_posts(id):
                 lik = like.to_dict()
                 likes.append(lik)
             for friend in post.tagged_friends:
-                person = friend.to_dict()
+                person = friend.users.to_dict()
                 tagged_people.append(person)
+            location = None
+            photo = None
+            if post.location:
+                location = post.location.to_dict()
+            if post.photos:
+                photo = post.photos[0].to_dict()
             dic = {**post.to_dict(),
                 "comments": comments,
                 "type": post.type.to_dict(),
                 "owner": post.owner.to_dict(),
                 "likes": likes,
-                "photo": post.photos[0].to_dict(),
-                "location": post.location.to_dict(),
+                "photo": photo,
+                "location": location,
                 "taggedFriends": tagged_people}
             data.append(dic)
         
@@ -77,7 +83,6 @@ def find_all_posts(id):
 @post_routes.route('/location/<string:value>', methods=['GET'])
 @jwt_required
 def get_location(value):
-    # r = requests.get(f'https://api.locationiq.com/v1/autocomplete.php?key={token}&q={value}&tag=place%3Acity%2Cplace%3Atown%2Cplace%3Avillage')
     r = requests.get(f'https://api.locationiq.com/v1/autocomplete.php?key={token}&q={value}&tag=place:city')
     data = r.json()
     return jsonify(data=data)

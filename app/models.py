@@ -114,6 +114,7 @@ class Post(db.Model):
   likes = db.relationship("Like", primaryjoin='Post.id == Like.post_id', foreign_keys="Like.post_id", backref='post_likes', cascade="all, delete")
   photos = db.relationship("Photo", primaryjoin='Post.id == Photo.post_id', foreign_keys="Photo.post_id", back_populates="posts", cascade="all, delete")
   tagged_friends = db.relationship("TaggedFriend", primaryjoin='Post.id == TaggedFriend.post_id', foreign_keys="TaggedFriend.post_id", back_populates="posts", cascade="all, delete")
+  # tagged_friends = db.relationship("TaggedFriend", lazy="joing", primaryjoin='Post.id == TaggedFriend.post_id', foreign_keys="TaggedFriend.post_id", back_populates="posts", cascade="all, delete")
 
   def to_dict(self):
     return {

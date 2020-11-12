@@ -43,7 +43,6 @@ def find_all_posts(id):
                                 .joinedload(Post.tagged_friends) \
                                 .joinedload(TaggedFriend.users)) \
                         .all()
-    
     posts = Post.query \
                 .filter(Post.user_id==id) \
                 .options(joinedload(Post.comments) \

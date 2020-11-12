@@ -32,11 +32,13 @@ function App() {
     useEffect(()=>{
         dispatch(restoreCSRF());
     }, [])
-    
+    // if (csrf) setLoading(true)
+
     useEffect(()=>{
         if(csrf !== undefined)
             setLoading(false);
     }, [csrf])
+    // if (!csrf) return <div>Loading...</div>
 
   return (
         <>

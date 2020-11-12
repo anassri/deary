@@ -173,7 +173,16 @@ export default function CreatePost(){
         }, 1000)
     }
     const clearForm = () => {
-
+        setEventType("");
+        setSelectedFriendsIds([]);
+        setSelectedFriends([]);
+        setSelectedLocation("");
+        setLocations([]);
+        setOpenDropdown(false);
+        setLocationField(false);
+        setPhotoPreview(null);
+        setPhoto(null);
+        setFriendsField(false);
     }
     const handlePost = () => {
         setLoading(true);

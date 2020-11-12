@@ -176,3 +176,11 @@ def create_post():
     db.session.commit()
 
     return "done"
+
+@post_routes.route('/<int:id>/delete', methods=['DELETE'])
+@jwt_required
+def delete_post(id):
+    post = Post.query.get(id)
+    db.session.delete(post)
+    db.session.commit()
+    return jsonify({"msg": 'Post deleted'})

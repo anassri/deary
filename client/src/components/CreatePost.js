@@ -149,7 +149,7 @@ export default function CreatePost(){
                 }
             })()}
     }, [searchTerm])
-    
+
     useEffect(()=>{
         const timeout = setTimeout(() => {
             setSync(false);
@@ -172,6 +172,9 @@ export default function CreatePost(){
             setSearchTerm(input);
         }, 1000)
     }
+    const clearForm = () => {
+
+    }
     const handlePost = () => {
         setLoading(true);
 
@@ -188,6 +191,7 @@ export default function CreatePost(){
         setClicked(false);
         setSync(true);
         dispatch(createPost(data));
+        clearForm();
 
     }
     const handleLocationClear = () =>{

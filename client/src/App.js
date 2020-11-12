@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter, Switch, Route,Redirect, useLocation } from 'react-router-dom';
 import AuthContainer from './components/AuthContainer';
@@ -23,28 +23,41 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 function App() {
     const dispatch = useDispatch();
     const needLogin = useSelector(state => !state.auth.user.id);
+    const [loading, setLoading] = useState(true);
+    const csrf = useSelector(state => state.csrf.token)
     const handleLogout = () =>{
         dispatch(logout());
     }
+
     useEffect(()=>{
         dispatch(restoreCSRF());
     }, [])
+    
+    useEffect(()=>{
+        if(csrf !== undefined)
+            setLoading(false);
+    }, [csrf])
+
   return (
-    <BrowserRouter>
-        <ThemeProvider theme={theme}>
-            <ConfirmProvider>
-                <CssBaseline />
-                <Switch>
-                    <Route path="/login" component={AuthContainer}/>
-                    <Route path="/signup" component={AuthContainer}/>
-                    <PrivateRoute path="/search/:idq=:value" needLogin={needLogin} component={Search} />
-                    <PrivateRoute path="/profile/:id" needLogin={needLogin} component={Profile} />
-                    <PrivateRoute path="/" needLogin={needLogin} component={Home} />
-                </Switch>
-            </ConfirmProvider>
-        </ThemeProvider>
-    </BrowserRouter>
-  );
+        <>
+          {loading && <div>Loading...</div>}
+          {!loading &&
+                <BrowserRouter>
+                    <ThemeProvider theme={theme}>
+                        <ConfirmProvider>
+                            <CssBaseline />
+                            <Switch>
+                                <Route path="/login" component={AuthContainer}/>
+                                <Route path="/signup" component={AuthContainer}/>
+                                <PrivateRoute path="/search/:idq=:value" needLogin={needLogin} component={Search} />
+                                <PrivateRoute path="/profile/:id" needLogin={needLogin} component={Profile} />
+                                <PrivateRoute path="/" needLogin={needLogin} component={Home} />
+                            </Switch>
+                        </ConfirmProvider>
+                    </ThemeProvider>
+                </BrowserRouter>}
+        </>
+    );
 }
 
 export default App;

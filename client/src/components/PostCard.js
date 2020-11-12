@@ -12,10 +12,9 @@ import { Paper,
     MenuItem,
     Menu,  } from '@material-ui/core/';
 import { useHistory } from 'react-router';
-import { formatDistanceToNowStrict, parse } from 'date-fns';
+import { formatDistanceToNowStrict } from 'date-fns';
 import profilePicturePlaceholder from '../images/profile-placeholder.png'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import coverPicturePlaceholder from '../images/cover-placeholder.jpg'
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import WorkIcon from '@material-ui/icons/Work';
@@ -29,8 +28,11 @@ import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import StarIcon from '@material-ui/icons/Star';
 import candleIcon from '../images/candle.svg';
 import Comments from './Comments';
-import { addLike, deleteLike } from '../store/post';
+import { addLike, deleteLike, deletePost } from '../store/post';
 import { useDispatch } from 'react-redux';
+import { useConfirm } from 'material-ui-confirm';
+import { loadPosts as userPosts } from '../store/user';
+import { loadPosts as friendsPosts } from '../store/post';
 
 const useStyle = makeStyles({
     paper:{
@@ -99,13 +101,13 @@ export default function PostCard({user, post}){
     const dispatch = useDispatch()
     const classes = useStyle()
     const posted = formatDistanceToNowStrict(new Date(post.created_at), { addSuffix: true });
-    // const posted = post.created_at
+    const [sync, setSync] = useState(false);
     const [descriptionArea, setDescriptionArea] = useState('')
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
-    const [postSyncNeeded, setPostSyncNeeded] = useState(false);
     const [commentArea, setCommentArea] = useState('')
-    
+    const confirm = useConfirm();
+
     useEffect(()=>{
         setLikeCount(post.likes.length)
         setCommentCount(post.comments.length)
@@ -113,7 +115,15 @@ export default function PostCard({user, post}){
             if (like.user_id === user.id) setLikeClicked(true);
         });
     }, [post.comments])
-    
+
+    useEffect(() => {
+        if(sync){
+            setSync(false);
+            dispatch(userPosts(user.id))
+            dispatch(friendsPosts(user.id))
+        }
+    }, [sync])
+
     const handleLiked = async () =>{
         if (likeClicked){
             setLikeClicked(false);
@@ -133,25 +143,23 @@ export default function PostCard({user, post}){
     };
     const handleDelete = async () => {
         setAnchorEl(null);
-        // const id = comment.id
-        // try {
-        //     await confirm({
-        //         title: 'Are you sure?',
-        //         description: 'This action is permanent!',
-        //         confirmationText: 'Delete',
-        //         cancellationText: 'Cancel',
-        //         dialogProps: { maxWidth: 'sm' }
-        //     });
-        //     // await dispatch(deleteComment(id, postId));
-        //     setPostSyncNeeded(true)
-        // } catch (e) {
-        //     console.error(e);
-        // }
+        const id = post.id
+        try {
+            await confirm({
+                title: 'Are you sure?',
+                description: 'This action is permanent!',
+                confirmationText: 'Delete',
+                cancellationText: 'Cancel',
+                dialogProps: { maxWidth: 'sm' }});
+            await dispatch(deletePost(id));
+            setSync(true)
+        } catch (e) {
+            console.error(e);
+        }
     };
     const handleEdit = () => {
         setOpen(false);
         // dispatch(editComment(commentArea, comment.id))
-        setPostSyncNeeded(true)
     };
     if (!user && !post) return null;
 
@@ -199,54 +207,58 @@ export default function PostCard({user, post}){
                             : null}
                         </div>
                     </div>
-                    <div className="right-side-container">
-                        <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                            <MoreHorizIcon style={{fontSize: 30}}/> 
-                        </IconButton>
-                        <Menu
-                            id="simple-menu"
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={Boolean(anchorEl)}
-                            onClose={handleClose}
-                        >
-                            <MenuItem onClick={() => {
-                                setOpen(true);
-                                setAnchorEl(null);
-                                // setDescriptionArea(comment.comment);
-                            }}>Edit</MenuItem>
-                            <MenuItem onClick={handleDelete} style={{ color: '#FF0000' }}>Delete</MenuItem>
-                        </Menu>
-                        <Dialog
-                            open={open}
-                            onClose={handleClose}
-                            maxWidth='sm'
-                            fullWidth
-                            aria-labelledby="form-dialog-title">
-                            <DialogTitle id="form-dialog-title">
-                                Edit Comment</DialogTitle>
-                            <DialogContent>
-                                <TextField
-                                    autoFocus
-                                    margin="dense"
-                                    id="name"
-                                    type="email"
-                                    value={descriptionArea}
-                                    onChange={e => setDescriptionArea(e.target.value)}
-                                    maxWidth='md'
-                                    fullWidth
-                                />
-                            </DialogContent>
-                            <DialogActions>
-                                <Button onClick={() => setOpen(false)} color="primary">
-                                    Cancel
-                                </Button>
-                                <Button onClick={handleEdit} color="primary">
-                                    Edit
-                                </Button>
-                            </DialogActions>
-                        </Dialog>
-                    </div>
+                    
+                    {user.id === post.owner.id
+                    ?   <div className="right-side-container">
+                            <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+                                <MoreHorizIcon style={{fontSize: 30}}/> 
+                            </IconButton>
+                            <Menu
+                                id="simple-menu"
+                                anchorEl={anchorEl}
+                                keepMounted
+                                open={Boolean(anchorEl)}
+                                onClose={handleClose}
+                            >
+                                <MenuItem onClick={() => {
+                                    setOpen(true);
+                                    setAnchorEl(null);
+                                    // setDescriptionArea(comment.comment);
+                                }}>Edit</MenuItem>
+                                <MenuItem onClick={handleDelete} style={{ color: '#FF0000' }}>Delete</MenuItem>
+                            </Menu>
+                            <Dialog
+                                open={open}
+                                onClose={handleClose}
+                                maxWidth='sm'
+                                fullWidth
+                                aria-labelledby="form-dialog-title">
+                                <DialogTitle id="form-dialog-title">
+                                    Edit Comment</DialogTitle>
+                                <DialogContent>
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        id="name"
+                                        type="email"
+                                        value={descriptionArea}
+                                        onChange={e => setDescriptionArea(e.target.value)}
+                                        maxWidth='md'
+                                        fullWidth
+                                    />
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={() => setOpen(false)} color="primary">
+                                        Cancel
+                                    </Button>
+                                    <Button onClick={handleEdit} color="primary">
+                                        Edit
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+                        </div>
+                    : null}
+                    
                 </div>
                 <div className="body-container-post">
                     <div className="body-description-container">

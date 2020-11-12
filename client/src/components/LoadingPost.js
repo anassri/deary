@@ -8,7 +8,6 @@ const useStyle = makeStyles({
     paper:{
         width: 780,
         marginBottom: 20,
-        marginRight: 20,
     },
     inputRoot: {
         backgroundColor: '#EFEFEF',

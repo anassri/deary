@@ -13,14 +13,14 @@ import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import StarIcon from '@material-ui/icons/Star';
 import candleIcon from '../images/candle_grey.svg';
 import candleGreenIcon from '../images/candle.svg';
-import { Button, IconButton, InputBase, TextField } from '@material-ui/core';
+import { Button, IconButton, InputBase } from '@material-ui/core';
 import ImageIcon from '@material-ui/icons/Image';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import CloseIcon from '@material-ui/icons/Close';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { createPost } from '../store/post';
 
 const useStyle = makeStyles({
     icon:{
@@ -57,20 +57,28 @@ const useStyle = makeStyles({
 export default function CreatePost(){
     const token = useSelector(state => state.auth.token);
     const friends = useSelector(state => state.user.friends);
+    const userId = useSelector(state => state.auth.user.id);
+    const dispatch = useDispatch();
+
     const [searchFriends, setSearchFriends] = useState("");
     const [friendsField, setFriendsField] = useState(false);
-    const [selectedFriends, setSelectedFriends] = useState([]);
     const [openFriendsDropdown, setOpenFriendsDropdown] = useState(false);
     const [clicked, setClicked] = useState(false);
     const [locationField, setLocationField] = useState(false);
-    const [selectedLocation, setSelectedLocation] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
     const [openDropdown, setOpenDropdown] = useState(false);
     const [locations, setLocations] = useState([]);
-    const [eventType, setEventType] = useState("");
-    const [photo, setPhoto] = useState(null);
     const [photoPreview, setPhotoPreview] = useState(null);
+    const [selectedFriends, setSelectedFriends] = useState([]);
+    
+    
+    const [eventType, setEventType] = useState("");
+    const [selectedLocation, setSelectedLocation] = useState("");
+    const [selectedFriendsIds, setSelectedFriendsIds] = useState([]);
+    const [photo, setPhoto] = useState(null);
     const [description, setDescription] = useState("");
+
+
     const classes = useStyle();
     const eventsIcons = {
         "work": <WorkIcon className={classes.icons} />,
@@ -148,7 +156,20 @@ export default function CreatePost(){
             setSearchTerm(input);
         }, 1000)
     }
+    const handlePost = () => {
+        const data = new FormData();
+        const date = new Date();
+        data.append("photo", photo);
+        data.append("post_type", eventType);
+        data.append("tagged_friends", selectedFriendsIds);
+        data.append("location", selectedLocation);
+        data.append("description", description);
+        data.append("user_id", userId);
+        data.append("created_at", date);
+        setClicked(false);
+        dispatch(createPost(data));
 
+    }
     const handleLocationClear = () =>{
         setLocationField(false)
         setSelectedLocation('');
@@ -237,6 +258,7 @@ export default function CreatePost(){
                                         variant="contained"
                                         className={`${classes.button} post-button`}
                                         disableElevation
+                                        onClick={handlePost}
                                     >Post</Button>
                                 </form>
                             </div>
@@ -309,6 +331,7 @@ export default function CreatePost(){
                                             ?   <div className="friend-dropdown-container">
                                                 {friends.map(friend => <Button key={friend.id} onClick={() => {
                                                     setSelectedFriends([...selectedFriends, friend.firstName + " " + friend.lastName]);
+                                                    setSelectedFriendsIds([...selectedFriendsIds, friend.id]);
                                                     setFriendsField(false);
                                                     }}>
                                                             {friend.firstName + " " + friend.lastName}
@@ -334,8 +357,15 @@ export default function CreatePost(){
                                         {openDropdown
                                         ?   <div className="search-dropdown-container">
                                                 {locations.length
-                                                    ? locations.map(location => <Button key={location.id} onClick={() => setSelectedLocation(`${location.address.city}, ${location.address.state} ${location.address.country}`)}>
-                                                    {location.address.city}, {location.address.state} {location.address.country}
+                                                    ? locations.map(location => <Button 
+                                                                key={location.id} 
+                                                                onClick={() => setSelectedLocation(location.address.country_code === "us"
+                                                                                                    ? location.address.name + ", " + location.address.state + " USA"
+                                                                                                    : location.address.name + ", " + location.address.country)}>
+                                                    {location.address.country_code === "us"
+                                                    ? location.address.name + ", " + location.address.state + " USA" 
+                                                    : location.address.name + ", " + location.address.country
+                                                    }
                                                     </Button>) 
 
                                                 : null}

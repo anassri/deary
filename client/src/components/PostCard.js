@@ -188,7 +188,14 @@ export default function PostCard({user, post}){
                         </div>
                         <div className="middle-side-container">
                             {post.taggedFriends.length
-                                ? <><p className="filler-word">with</p> {post.taggedFriends.map(friend => <Fullname key={friend.id} user={friend} />)}</>
+                                ? <><p className="filler-word">with</p> {post.taggedFriends.map(friend => 
+                                        post.taggedFriends[post.taggedFriends.length-1] === friend
+                                        ? <Fullname key={friend.id} user={friend} />
+                                        : <><Fullname key={friend.id} user={friend} /> <p className="fullname coma">,</p></>
+                                        )}</>
+                            : null}
+                            {post.location
+                                ? <><p className="filler-word">in</p> <p className="fullname">{post.location.location}</p></>
                             : null}
                         </div>
                     </div>

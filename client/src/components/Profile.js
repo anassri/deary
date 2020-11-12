@@ -21,6 +21,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { loadUser, editUser, editCover, editPhoto, loadPosts } from '../store/user';
 import { useParams } from 'react-router';
 import PostCard from './PostCard';
+import CreatePost from './CreatePost';
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
@@ -58,6 +59,9 @@ export function Profile({ user, authUser, posts}){
     const dispatch = useDispatch();
     const classes = useStyles();
     const {id} =useParams();
+
+    const firstname = user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1)
+    const lastname = user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)
 
     useEffect(()=>{
         setFullName(user.firstName+' '+user.lastName);
@@ -200,7 +204,7 @@ export function Profile({ user, authUser, posts}){
                     }
                     <div className="basic-info-container">
                         <div className="name-header">
-                            <h1>{user.firstName+' '+user.lastName}</h1>
+                            <h1>{firstname+' '+lastname}</h1>
                         </div>
                         <div className="bio-container">
                             {user.bio}
@@ -288,6 +292,9 @@ export function Profile({ user, authUser, posts}){
                     </div>
                 </div>
                     <div className="profile-body-container">
+                        <div className="create-post-profile">
+                            <CreatePost />
+                        </div>
                         {posts.map(post=><PostCard post={post} user={user}/>)}
                     </div>
             </div>

@@ -94,7 +94,6 @@ def find_users(id, value):
 @jwt_required
 def add_friend(id):
   incoming = request.get_json()
-  print(incoming)
   date = datetime.now()
   relationship = Relationship(user_id=id,
                               friend_id=incoming,

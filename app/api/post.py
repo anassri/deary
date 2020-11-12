@@ -86,3 +86,27 @@ def get_location(value):
     r = requests.get(f'https://api.locationiq.com/v1/autocomplete.php?key={token}&q={value}&tag=place:city')
     data = r.json()
     return jsonify(data=data)
+
+@post_routes.route('/', methods=['POST'])
+@jwt_required
+def create_post():
+    if "photo" not in request.files:
+        return "No file key in request.files"
+    photo = request.files['profilePicture']
+    if photo:
+        photo_link = upload_file_to_s3(photo)
+        # user.profile_picture = profile_photo_link
+    else:
+        return "No file key in request.files"
+    print(request.files)
+    # post_type = request.files
+
+
+    # relationship = Relationship(user_id=id,
+    #                             friend_id=incoming,
+    #                             status=1,
+    #                             friends_since=date)
+    # db.session.add(relationship)
+    db.session.commit()
+    
+    return "done"

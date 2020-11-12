@@ -13,13 +13,8 @@ import { logout } from './store/auth';
 import { restoreCSRF } from './store/csrf';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-    // const dispatch = useDispatch();
-    // const location = useLocation();
-    // useEffect(() => {
-    //     dispatch(setLocation(location.pathname));
-    // }, [location.pathname])
     return <Route {...rest} render={(props) => (
-        rest.needLogin === true
+        rest.needLogin
             ? <Redirect to='/login' />
             : <Component {...props} />
     )} />

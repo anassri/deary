@@ -13,6 +13,18 @@
     font-weight: 500;
     color: #666;
 }
+.middle-side-container{
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 18px;
+}
+.filler-word{
+    margin-right: 5px;
+    margin-left: 5px;
+}
+.fullname.coma{
+    margin-right: 5px;
+}
 .left-side-container{
     display: flex;
     align-items: center;
@@ -50,6 +62,9 @@
 }
 .footer-buttons:active { 
     transform: scale(0.9); 
+}
+.post-timestamp{
+    font-size: 13px;
 }
 .comment-section{
    text-align: center;

@@ -69,4 +69,8 @@
     flex-direction: column;
     /* margin-top: 100px; */
     align-items: center;
+    margin-left: 20px;
+}
+.create-post-profile{
+    padding-right: 20px;
 }

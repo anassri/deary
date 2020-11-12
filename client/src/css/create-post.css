@@ -1,15 +1,16 @@
 .create-post-container{
     width: 780px;
     background-color: #fff;
-    padding: 20px;
-    border-radius: 15px;
+    border-radius: 10px;
     box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
     margin: 15px 0;
-
+    
 }
 .expand-create-button-container{
+    padding: 20px;
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 .create-button-icon{
     width: 70px;
@@ -23,4 +24,111 @@
 .create-button-label{
     margin-left: 20px;
     font-size: 25px;
+}
+.events-buttons-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 20px;
+}
+.icon-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 25px;
+    width: 80px;
+}
+.chosen-icon-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.icon-label{
+    color: #666;
+}
+.add-more-buttons-container{
+    margin: 5px;
+    display: flex;
+}
+.form-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.post-button.MuiButton-contained{
+    align-self: center;
+    width: 250px;
+    border-radius: 40px;
+    margin: 10px 0;
+}
+.location-auto-complete{
+    margin-top: 8px;
+    margin-left: 10px;
+}
+.green-icon-label{
+    color: #33DD87;
+}
+.description-text-field{
+    width: 95%;
+    margin: 10px 20px 0 20px;
+    height: 100%;
+    border: none;
+    /* background-color: #000; */
+    font-size: 30px;
+    color: #666;
+    overflow:hidden;
+    font-family: inherit;
+}
+.description-text-field:focus{
+    outline: none;
+}
+.photo-preview-container{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.close-button-container{
+    position: absolute;
+    margin: 10px; 
+}
+.uploaded-photo{
+   width: 100%;
+}
+.search-location-container, .friend-container{
+    position: relative;
+}
+.search-field-input, .friend-field-input{
+    margin-top: 9px;
+    margin-left: 5px;
+    width: 150px;
+}
+.friend-text-container, .location-text-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.icon-button{
+    width: 25px;
+    height: 25px;
+}
+.location-text, .friend-text{
+    color: #666;
+    margin: 10px 25px;
+    font-size: 18px;
+}
+.search-dropdown-container, .friend-dropdown-container{
+    position: absolute;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 10px;
+    box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+    width: 450px;
+}
+.friend-dropdown-container{
+    width: 250px;
 }

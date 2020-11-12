@@ -47,7 +47,7 @@ export default function Comments({ owner, post }) {
     const [comments, setComments] = useState([]);
     useEffect(() => {
         setComments([...post.comments]);
-    }, [post])
+    }, [post, post.comments])
 
     const [comment, setComment] = useState('');
     const dispatch = useDispatch()
@@ -118,7 +118,6 @@ const DisplayComments = ({ comment, postId }) => {
 
     useEffect(()=>{
         dispatch(loadPosts(user.id))
-        console.log('hit')
     }, [postSyncNeeded])
 
     const handleClick = (event) => {

@@ -24,6 +24,7 @@ class User(db.Model):
   # circles = db.relationship('Circle', back_populates='users', secondary='circle_lists')
   relationships = db.relationship("Relationship", primaryjoin='User.id == Relationship.friend_id', foreign_keys="Relationship.friend_id", backref='user_friends')
   posts = db.relationship("Post", primaryjoin='User.id == Post.user_id', foreign_keys="Post.user_id", backref='user_posts')
+  # friends = db.relationship("User", foreign_keys="Relationship.friend_id", secondary="Relationship")
 
   def to_dict(self):
     return {
@@ -103,12 +104,16 @@ class Post(db.Model):
   user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
   description = db.Column(db.Text)
   type_id = db.Column(db.Integer, db.ForeignKey("post_types.id"), nullable = False)
-  created_at = db.Column(db.DateTime, nullable = False)
+  created_at = db.Column(db.String(100), nullable = False)
+  location_id = db.Column(db.Integer, db.ForeignKey("locations.id"))
 
   owner = db.relationship("User", foreign_keys=user_id)
+  location = db.relationship("Location", foreign_keys=location_id)
   type = db.relationship("PostType", foreign_keys=type_id)
   comments = db.relationship("Comment", primaryjoin='Post.id == Comment.post_id', foreign_keys="Comment.post_id", backref='post_comments', cascade="all, delete")
   likes = db.relationship("Like", primaryjoin='Post.id == Like.post_id', foreign_keys="Like.post_id", backref='post_likes', cascade="all, delete")
+  photos = db.relationship("Photo", primaryjoin='Post.id == Photo.post_id', foreign_keys="Photo.post_id", back_populates="posts", cascade="all, delete")
+  tagged_friends = db.relationship("TaggedFriend", primaryjoin='Post.id == TaggedFriend.post_id', foreign_keys="TaggedFriend.post_id", back_populates="posts", cascade="all, delete")
 
   def to_dict(self):
     return {
@@ -157,21 +162,55 @@ class Like(db.Model):
       "user_id": self.user_id,
     } 
 
-# class Photo(db.Model):
-#   __tablename__ = "photos"
+class Photo(db.Model):
+  __tablename__ = "photos"
 
-#   id = db.Column(db.Integer, primary_key = True)
-#   path = db.Column(db.String(255), nullable = False)
-#   post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable = False)
+  id = db.Column(db.Integer, primary_key = True)
+  path = db.Column(db.String(255), nullable = False)
+  post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable = False)
 
-#   posts = db.relationship("Post", foreign_keys=post_id, cascade="all, delete")
+  posts = db.relationship("Post", foreign_keys=post_id, back_populates="photos", uselist=False)
 
-#   def to_dict(self):
-#     return {
-#       "id": self.id,
-#       "path": self.path,
-#       "post_id": self.post_id,
-#     }    
+  def to_dict(self):
+    return {
+      "id": self.id,
+      "path": self.path,
+      "postId": self.post_id,
+    }    
+
+class Location(db.Model):
+  __tablename__ = "locations"
+
+  id = db.Column(db.Integer, primary_key = True)
+  location = db.Column(db.String(255), nullable = False)
+
+  posts = db.relationship("Post", 
+            primaryjoin='Location.id == Post.location_id', 
+            foreign_keys="Post.location_id", 
+            backref='location_posts')
+
+  def to_dict(self):
+    return {
+      "id": self.id,
+      "location": self.location,
+    }    
+
+class TaggedFriend(db.Model):
+  __tablename__ = "tagged_friends"
+
+  id = db.Column(db.Integer, primary_key = True)
+  user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
+  post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable = False)
+
+  posts = db.relationship("Post", foreign_keys=post_id, back_populates="tagged_friends")
+  users = db.relationship("User", foreign_keys=user_id)
+
+  def to_dict(self):
+    return {
+      "id": self.id,
+      "userId": self.user_id,
+      "postId": self.post_id,
+    }    
 
 # class Video(db.Model):
 #   __tablename__ = "videos"

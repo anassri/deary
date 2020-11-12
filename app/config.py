@@ -12,3 +12,4 @@ class Config:
   S3_KEY=os.environ.get('S3_ACCESS_ID')
   S3_SECRET=os.environ.get('S3_SECRET')
   S3_BUCKET=os.environ.get('S3_BUCKET')
+  GEOCODING_TOKEN=os.environ.get('GEOCODING_TOKEN')

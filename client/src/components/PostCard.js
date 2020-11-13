@@ -11,9 +11,7 @@ import { Paper,
     DialogTitle,
     MenuItem,
     Menu,  } from '@material-ui/core/';
-import { useHistory } from 'react-router';
 import { formatDistanceToNowStrict } from 'date-fns';
-import profilePicturePlaceholder from '../images/profile-placeholder.png'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
@@ -33,6 +31,9 @@ import { useDispatch } from 'react-redux';
 import { useConfirm } from 'material-ui-confirm';
 import { loadPosts as userPosts } from '../store/user';
 import { loadPosts as friendsPosts } from '../store/post';
+import Fullname from './Fullname';
+import ProfilePic from './ProfilePic';
+
 
 const useStyle = makeStyles({
     paper:{
@@ -54,45 +55,6 @@ const useStyle = makeStyles({
 
 })
 
-export const Fullname = ({user}) => {
-    const firstname = user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1)
-    const lastname = user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)
-    const history = useHistory()
-
-    return(
-        // <div className="name-container">
-            <p className="fullname"
-                style={{ cursor: 'pointer' }}
-                onClick={() => history.push(`/profile/${user.id}`)}>
-                {firstname + " " + lastname} </p>
-        // </div>
-    )
-}
-export const ProfilePic = ({user, size=60})=>{
-    const history = useHistory()
-
-    return (
-        <>
-            {user.profilePicture
-                ? <img
-                    src={user.profilePicture}
-                    alt="profile placeholder"
-                    className="thumbnail-image"
-                    height={size}
-                    width={size}
-                    onClick={() => history.push(`/profile/${user.id}`)}
-                />
-                : <img
-                    src={profilePicturePlaceholder}
-                    alt="profile placeholder"
-                    className="thumbnail-image"
-                    height={size}
-                    width={size}
-                    onClick={() => history.push(`/profile/${user.id}`)}
-                />}
-        </>
-    )
-}
 export default function PostCard({user, post}){
     const [likeClicked, setLikeClicked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
@@ -105,7 +67,6 @@ export default function PostCard({user, post}){
     const [descriptionArea, setDescriptionArea] = useState('')
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
-    const [commentArea, setCommentArea] = useState('')
     const confirm = useConfirm();
 
     useEffect(()=>{
@@ -161,7 +122,6 @@ export default function PostCard({user, post}){
         setOpen(false);
         // dispatch(editComment(commentArea, comment.id))
     };
-    if (!user && !post) return null;
 
     const eventsIcons = {
         "work": <WorkIcon className={classes.icons}/>,

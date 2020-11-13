@@ -1,5 +1,5 @@
 import React, {  useEffect, useState } from 'react';
-import {ProfilePic, Fullname} from './PostCard'
+import ProfilePic from './ProfilePic';
 import '../css/post.css';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { addComment, deleteComment, loadPosts, editComment } from '../store/post';
@@ -22,6 +22,7 @@ import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SendIcon from '@material-ui/icons/Send';
 import { useConfirm } from 'material-ui-confirm';
+import Fullname from './Fullname';
 
 const useStyle = makeStyles({
     paper: {

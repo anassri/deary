@@ -5,6 +5,7 @@ import AuthContainer from './components/AuthContainer';
 import Home from './components/Home';
 import Search from './components/Search';
 import Profile from './components/Profile';
+import Notifications from './components/Notifications';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from './theme';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -53,6 +54,7 @@ function App() {
                                 <Route path="/signup" component={AuthContainer}/>
                                 <PrivateRoute path="/search/:idq=:value" needLogin={needLogin} component={Search} />
                                 <PrivateRoute path="/profile/:id" needLogin={needLogin} component={Profile} />
+                                <PrivateRoute path="/notifications/:id" needLogin={needLogin} component={Notifications} />
                                 <PrivateRoute path="/" needLogin={needLogin} component={Home} />
                             </Switch>
                         </ConfirmProvider>

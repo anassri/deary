@@ -17,7 +17,7 @@
 .unread-circle:active{ 
     transform: scale(0.9); 
 }
-.unread-circle.active{
+.unread-circle.hidden{
     display: none;
 }
 .notification-middle-container{
@@ -33,5 +33,13 @@
     font-size: 16px;
 }
 .notification-right-container{
-    justify-self: flex-end;
+    text-align: right;
+    width: 45%;
+}
+.buttons-container{
+    display: flex;
+    justify-content: flex-end;
+}
+.add-buttons-container{
+    margin-left: 5px;
 }

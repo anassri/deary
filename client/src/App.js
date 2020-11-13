@@ -32,11 +32,19 @@ function App() {
 
     useEffect(()=>{
         dispatch(restoreCSRF());
-    }, [])
+    }, []);
+
+    // (() => {
+    //     const timeout = setTimeout(()=>{
+    //         setLoading(false);
+    //     }, 2000)
+    //     return () => clearTimeout(timeout);
+    // })();
+    
     // if (csrf) setLoading(true)
 
     useEffect(()=>{
-        if(csrf !== undefined)
+        if(csrf)
             setLoading(false);
     }, [csrf])
     // if (!csrf) return <div>Loading...</div>
@@ -59,7 +67,8 @@ function App() {
                             </Switch>
                         </ConfirmProvider>
                     </ThemeProvider>
-                </BrowserRouter>}
+                </BrowserRouter>
+        }   
         </>
     );
 }

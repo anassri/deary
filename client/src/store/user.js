@@ -53,6 +53,23 @@ export const loadNotifications = (id) => async dispatch => {
         return e;
     }
 }
+export const updateNotification = (data, id) => async (dispatch, getState) => {
+    const token = getToken();
+    try {
+        const res = await fetch(`/api/users/${id}/notifications`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+                'X-CSRFToken': getState().csrf.token
+            },
+            body: JSON.stringify(data)
+        });
+    } catch (e) {
+        console.error(e);
+        return e;
+    }
+}
 export const loadFriends = (id) => async dispatch => {
     const token = getToken();
     try {
@@ -119,21 +136,35 @@ export const loadUser = (id) => async dispatch => {
         return e;
     }
 }
-export const addFriend = (id, userId) => async (dispatch, getState) => {
+export const addFriend = (id, data) => async (dispatch, getState) => {
     const token = getToken();
-    console.log(id, userId);
     try {
         const res = await fetch(`/api/users/${id}/add`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 
                         Authorization: `Bearer ${token}`,
                         'X-CSRFToken': getState().csrf.token },
-            body: JSON.stringify(userId)
+            body: JSON.stringify(data)
         });
         if (res.ok) {
             const { friends } = await res.json();
             dispatch(setRelationships(friends));
         }
+    } catch (e) {
+        console.error(e);
+        return e;
+    }
+}
+export const updateFriend = (data, id) => async (dispatch, getState) => {
+    const token = getToken();
+    try {
+        const res = await fetch(`/api/users/${id}/update`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 
+                        Authorization: `Bearer ${token}`,
+                        'X-CSRFToken': getState().csrf.token },
+            body: JSON.stringify(data)
+        });
     } catch (e) {
         console.error(e);
         return e;

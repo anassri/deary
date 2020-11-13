@@ -94,11 +94,10 @@ def find_users(id, value):
 @jwt_required
 def add_friend(id):
   incoming = request.get_json()
-  date = datetime.now()
   relationship = Relationship(user_id=id,
-                              friend_id=incoming,
+                              friend_id=incoming["friendId"],
                               status=1,
-                              friends_since=date)
+                              friends_since=incoming["createdAt"])
   db.session.add(relationship)
   db.session.commit()
   relationships= Relationship.query \
@@ -107,6 +106,27 @@ def add_friend(id):
   friends=[relationship.to_dict() for relationship in relationships]
 
   return jsonify(friends=friends)
+
+# Update a relationship
+@user_routes.route('/<int:id>/update', methods=['POST'])
+@jwt_required
+def update_friend(id):
+  incoming = request.get_json()
+    
+  friendship= Relationship.query \
+                              .filter(and_(Relationship.user_id==id, 
+                                      Relationship.friend_id==incoming["friendId"])) \
+                              .first()
+  
+  if not incoming["status"]:
+    db.session.delete(friendship)
+  else:
+    friendship.status = incoming["status"]
+    friendship.friends_since = incoming["since"]
+
+  db.session.commit()
+
+  return {'msg': 'relationship updated successfully'}
 
 # Grab all posts belonging to the user
 @user_routes.route('/<int:id>/profile', methods=['GET'])
@@ -161,11 +181,27 @@ def find_all_posts(id):
 def find_all_notifications(id):
   notifications = Notification.query \
                               .filter(Notification.user_id==id) \
-                              .options(joinedload(Notification.friend)) \
+                              .options(joinedload(Notification.friend) \
+                                        .joinedload(User.relationships)) \
                               .options(joinedload(Notification.type)) \
                               .all()
+  # print(notifications[0].friend)
+  # print(notifications[0].friend.relationships)
   data = [{**notification.to_dict(),
           "friend": notification.friend.to_dict(),
+          "relationship": notification.friend.relationships[0].to_dict() or None,
           "type": notification.type.to_dict()} for notification in notifications]
 
   return jsonify(data=data)
+# Update notification status
+@user_routes.route('/<int:id>/notifications', methods=['POST'])
+@jwt_required
+def update_notifications(id):
+  incoming = request.get_json()
+  notification_id = incoming["notificationId"]
+  notification = Notification.query.get(notification_id)
+
+  notification.status = incoming["status"]
+  db.session.commit()
+
+  return {'msg': 'notification updated successfully'}

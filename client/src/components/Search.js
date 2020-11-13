@@ -25,8 +25,14 @@ function CheckRelationShip({userId, relationships}){
     const dispatch = useDispatch();
     const id = Number.parseInt(idq[0])
     let status = 0;
+
     const handleAddPerson = () =>{
-        dispatch(addFriend(id, userId));
+        const date = new Date()
+        const data = {
+            "friendId": userId,
+            "createdAt": date,
+        }
+        dispatch(addFriend(id, data));
     }
     const relations = relationships.map(relation => {
         if (userId === relation.friend_id) {

@@ -25,7 +25,8 @@ class User(db.Model):
   friendships= db.relationship("Relationship", primaryjoin='User.id == Relationship.friend_id', foreign_keys="Relationship.friend_id", back_populates="friends")
   relationships = db.relationship("Relationship", primaryjoin='User.id == Relationship.user_id', foreign_keys="Relationship.user_id", back_populates="person")
   posts = db.relationship("Post", primaryjoin='User.id == Post.user_id', foreign_keys="Post.user_id", backref='user_posts')
-  # friends = db.relationship("User", foreign_keys="Relationship.friend_id", secondary="Relationship")
+  # friends = db.relationship("User", foreign_keys="Relationship.friend_id", secondary="Relationship", back_populates="friends")
+  # friends = db.relationship("User", foreign_keys="Relationship.friend_id", secondary="Relationship", back_populates="person")
 
   def to_dict(self):
     return {
@@ -66,6 +67,7 @@ class Relationship(db.Model):
   id = db.Column(db.Integer, primary_key = True)
   user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
   friend_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+  action_user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
   status = db.Column(db.Integer, nullable=False)
   friends_since = db.Column(db.DateTime, nullable=False)
 
@@ -83,7 +85,8 @@ class Relationship(db.Model):
       "user_id": self.user_id,
       "friend_id": self.friend_id,
       "status": self.status,
-      "friends_since ": self.friends_since,
+      "friends_since": self.friends_since,
+      "action_user_id": self.action_user_id,
     }
 
 class PostType(db.Model):

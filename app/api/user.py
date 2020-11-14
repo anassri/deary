@@ -77,11 +77,11 @@ def find_users(id, value):
               .filter(or_(User.last_name.ilike('%'+value+'%'), \
                           User.first_name.ilike('%'+value+'%'))) \
               .filter(not_(User.id==id)) \
-              .options(joinedload(User.relationships)) \
               .all()
 
   relationships = Relationship.query \
-                              .filter(Relationship.user_id==id) \
+                              .filter(or_(Relationship.user_id==id, 
+                                          Relationship.friend_id==id)) \
                               .all()
   data=[user.to_dict() for user in users]
   friends=[relationship.to_dict() for relationship in relationships]
@@ -187,10 +187,11 @@ def find_all_notifications(id):
   notifications = Notification.query \
                               .filter(Notification.user_id==id) \
                               .all()
+                              # .filter(Notification.friend.)
                               # .options(joinedload(Notification.friend)) \
                               # .options(joinedload(Notification.type)) \
   # print(notifications[0].friend)
-  print(notifications[10].friend.relationships)
+  # print(notifications[10].friend.relationships)
   data = [{**notification.to_dict(),
           "friend": notification.friend.to_dict(),
           "relationship": notification.friend.relationships[0].to_dict() if len(notification.friend.relationships) else None,

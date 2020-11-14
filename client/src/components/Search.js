@@ -18,13 +18,14 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'start',
     }
 }));
-function CheckRelationShip({userId, relationships}){
+function CheckRelationShip({ownerId, userId, relationships}){
     const classes = useStyles();
     const history = useHistory();
     const {idq} = useParams();
     const dispatch = useDispatch();
     const id = Number.parseInt(idq[0])
     let status = 0;
+    let action_user = 0;
 
     const handleAddPerson = () =>{
         const data = {
@@ -40,11 +41,23 @@ function CheckRelationShip({userId, relationships}){
         dispatch(addFriend(id, data));
     }
     relationships.map(relation => {
-        if (userId === relation.friend_id) {
+        if ((ownerId === relation.user_id && userId === relation.friend_id) 
+            || (ownerId === relation.friend_id && userId === relation.user_id)) {
             status = relation.status  
-            }
-        })
-    if (status ===1)
+            action_user = relation.action_user_id
+            // console.log("relation.user_id", relation.user_id)
+            // console.log("relation.friend_id", relation.friend_id)
+        }
+    })
+
+    if (status === 1 && action_user !== ownerId){
+        return <Button 
+                    variant="contained" 
+                    className={`add-button`} 
+                    disabled
+                    >Accept</Button>
+    }
+    else if (status === 1 && action_user === ownerId)
         return <Button 
                     variant="contained" 
                     className={`add-button`} 
@@ -69,7 +82,7 @@ function CheckRelationShip({userId, relationships}){
                 >Add Friend</Button>
     
 }
-function SearchEntry({user, relationships}){
+function SearchEntry({user, relationships, owner}){
     const history = useHistory();
     return (
         <>
@@ -100,7 +113,7 @@ function SearchEntry({user, relationships}){
                         {user.firstName + " " + user.lastName} </p>
                 </div>
                 <div className="add-button-container">
-                    <CheckRelationShip userId={user.id} relationships={relationships}/>
+                    <CheckRelationShip ownerId={owner.id} userId={user.id} relationships={relationships}/>
                 </div>
             </div>
             <div className="divider"/>
@@ -109,6 +122,7 @@ function SearchEntry({user, relationships}){
 }
 export default function Search(){
     const users = useSelector(state => state.user.users);
+    const owner = useSelector(state => state.auth.user);
     const relationships = useSelector(state => state.user.relationships)
     
     if(!users) return null
@@ -119,7 +133,7 @@ export default function Search(){
             <Navigation />
             <div className="content-container">
                 <Paper className="paper-container">{users.map(user =>
-                    <SearchEntry key={user.id} user={user} relationships={relationships} />
+                    <SearchEntry key={user.id} owner={owner} user={user} relationships={relationships} />
                 )}</Paper>
             </div>
         </>

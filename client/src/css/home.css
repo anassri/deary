@@ -48,3 +48,11 @@
     align-items: flex-start;
     padding: 10px 20px 0 0;
 }
+.loading-screen{
+    position: fixed;
+    left: 50%;
+    top: 50%;
+}
+.MuiCircularProgress-colorPrimary.MuiCircularProgress-indeterminate{
+    color: #33DD87;
+}

@@ -205,3 +205,67 @@ def update_notifications(id):
   db.session.commit()
 
   return {'msg': 'notification updated successfully'}
+
+# Create notification 
+@user_routes.route('/<int:id>/notifications/create', methods=['POST'])
+@jwt_required
+def create_notifications(id):
+  incoming = request.get_json()
+  if "postId" not in incoming:
+    postId = None
+  else: 
+    postId = incoming["postId"]
+  notification = Notification(post_id=postId,
+                              user_id=id,
+                              friend_id=incoming["friendId"],
+                              type_id=incoming["typeId"],
+                              created_at=incoming["createdAt"],
+                              status=1)
+
+  db.session.add(notification)
+  db.session.commit()
+
+  return {'msg': 'notification created successfully'}
+
+
+  # get one post
+@user_routes.route('/post/<int:id>', methods=['GET'])
+@jwt_required
+def get_one_post(id):
+  post = Post.query \
+             .options(joinedload(Post.comments) \
+                      .joinedload(Comment.owner)) \
+             .options(joinedload(Post.type)) \
+             .options(joinedload(Post.likes)) \
+             .options(joinedload(Post.photos)) \
+             .options(joinedload(Post.tagged_friends)) \
+             .get(id)
+  
+  comments = []
+  likes = []
+  tagged_people = []
+  for comment in post.comments:
+      comm = {**comment.to_dict(), "owner": comment.owner.to_dict()}
+      comments.append(comm)
+  for like in post.likes:
+      lik = like.to_dict()
+      likes.append(lik)
+  for friend in post.tagged_friends:
+      person = friend.users.to_dict()
+      tagged_people.append(person)
+  location = None
+  photo = None
+  if post.location:
+      location = post.location.to_dict()
+  if post.photos:
+      photo = post.photos[0].to_dict()
+  data = {**post.to_dict(),
+      "comments": comments,
+      "type": post.type.to_dict(),
+      "owner": post.owner.to_dict(),
+      "likes": likes,
+      "photo": photo,
+      "location": location,
+      "taggedFriends": tagged_people}
+  print(data)
+  return data

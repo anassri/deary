@@ -20,9 +20,15 @@ const useStyles = makeStyles((theme) => ({
     button: {
         borderRadius: 40,
     },
+    iconButton:{
+        height:45,
+        width: 45,
+        marginRight: 8,
+    },
     icon:{
         marginLeft: 17,
         marginRight: 17,
+        // fontSize: 60
     }
 }));
 
@@ -53,10 +59,7 @@ export default function Navigation(){
                 <div className={classes.search}>
                     <InputBase
                         placeholder="Search Deary…"
-                        classes={{
-                            root: classes.inputRoot,
-                            input: classes.inputInput,
-                        }}
+                        className={classes.inputRoot}
                         inputProps={{ 'aria-label': 'search' }}
                         onKeyDown={e => e.keyCode == 13 ? handleSearchButton() : null }
                         startAdornment={
@@ -70,6 +73,7 @@ export default function Navigation(){
                                     variant="contained"
                                     color="default"
                                     type="file"
+                                    className={classes.iconButton}
                                     onClick={handleSearchButton}
                                 >
                                     <SendIcon className={classes.icon}/>

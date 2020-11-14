@@ -6,6 +6,7 @@ import '../css/notification.css';
 import { Button, makeStyles } from '@material-ui/core';
 import { updateFriend, updateNotification } from '../store/user';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -15,14 +16,15 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const NotificationType = ({type}) => {
+const NotificationType = ({ type, postId}) => {
+    const history = useHistory()
     if (type === 'comment'){
         return <div className="notification-text">
-            <p>commented on your <span style={{fontWeight: 'bold'}}>post</span></p>
+            <p>commented on your <span className="post-link" onClick={() => history.push(`/post/${postId}`)}>post</span></p>
         </div>
     } else if (type === 'like'){
        return  <div className="notification-text">
-            <p>liked your <span style={{ fontWeight: 'bold' }}>post</span></p>
+           <p>liked your <span className="post-link" onClick={() => history.push(`/post/${postId}`)}>post</span></p>
         </div>
     }
     return <div className="notification-text">
@@ -80,7 +82,7 @@ export default function NotificationCard({notification}) {
                 <div className="notification-middle-container">
                     <div className="notification-text-container">
                         <Fullname user={notification.friend} />
-                        <NotificationType type={notification.type.type} />
+                        <NotificationType type={notification.type.type} postId={notification.postId}/>
                     </div>
                     <div className="time-container">
                         <p className="post-timestamp">{posted}</p>

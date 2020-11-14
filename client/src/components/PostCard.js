@@ -29,7 +29,7 @@ import Comments from './Comments';
 import { addLike, deleteLike, deletePost } from '../store/post';
 import { useDispatch } from 'react-redux';
 import { useConfirm } from 'material-ui-confirm';
-import { loadPosts as userPosts } from '../store/user';
+import { createNotification, loadPosts as userPosts } from '../store/user';
 import { loadPosts as friendsPosts } from '../store/post';
 import Fullname from './Fullname';
 import ProfilePic from './ProfilePic';
@@ -62,6 +62,7 @@ export default function PostCard({user, post}){
     const [commentClicked, setCommentClicked] = useState(false);
     const dispatch = useDispatch()
     const classes = useStyle()
+    // console.log(post.created_at);
     const posted = formatDistanceToNowStrict(new Date(post.created_at), { addSuffix: true });
     const [sync, setSync] = useState(false);
     const [descriptionArea, setDescriptionArea] = useState('')
@@ -91,6 +92,13 @@ export default function PostCard({user, post}){
             setLikeCount((previousCount) => previousCount-1)
             await dispatch(deleteLike(post.id, user.id));
         } else {
+            const notification = {
+                "friendId": post.owner.id,
+                "typeId": 2,
+                "postId": post.id,
+                "createdAt": new Date(),
+            }
+            dispatch(createNotification(notification, user.id))
             setLikeClicked(true);
             setLikeCount((previousCount) => previousCount+1)
             await dispatch(addLike(post.id, user.id));

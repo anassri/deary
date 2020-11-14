@@ -7,7 +7,7 @@ import profilePicturePlaceholder from '../images/profile-placeholder.png'
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PersonIcon from '@material-ui/icons/Person';
 import { useHistory, useParams } from 'react-router';
-import { addFriend } from '../store/user';
+import { addFriend, createNotification } from '../store/user';
 const useStyles = makeStyles((theme) => ({
     button: {
         background: "linear-gradient(43deg, rgba(51,221,135,1) 0%, rgba(68,226,141,1) 72%, rgba(100,237,152,1) 87%, rgba(156,255,172,1) 100%)",
@@ -32,9 +32,15 @@ function CheckRelationShip({userId, relationships}){
             "friendId": userId,
             "createdAt": date,
         }
+        const notification = {
+            "friendId": userId,
+            "typeId": 3,
+            "createdAt": new Date(),
+        }
+        dispatch(createNotification(notification, id))
         dispatch(addFriend(id, data));
     }
-    const relations = relationships.map(relation => {
+    relationships.map(relation => {
         if (userId === relation.friend_id) {
             status = relation.status  
             }

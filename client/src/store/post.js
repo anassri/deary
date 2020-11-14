@@ -43,7 +43,21 @@ export const createPost = (data) => async (dispatch, getState) => {
         return e;
     }
 }
-
+export const deletePost = (id) => async (dispatch) => {
+    const token = getToken();
+    try {
+        const res = await fetch(`/api/posts/${id}/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        });
+    } catch (e) {
+        console.error(e);
+        return e;
+    }
+}
 
 export const addComment = (data, id) => async (dispatch, getState) => {
     const token = getToken();

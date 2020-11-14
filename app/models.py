@@ -108,12 +108,13 @@ class Post(db.Model):
   location_id = db.Column(db.Integer, db.ForeignKey("locations.id"))
 
   owner = db.relationship("User", foreign_keys=user_id)
-  location = db.relationship("Location", foreign_keys=location_id)
+  location = db.relationship("Location", foreign_keys=location_id, back_populates='posts')
   type = db.relationship("PostType", foreign_keys=type_id)
   comments = db.relationship("Comment", primaryjoin='Post.id == Comment.post_id', foreign_keys="Comment.post_id", backref='post_comments', cascade="all, delete")
   likes = db.relationship("Like", primaryjoin='Post.id == Like.post_id', foreign_keys="Like.post_id", backref='post_likes', cascade="all, delete")
   photos = db.relationship("Photo", primaryjoin='Post.id == Photo.post_id', foreign_keys="Photo.post_id", back_populates="posts", cascade="all, delete")
   tagged_friends = db.relationship("TaggedFriend", primaryjoin='Post.id == TaggedFriend.post_id', foreign_keys="TaggedFriend.post_id", back_populates="posts", cascade="all, delete")
+  # tagged_friends = db.relationship("TaggedFriend", lazy="joing", primaryjoin='Post.id == TaggedFriend.post_id', foreign_keys="TaggedFriend.post_id", back_populates="posts", cascade="all, delete")
 
   def to_dict(self):
     return {
@@ -169,7 +170,7 @@ class Photo(db.Model):
   path = db.Column(db.String(255), nullable = False)
   post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable = False)
 
-  posts = db.relationship("Post", foreign_keys=post_id, back_populates="photos", uselist=False)
+  posts = db.relationship("Post", foreign_keys=post_id, back_populates="photos")
 
   def to_dict(self):
     return {
@@ -185,9 +186,7 @@ class Location(db.Model):
   location = db.Column(db.String(255), nullable = False)
 
   posts = db.relationship("Post", 
-            primaryjoin='Location.id == Post.location_id', 
-            foreign_keys="Post.location_id", 
-            backref='location_posts')
+            back_populates='location')
 
   def to_dict(self):
     return {
@@ -211,6 +210,50 @@ class TaggedFriend(db.Model):
       "userId": self.user_id,
       "postId": self.post_id,
     }    
+
+class NotificationType(db.Model):
+  __tablename__ = "notification_types"
+
+  id = db.Column(db.Integer, primary_key = True)
+  type = db.Column(db.String(255), nullable = False)
+
+  def to_dict(self):
+    return {
+      "id": self.id,
+      "type": self.type,
+    }
+
+class Notification(db.Model):
+  __tablename__ = "notifications"
+
+  id = db.Column(db.Integer, primary_key = True)
+  friend_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
+  user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
+  type_id = db.Column(db.Integer, db.ForeignKey("notification_types.id"), nullable = False)
+  post_id = db.Column(db.Integer, db.ForeignKey("posts.id"))
+  created_at = db.Column(db.String(100), nullable = False)
+  status = db.Column(db.Integer, nullable = False)
+
+  # status:
+  # 1: unread
+  # 2: read
+
+  posts = db.relationship("Post", foreign_keys=post_id)
+  friend = db.relationship("User", foreign_keys=friend_id)
+  owner = db.relationship("User", foreign_keys=user_id)
+  type = db.relationship("NotificationType", foreign_keys=type_id)
+
+  def to_dict(self):
+    return {
+      "id": self.id,
+      "postId": self.post_id,
+      "friendId": self.friend_id,
+      "userId": self.user_id,
+      "typeId": self.type_id,
+      "status": self.status,
+      "createdAt": self.created_at,
+    }
+
 
 # class Video(db.Model):
 #   __tablename__ = "videos"
@@ -282,37 +325,6 @@ class TaggedFriend(db.Model):
 
 
 
-# class NotificationType(db.Model):
-#   __tablename__ = "notification_types"
-
-#   id = db.Column(db.Integer, primary_key = True)
-#   type = db.Column(db.String(255), nullable = False)
-
-#   def to_dict(self):
-#     return {
-#       "id": self.id,
-#       "type": self.type,
-#     }
-
-# class Notification(db.Model):
-#   __tablename__ = "notifications"
-
-#   id = db.Column(db.Integer, primary_key = True)
-#   friend_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
-#   user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
-#   type_id = db.Column(db.Integer, db.ForeignKey("notification_types.id"), nullable = False)
-
-#   friend = db.relationship("User", foreign_keys=friend_id)
-#   owner = db.relationship("User", foreign_keys=user_id)
-#   type = db.relationship("NotificationType", foreign_keys=type_id)
-
-#   def to_dict(self):
-#     return {
-#       "id": self.id,
-#       "friend_id": self.friend_id,
-#       "user_id": self.user_id,
-#       "type_id": self.type_id,
-#     }
 
 # class Circle(db.Model):
 #   __tablename__ = "circles"

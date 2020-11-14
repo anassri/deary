@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createPost } from '../store/post';
 import { loadPosts as userPosts } from '../store/user';
 import { loadPosts as friendsPosts } from '../store/post';
+import LoadingPost from './LoadingPost';
 
 const useStyle = makeStyles({
     icon:{
@@ -71,8 +72,9 @@ export default function CreatePost(){
     const [openDropdown, setOpenDropdown] = useState(false);
     const [locations, setLocations] = useState([]);
     const [photoPreview, setPhotoPreview] = useState(null);
-    const [selectedFriends, setSelectedFriends] = useState([]);
     const [sync, setSync] = useState(false);
+    const [selectedFriends, setSelectedFriends] = useState([]);
+    const [loading, setLoading] = useState(false);
     
     const [eventType, setEventType] = useState("");
     const [selectedLocation, setSelectedLocation] = useState("");
@@ -148,6 +150,18 @@ export default function CreatePost(){
             })()}
     }, [searchTerm])
 
+    useEffect(()=>{
+        const timeout = setTimeout(() => {
+            setSync(false);
+            setLoading(false);
+            dispatch(userPosts(userId))
+            dispatch(friendsPosts(userId))
+        }, 3000);
+        return () => {
+            clearTimeout(timeout)
+        }
+    }, [sync])
+
     let timeout=null;
     const handleSearchTerm = (e) =>{
         let input = e.target.value
@@ -158,7 +172,21 @@ export default function CreatePost(){
             setSearchTerm(input);
         }, 1000)
     }
+    const clearForm = () => {
+        setEventType("");
+        setSelectedFriendsIds([]);
+        setSelectedFriends([]);
+        setSelectedLocation("");
+        setLocations([]);
+        setOpenDropdown(false);
+        setLocationField(false);
+        setPhotoPreview(null);
+        setPhoto(null);
+        setFriendsField(false);
+    }
     const handlePost = () => {
+        setLoading(true);
+
         const data = new FormData();
         const date = new Date();
         if (photo) data.append("photo", photo);
@@ -170,8 +198,9 @@ export default function CreatePost(){
         data.append("user_id", userId);
         data.append("created_at", `${date}`);
         setClicked(false);
-        dispatch(createPost(data));
         setSync(true);
+        dispatch(createPost(data));
+        clearForm();
 
     }
     const handleLocationClear = () =>{
@@ -190,199 +219,204 @@ export default function CreatePost(){
         setSearchFriends(e.target.value);
     }
     return (
-        <div className="create-post-container">
-            <div className="expand-create-button-container" onClick={() => clicked ? setClicked(false) : setClicked(true)}>
-                <div className="create-button-icon">
-                    <AddIcon className={classes.icon}/>
+        <>
+            <div className="create-post-container">
+                <div className="expand-create-button-container" onClick={() => clicked ? setClicked(false) : setClicked(true)}>
+                    <div className="create-button-icon">
+                        <AddIcon className={classes.icon}/>
+                    </div>
+                    <div className="create-button-label">
+                        <p>Share a moment from your life.</p>
+                    </div>
                 </div>
-                <div className="create-button-label">
-                    <p>Share a moment from your life.</p>
-                </div>
-            </div>
-            {clicked
-            ?   <div className="create-post-body-container">
-                    <div className="divider"/>
-                    {eventType 
-                    ?   <div className="event-body-container">
-                            <div className="back-button-container">
-                                <IconButton
-                                    className={classes.iconButtons}
-                                    style={{margin: '10px 10px'}}
-                                    onClick={() => setEventType("") }>
-                                    <KeyboardBackspaceIcon />
-                                </IconButton>
-                            </div>
-                            <div className="chosen-icon-container">
-                                <div className="green-icon">
-                                    {greenEventsIcons[eventType]}
+                {clicked
+                ?   <div className="create-post-body-container">
+                        <div className="divider"/>
+                        {eventType 
+                        ?   <div className="event-body-container">
+                                <div className="back-button-container">
+                                    <IconButton
+                                        className={classes.iconButtons}
+                                        style={{margin: '10px 10px'}}
+                                        onClick={() => setEventType("") }>
+                                        <KeyboardBackspaceIcon />
+                                    </IconButton>
                                 </div>
-                                <p className="green-icon-label" style={{fontWeight: 'bold'}}>
-                                    {eventType.toUpperCase()}
-                                </p>
-                            </div>
-                            <div className="tags-container">
-                                {selectedFriends.length
-                                    ? selectedFriends.map((friend) => <div className="friend-text-container">
-                                        <p className="friend-text">with <span style={{ fontWeight: 'bold' }}>{friend} </span></p>
-                                        <IconButton
-                                            style={{ color: '#666' }}
-                                            size="small"
-                                            className="icon-button"
-                                            onClick={() => selectedFriends.length === 1 
-                                                ? handleFriendClear()
-                                                : setSelectedFriends([...selectedFriends.slice(0, selectedFriends.length-1)])
-                                            }>
-                                            <CloseIcon fontSize="inherit" />
-                                        </IconButton>
+                                <div className="chosen-icon-container">
+                                    <div className="green-icon">
+                                        {greenEventsIcons[eventType]}
                                     </div>
-                                    )
+                                    <p className="green-icon-label" style={{fontWeight: 'bold'}}>
+                                        {eventType.toUpperCase()}
+                                    </p>
+                                </div>
+                                <div className="tags-container">
+                                    {selectedFriends.length
+                                        ? selectedFriends.map((friend) => <div className="friend-text-container">
+                                            <p className="friend-text">with <span style={{ fontWeight: 'bold' }}>{friend} </span></p>
+                                            <IconButton
+                                                style={{ color: '#666' }}
+                                                size="small"
+                                                className="icon-button"
+                                                onClick={() => selectedFriends.length === 1 
+                                                    ? handleFriendClear()
+                                                    : setSelectedFriends([...selectedFriends.slice(0, selectedFriends.length-1)])
+                                                }>
+                                                <CloseIcon fontSize="inherit" />
+                                            </IconButton>
+                                        </div>
+                                        )
+                                        : null}
+                                    {selectedLocation
+                                    ?   <div className="location-text-container">
+                                            <p className="location-text">in <span style={{fontWeight: 'bold'}}>{selectedLocation}</span></p>
+                                            <IconButton
+                                                style={{color: '#666'}}
+                                                size="small"
+                                                className="icon-button"
+                                                onClick={handleLocationClear}>
+                                                <CloseIcon fontSize="inherit"/>
+                                            </IconButton>
+                                        </div>
                                     : null}
-                                {selectedLocation
-                                ?   <div className="location-text-container">
-                                        <p className="location-text">in <span style={{fontWeight: 'bold'}}>{selectedLocation}</span></p>
-                                        <IconButton
-                                            style={{color: '#666'}}
-                                            size="small"
-                                            className="icon-button"
-                                            onClick={handleLocationClear}>
-                                            <CloseIcon fontSize="inherit"/>
-                                        </IconButton>
+                                    
+                                </div>
+                                <div className="description-input-container">
+                                    <form className="form-container">
+                                        <textarea 
+                                            type="text"
+                                            placeholder="Write a description..."
+                                            className="description-text-field" 
+                                            onChange={e => setDescription(e.target.value)}/>
+                                        <Button
+                                            variant="contained"
+                                            className={`${classes.button} post-button`}
+                                            disableElevation
+                                            onClick={handlePost}
+                                        >Post</Button>
+                                    </form>
+                                </div>
+                                {photoPreview
+                                ?   <div className="photo-preview-container"> 
+                                        <div className="close-button-container">
+                                            <IconButton 
+                                                className={classes.closeButton}
+                                                onClick={() => { setPhoto(null); setPhotoPreview(null);}}>
+                                                <CloseIcon />
+                                            </IconButton>
+                                        </div>
+                                        <img
+                                            src={photoPreview}
+                                            alt="uploaded photo"
+                                            className="uploaded-photo"
+                                        />
                                     </div>
                                 : null}
-                                
                             </div>
-                            <div className="description-input-container">
-                                <form className="form-container">
-                                    <textarea 
-                                        type="text"
-                                        placeholder="Write a description..."
-                                        className="description-text-field" 
-                                        onChange={e => setDescription(e.target.value)}/>
-                                    <Button
-                                        variant="contained"
-                                        className={`${classes.button} post-button`}
-                                        disableElevation
-                                        onClick={handlePost}
-                                    >Post</Button>
-                                </form>
-                            </div>
-                            {photoPreview
-                            ?   <div className="photo-preview-container"> 
-                                    <div className="close-button-container">
-                                        <IconButton 
-                                            className={classes.closeButton}
-                                            onClick={() => { setPhoto(null); setPhotoPreview(null);}}>
-                                            <CloseIcon />
-                                        </IconButton>
-                                    </div>
-                                    <img
-                                        src={photoPreview}
-                                        alt="uploaded photo"
-                                        className="uploaded-photo"
-                                    />
-                                </div>
-                            : null}
-                        </div>
-                    :   <div className="events-buttons-container">
-                            {Object.entries(eventsIcons).map(([key,value]) => 
-                                <Button key={key} onClick={()=>setEventType(key)} className={classes.evenButtons}>
-                                    <div className="icon-container">
-                                        <div className="icon">
-                                            {value}
+                        :   <div className="events-buttons-container">
+                                {Object.entries(eventsIcons).map(([key,value]) => 
+                                    <Button key={key} onClick={()=>setEventType(key)} className={classes.evenButtons}>
+                                        <div className="icon-container">
+                                            <div className="icon">
+                                                {value}
+                                            </div>
+                                            <p className="icon-label">
+                                                {key.charAt(0).toUpperCase() + key.slice(1)}
+                                            </p>
                                         </div>
-                                        <p className="icon-label">
-                                            {key.charAt(0).toUpperCase() + key.slice(1)}
-                                        </p>
-                                    </div>
-                                </Button>
-                            )}
-                        </div>
-                    }
-                    
-                    {eventType 
-                    ?   <>
-                            <div className="divider" />
-                            <div className="add-more-buttons-container">
-                                <input
-                                    accept="image/png, image/jpeg"
-                                    id="upload-photo"
-                                    type="file"
-                                    style={{ display: 'none' }}
-                                    onChange={handlePhoto}
-                                />
-                                <IconButton 
-                                    className={classes.iconButtons}
-                                    type="file"
-                                    onClick={handlePhotoButton}
-                                    >
-                                    <ImageIcon />
-                                </IconButton>
-                                <IconButton 
-                                    className={classes.iconButtons}
-                                    onClick={() => friendsField ? setFriendsField(false) : setFriendsField(true)}
-                                    >
-                                    <PersonAddIcon />
-                                </IconButton>
-                                {friendsField 
-                                    ? <div className="friend-container" >
-                                        <InputBase
-                                            placeholder="Friend..."
-                                            onChange={handleFriendTerm}
-                                            className="friend-field-input"
-                                            inputProps={{ 'aria-label': 'naked' }}
-                                        />
-                                        {openFriendsDropdown
-                                            ?   <div className="friend-dropdown-container">
-                                                {friends.map(friend => <Button key={friend.id} onClick={() => {
-                                                    setSelectedFriends([...selectedFriends, friend.firstName + " " + friend.lastName]);
-                                                    setSelectedFriendsIds([...selectedFriendsIds, friend.id]);
-                                                    setFriendsField(false);
-                                                    }}>
-                                                            {friend.firstName + " " + friend.lastName}
-                                                        </Button>)}
+                                    </Button>
+                                )}
+                            </div>
+                        }
+                        
+                        {eventType 
+                        ?   <>
+                                <div className="divider" />
+                                <div className="add-more-buttons-container">
+                                    <input
+                                        accept="image/png, image/jpeg"
+                                        id="upload-photo"
+                                        type="file"
+                                        style={{ display: 'none' }}
+                                        onChange={handlePhoto}
+                                    />
+                                    <IconButton 
+                                        className={classes.iconButtons}
+                                        type="file"
+                                        onClick={handlePhotoButton}
+                                        >
+                                        <ImageIcon />
+                                    </IconButton>
+                                    <IconButton 
+                                        className={classes.iconButtons}
+                                        onClick={() => friendsField ? setFriendsField(false) : setFriendsField(true)}
+                                        >
+                                        <PersonAddIcon />
+                                    </IconButton>
+                                    {friendsField 
+                                        ? <div className="friend-container" >
+                                            <InputBase
+                                                placeholder="Friend..."
+                                                onChange={handleFriendTerm}
+                                                className="friend-field-input"
+                                                inputProps={{ 'aria-label': 'naked' }}
+                                            />
+                                            {openFriendsDropdown
+                                                ?   <div className="friend-dropdown-container">
+                                                    {friends.map(friend => <Button key={friend.id} onClick={() => {
+                                                        setSelectedFriends([...selectedFriends, friend.firstName + " " + friend.lastName]);
+                                                        setSelectedFriendsIds([...selectedFriendsIds, friend.id]);
+                                                        setFriendsField(false);
+                                                        }}>
+                                                                {friend.firstName + " " + friend.lastName}
+                                                            </Button>)}
+                                                    </div>
+                                                : null}
+                                        </div>
+                                    : null}
+                                    <IconButton 
+                                        className={classes.iconButtons}
+                                        onClick={() => locationField ? setLocationField(false) : setLocationField(true)}
+                                        >
+                                        <LocationOnIcon />
+                                    </IconButton>
+                                    {locationField && !selectedLocation
+                                    ?   <div className="search-location-container">
+                                            <InputBase
+                                                placeholder="Search location..."
+                                                onChange={handleSearchTerm}
+                                                className="search-field-input"
+                                                inputProps={{ 'aria-label': 'naked'}} 
+                                                    />
+                                            {openDropdown
+                                            ?   <div className="search-dropdown-container">
+                                                    {locations.length
+                                                        ? locations.map(location => <Button 
+                                                                    key={location.id} 
+                                                                    onClick={() => setSelectedLocation(location.address.country_code === "us"
+                                                                                                        ? location.address.name + ", " + location.address.state + " USA"
+                                                                                                        : location.address.name + ", " + location.address.country)}>
+                                                        {location.address.country_code === "us"
+                                                        ? location.address.name + ", " + location.address.state + " USA" 
+                                                        : location.address.name + ", " + location.address.country
+                                                        }
+                                                        </Button>) 
+
+                                                    : null}
                                                 </div>
                                             : null}
-                                    </div>
-                                : null}
-                                <IconButton 
-                                    className={classes.iconButtons}
-                                    onClick={() => locationField ? setLocationField(false) : setLocationField(true)}
-                                    >
-                                    <LocationOnIcon />
-                                </IconButton>
-                                {locationField && !selectedLocation
-                                ?   <div className="search-location-container">
-                                        <InputBase
-                                            placeholder="Search location..."
-                                            onChange={handleSearchTerm}
-                                            className="search-field-input"
-                                            inputProps={{ 'aria-label': 'naked'}} 
-                                                />
-                                        {openDropdown
-                                        ?   <div className="search-dropdown-container">
-                                                {locations.length
-                                                    ? locations.map(location => <Button 
-                                                                key={location.id} 
-                                                                onClick={() => setSelectedLocation(location.address.country_code === "us"
-                                                                                                    ? location.address.name + ", " + location.address.state + " USA"
-                                                                                                    : location.address.name + ", " + location.address.country)}>
-                                                    {location.address.country_code === "us"
-                                                    ? location.address.name + ", " + location.address.state + " USA" 
-                                                    : location.address.name + ", " + location.address.country
-                                                    }
-                                                    </Button>) 
-
-                                                : null}
-                                            </div>
-                                        : null}
-                                    </div>
-                                : null}
-                            </div>
-                        </>
-                    : null}
-                </div>
+                                        </div>
+                                    : null}
+                                </div>
+                            </>
+                        : null}
+                    </div>
+                : null}
+            </div>
+            {loading
+            ? <LoadingPost />
             : null}
-        </div>
+        </>
 
     );
 }

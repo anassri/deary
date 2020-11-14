@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from app import app, db
-from app.models import User, Relationship, PostType, Post, Photo, Location, TaggedFriend, Comment,Like
+from app.models import User, Relationship, Notification, NotificationType, PostType, Post, Photo, Location, TaggedFriend, Comment, Like
 from datetime import datetime
 
 from random import randrange
@@ -35,7 +35,7 @@ with app.app_context():
   relationship3 = Relationship(user_id=7,friend_id=5, status=2, friends_since=random_date())
   relationship4= Relationship(user_id=7,friend_id=6, status=2, friends_since=random_date())
   relationship5 = Relationship(user_id=7,friend_id=3, status=2, friends_since=random_date())
-  relationship6 = Relationship(user_id=7,friend_id=4, status=3, friends_since=random_date())
+  relationship6 = Relationship(user_id=4,friend_id=7, status=4, friends_since=random_date())
   
   post_types1 = PostType(type="work")
   post_types2 = PostType(type="education")
@@ -47,6 +47,28 @@ with app.app_context():
   post_types8 = PostType(type="health")
   post_types9 = PostType(type="achievements")
   post_types10 = PostType(type="rememberance")
+  
+  # commented
+  # liked
+  # added you as a friend
+  # 
+  notification_type1 = NotificationType(type="comment")
+  notification_type2 = NotificationType(type="like")
+  notification_type3 = NotificationType(type="add")
+
+  notification1 = Notification(friend_id=4,user_id=7,type_id=3, status=2, created_at=random_date())
+  notification2 = Notification(friend_id=1,user_id=7,type_id=1, status=2, post_id=1, created_at=random_date())
+  notification3 = Notification(friend_id=2,user_id=7,type_id=1, status=2, post_id=1, created_at=random_date())
+  notification4 = Notification(friend_id=3,user_id=7,type_id=1, status=2, post_id=1, created_at=random_date())
+  notification5 = Notification(friend_id=5,user_id=7,type_id=2, status=2, post_id=8, created_at=random_date())
+  notification6 = Notification(friend_id=6,user_id=7,type_id=2, status=2, post_id=8, created_at=random_date())
+  notification7 = Notification(friend_id=1,user_id=7,type_id=2, status=2, post_id=15, created_at=random_date())
+  notification8 = Notification(friend_id=2,user_id=7,type_id=2, status=2, post_id=15, created_at=random_date())
+  notification9 = Notification(friend_id=3,user_id=7,type_id=2, status=2, post_id=15, created_at=random_date())
+  notification10 = Notification(friend_id=5,user_id=7,type_id=2, status=1, post_id=15, created_at=random_date())
+  notification11 = Notification(friend_id=6,user_id=7,type_id=2, status=1, post_id=15, created_at=random_date())
+  notification12 = Notification(friend_id=1,user_id=7,type_id=2, status=1, post_id=8, created_at=random_date())
+  notification13 = Notification(friend_id=2,user_id=7,type_id=1, status=1, post_id=8, created_at=random_date())
   
   post1 = Post(user_id=7, description="some weird description, bla bla bla", type_id=1, location_id=2, created_at=random_date())
   post2 = Post(user_id=1, description="some weird description, bla bla bla", type_id=2, location_id=1, created_at=random_date())
@@ -118,9 +140,9 @@ with app.app_context():
   like8= Like(post_id=4, user_id=1)
   like9= Like(post_id=2, user_id=2)
   like10= Like(post_id=6, user_id=3)
-  like11= Like(post_id=6, user_id=4)
-  like12= Like(post_id=6, user_id=5)
-  like13= Like(post_id=6, user_id=6)
+  like11= Like(post_id=8, user_id=4)
+  like12= Like(post_id=8, user_id=5)
+  like13= Like(post_id=8, user_id=6)
   like14= Like(post_id=6, user_id=7)
   like15= Like(post_id=9, user_id=1)
   like16= Like(post_id=9, user_id=2)
@@ -151,12 +173,12 @@ with app.app_context():
   like41= Like(post_id=13, user_id=6)
   like42= Like(post_id=13, user_id=7)
   like43= Like(post_id=13, user_id=1)
-  like44= Like(post_id=14, user_id=2)
-  like45= Like(post_id=14, user_id=3)
-  like46= Like(post_id=14, user_id=4)
-  like47= Like(post_id=14, user_id=5)
-  like48= Like(post_id=14, user_id=6)
-  like49= Like(post_id=14, user_id=7)
+  like44= Like(post_id=15, user_id=2)
+  like45= Like(post_id=15, user_id=3)
+  like46= Like(post_id=15, user_id=4)
+  like47= Like(post_id=15, user_id=5)
+  like48= Like(post_id=15, user_id=6)
+  like49= Like(post_id=15, user_id=7)
   like50= Like(post_id=3, user_id=1)
   like51= Like(post_id=3, user_id=2)
   like52= Like(post_id=3, user_id=3)
@@ -297,6 +319,20 @@ with app.app_context():
   db.session.add(photo9)
   db.session.add(photo10)
 
+  db.session.add(notification1)
+  db.session.add(notification2)
+  db.session.add(notification3)
+  db.session.add(notification4)
+  db.session.add(notification5)
+  db.session.add(notification6)
+  db.session.add(notification7)
+  db.session.add(notification8)
+  db.session.add(notification9)
+  db.session.add(notification10)
+  db.session.add(notification11)
+  db.session.add(notification12)
+  db.session.add(notification13)
+
   db.session.add(location1)
   db.session.add(location2)
   db.session.add(location3)
@@ -309,5 +345,9 @@ with app.app_context():
   db.session.add(tagged_friend4)
   db.session.add(tagged_friend5)
   db.session.add(tagged_friend6)
+
+  db.session.add(notification_type1)
+  db.session.add(notification_type2)
+  db.session.add(notification_type3)
 
   db.session.commit()

@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app.models import User, Relationship, Post, Comment, Like, db
+from app.models import User, Relationship, Post, Notification, NotificationType, Comment, Like, db
 from flask_jwt_extended import jwt_required, create_access_token
 from app.aws_s3 import upload_file_to_s3
 from sqlalchemy.orm import joinedload
@@ -154,3 +154,18 @@ def find_all_posts(id):
         
 
     return jsonify(data=data)
+
+  # Grab all notifications belonging to the user
+@user_routes.route('/<int:id>/notifications', methods=['GET'])
+@jwt_required
+def find_all_notifications(id):
+  notifications = Notification.query \
+                              .filter(Notification.user_id==id) \
+                              .options(joinedload(Notification.friend)) \
+                              .options(joinedload(Notification.type)) \
+                              .all()
+  data = [{**notification.to_dict(),
+          "friend": notification.friend.to_dict(),
+          "type": notification.type.to_dict()} for notification in notifications]
+
+  return jsonify(data=data)

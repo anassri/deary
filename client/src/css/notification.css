@@ -1,0 +1,37 @@
+.notification-body-container{
+    margin: 10px 20px;
+    display: flex;
+    align-items: center;
+}
+.read-indicator-container{
+    width: 35px;
+}
+.unread-circle{
+    background-color: #33DD87;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-right: 20px;
+    cursor: pointer;
+}
+.unread-circle:active{ 
+    transform: scale(0.9); 
+}
+.unread-circle.active{
+    display: none;
+}
+.notification-middle-container{
+    font-size: 19px;
+    margin-left: 10px;
+}
+.notification-text-container{
+    display: flex;
+    align-items: center;
+}
+.notification-text{
+    margin-left: 5px;
+    font-size: 16px;
+}
+.notification-right-container{
+    justify-self: flex-end;
+}

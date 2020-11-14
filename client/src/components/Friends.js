@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import {ProfilePic, Fullname} from './PostCard';
+import React from 'react';
+import Fullname from './Fullname';
+import ProfilePic from './ProfilePic';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core/';
 import '../css/friends.css';
@@ -20,6 +21,9 @@ export default function Friends({friends}){
     const classes = useStyles();
     return (
         <>
+            <div className="friends-container-title">
+                Friends
+            </div>
             {friends.map(friend => 
                 <Button key={friend.id} className={classes.button} >
                     <div className="button-content-container">

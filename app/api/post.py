@@ -43,7 +43,6 @@ def find_all_posts(id):
                                 .joinedload(Post.tagged_friends) \
                                 .joinedload(TaggedFriend.users)) \
                         .all()
-    
     posts = Post.query \
                 .filter(Post.user_id==id) \
                 .options(joinedload(Post.comments) \
@@ -137,6 +136,29 @@ def create_post():
     created_at = request.form['created_at']
 
     post_type_rec = PostType.query.filter(PostType.type==post_type).first()
+    
+    # post = Post(user_id=user_id,
+    #             description=description,
+    #             type_id=post_type_rec.id,
+    #             created_at=created_at)
+    # if "location" in request.form:
+    #     post.location = Location(location=request.form['location'])
+
+    # if "photo" in request.files:
+    #     photo = request.files['photo']
+    #     photo_link = upload_file_to_s3(photo)
+    #     post.photos = Photo(path=photo_link)
+
+    # if "tagged_friends" in request.form:
+    #     tagged_friends = request.form['tagged_friends']
+    #     friends = tagged_friends.split(',')
+    #     friends_list = []
+    #     for friend in friends:
+    #         print(friend)
+    #         friend_id = int(friend)
+    #         tagged_friend = TaggedFriend(user_id=friend_id)
+    #         friends_list.append(tagged_friend)
+    #     post.tagged_friends = friends_list
 
     if "location" in request.form:
         location = request.form['location']
@@ -174,6 +196,15 @@ def create_post():
             db.session.add(tagged_friend) 
             db.session.commit()
             
+    # db.session.add(post) 
     db.session.commit()
 
     return "done"
+
+@post_routes.route('/<int:id>/delete', methods=['DELETE'])
+@jwt_required
+def delete_post(id):
+    post = Post.query.get(id)
+    db.session.delete(post)
+    db.session.commit()
+    return jsonify({"msg": 'Post deleted'})

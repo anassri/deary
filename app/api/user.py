@@ -186,10 +186,10 @@ def find_all_notifications(id):
                               .options(joinedload(Notification.type)) \
                               .all()
   # print(notifications[0].friend)
-  # print(notifications[0].friend.relationships)
+  print(notifications[12].friend.relationships)
   data = [{**notification.to_dict(),
           "friend": notification.friend.to_dict(),
-          "relationship": notification.friend.relationships[0].to_dict() or None,
+          # "relationship": notification.friend.relationships[0].to_dict() or None,
           "type": notification.type.to_dict()} for notification in notifications]
 
   return jsonify(data=data)
@@ -216,8 +216,8 @@ def create_notifications(id):
   else: 
     postId = incoming["postId"]
   notification = Notification(post_id=postId,
-                              user_id=id,
-                              friend_id=incoming["friendId"],
+                              user_id=incoming["friendId"],
+                              friend_id=id,
                               type_id=incoming["typeId"],
                               created_at=incoming["createdAt"],
                               status=1)

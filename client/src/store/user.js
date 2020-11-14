@@ -3,6 +3,7 @@ import setInLocalStorage from '../utils/setInLocalStorage';
 
 const SET_NOTIFICATIONS = 'user/SET_NOTIFICATIONS';
 const SET_FRIENDS = 'user/SET_FRIENDS';
+const SET_POST = 'user/SET_POST';
 const SET_POSTS = 'user/SET_POSTS';
 const SET_USERS = 'user/SET_USERS';
 const SET_USER = 'user/SET_USER';
@@ -19,6 +20,10 @@ const setFriends = friends => ({
 const setPosts = posts => ({
     type: SET_POSTS,
     posts,
+});
+const setPost = post => ({
+    type: SET_POST,
+    post,
 });
 const setUsers = users => ({
     type: SET_USERS,
@@ -37,57 +42,64 @@ const getToken = () => {
     if (!token) return;
     return token;
 }
-export const loadNotifications = (id) => async dispatch => {
+
+const postFetch = async (data, path, getState) =>{
     const token = getToken();
     try {
-        const res = await fetch(`/api/users/${id}/notifications`, {
+        const res = await fetch(path, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+                'X-CSRFToken': getState().csrf.token
+            },
+            body: JSON.stringify(data)
+        });
+    } catch (e) {
+        console.error(e);
+        return e;
+    }
+}
+const getFetch = async (path, dispatch, func) => {
+    const token = getToken();
+    try {
+        const res = await fetch(path, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         });
-        if(res.ok){
-            const {data} = await res.json();
-            dispatch(setNotifications(data));
+        if (res.ok) {
+            const { data } = await res.json();
+            dispatch(func(data));
         }
     } catch (e) {
         console.error(e);
         return e;
     }
 }
+export const loadNotifications = (id) => async dispatch => {
+    getFetch(`/api/users/${id}/notifications`, dispatch, setNotifications)
+}
+
+export const updateNotification = (data, id) => async (dispatch, getState) => {
+    postFetch(data, `/api/users/${id}/notifications`, getState )
+}
+
+export const createNotification = (data, id) => async (dispatch, getState) => {
+    postFetch(data, `/api/users/${id}/notifications/create`, getState )
+}
+
 export const loadFriends = (id) => async dispatch => {
-    const token = getToken();
-    try {
-        const res = await fetch(`/api/friends/${id}`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        });
-        if(res.ok){
-            const {data} = await res.json();
-            dispatch(setFriends(data));
-        }
-    } catch (e) {
-        console.error(e);
-        return e;
-    }
+    getFetch(`/api/friends/${id}`, dispatch, setFriends)
 }
 export const loadPosts = (id) => async dispatch => {
-    const token = getToken();
-    try {
-        const res = await fetch(`/api/users/${id}/profile`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        });
-        if(res.ok){
-            const {data} = await res.json();
-            dispatch(setPosts(data));
-        }
-    } catch (e) {
-        console.error(e);
-        return e;
-    }
+    getFetch(`/api/users/${id}/profile`, dispatch, setPosts)
 }
+export const loadPost = (id) => async dispatch => {
+    getFetch(`/api/users/post/${id}`, dispatch, setPost)
+}
+
 export const loadUsers = (id, value) => async dispatch => {
     const token = getToken();
-
     try {
         const res = await fetch(`/api/users/${id}q=${value}`, {
             method: 'GET',
@@ -104,36 +116,37 @@ export const loadUsers = (id, value) => async dispatch => {
     }
 }
 export const loadUser = (id) => async dispatch => {
-    const token = getToken();
-    try {
-        const res = await fetch(`/api/users/${id}`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        });
-        if(res.ok){
-            const {data} = await res.json();
-            dispatch(setUser(data));
-        }
-    } catch (e) {
-        console.error(e);
-        return e;
-    }
+    getFetch(`/api/users/${id}`, dispatch, setUser)
 }
-export const addFriend = (id, userId) => async (dispatch, getState) => {
+export const addFriend = (id, data) => async (dispatch, getState) => {
     const token = getToken();
-    console.log(id, userId);
     try {
         const res = await fetch(`/api/users/${id}/add`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 
                         Authorization: `Bearer ${token}`,
                         'X-CSRFToken': getState().csrf.token },
-            body: JSON.stringify(userId)
+            body: JSON.stringify(data)
         });
         if (res.ok) {
             const { friends } = await res.json();
             dispatch(setRelationships(friends));
         }
+    } catch (e) {
+        console.error(e);
+        return e;
+    }
+}
+export const updateFriend = (data, id) => async (dispatch, getState) => {
+    const token = getToken();
+    try {
+        const res = await fetch(`/api/users/${id}/update`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 
+                        Authorization: `Bearer ${token}`,
+                        'X-CSRFToken': getState().csrf.token },
+            body: JSON.stringify(data)
+        });
     } catch (e) {
         console.error(e);
         return e;
@@ -196,6 +209,8 @@ export default function userReducer(state = { user: {}, relationships: [], posts
             return { ...state, friends: action.friends };
         case SET_POSTS:
             return { ...state, posts: action.posts };
+        case SET_POST:
+            return { ...state, post: action.post };
         case SET_USERS:
             return { ...state, users: action.users };
         case SET_USER:

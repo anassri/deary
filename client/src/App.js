@@ -10,8 +10,12 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import theme from './theme';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ConfirmProvider } from 'material-ui-confirm';
-import { logout } from './store/auth';
+import { logout, loadUser } from './store/auth';
 import { restoreCSRF } from './store/csrf';
+import Post from './components/Post';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import './css/home.css';
+
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
     return <Route {...rest} render={(props) => (
@@ -29,21 +33,23 @@ function App() {
     const handleLogout = () =>{
         dispatch(logout());
     }
-
     useEffect(()=>{
         dispatch(restoreCSRF());
-    }, [])
-    // if (csrf) setLoading(true)
+        dispatch(loadUser());
 
+    }, []);
     useEffect(()=>{
-        if(csrf !== undefined)
-            setLoading(false);
+        let timeout;
+        if(csrf){
+            timeout = setTimeout(()=>{
+                setLoading(false);
+            }, 500)
+        }
+        return () => clearTimeout(timeout);
     }, [csrf])
-    // if (!csrf) return <div>Loading...</div>
-
   return (
         <>
-          {loading && <div>Loading...</div>}
+          {loading && <div className="loading-screen"><CircularProgress /></div>}
           {!loading &&
                 <BrowserRouter>
                     <ThemeProvider theme={theme}>
@@ -55,11 +61,13 @@ function App() {
                                 <PrivateRoute path="/search/:idq=:value" needLogin={needLogin} component={Search} />
                                 <PrivateRoute path="/profile/:id" needLogin={needLogin} component={Profile} />
                                 <PrivateRoute path="/notifications/:id" needLogin={needLogin} component={Notifications} />
+                                <PrivateRoute path="/post/:id" needLogin={needLogin} component={Post} />
                                 <PrivateRoute path="/" needLogin={needLogin} component={Home} />
                             </Switch>
                         </ConfirmProvider>
                     </ThemeProvider>
-                </BrowserRouter>}
+                </BrowserRouter>
+        }   
         </>
     );
 }

@@ -94,11 +94,10 @@ def find_users(id, value):
 @jwt_required
 def add_friend(id):
   incoming = request.get_json()
-  date = datetime.now()
   relationship = Relationship(user_id=id,
-                              friend_id=incoming,
+                              friend_id=incoming["friendId"],
                               status=1,
-                              friends_since=date)
+                              friends_since=incoming["createdAt"])
   db.session.add(relationship)
   db.session.commit()
   relationships= Relationship.query \
@@ -107,6 +106,27 @@ def add_friend(id):
   friends=[relationship.to_dict() for relationship in relationships]
 
   return jsonify(friends=friends)
+
+# Update a relationship
+@user_routes.route('/<int:id>/update', methods=['POST'])
+@jwt_required
+def update_friend(id):
+  incoming = request.get_json()
+    
+  friendship= Relationship.query \
+                              .filter(and_(Relationship.user_id==id, 
+                                      Relationship.friend_id==incoming["friendId"])) \
+                              .first()
+  
+  if not incoming["status"]:
+    db.session.delete(friendship)
+  else:
+    friendship.status = incoming["status"]
+    friendship.friends_since = incoming["since"]
+
+  db.session.commit()
+
+  return {'msg': 'relationship updated successfully'}
 
 # Grab all posts belonging to the user
 @user_routes.route('/<int:id>/profile', methods=['GET'])
@@ -161,11 +181,91 @@ def find_all_posts(id):
 def find_all_notifications(id):
   notifications = Notification.query \
                               .filter(Notification.user_id==id) \
-                              .options(joinedload(Notification.friend)) \
+                              .options(joinedload(Notification.friend) \
+                                        .joinedload(User.relationships)) \
                               .options(joinedload(Notification.type)) \
                               .all()
+  # print(notifications[0].friend)
+  # print(notifications[0].friend.relationships)
   data = [{**notification.to_dict(),
           "friend": notification.friend.to_dict(),
+          "relationship": notification.friend.relationships[0].to_dict() or None,
           "type": notification.type.to_dict()} for notification in notifications]
 
   return jsonify(data=data)
+# Update notification status
+@user_routes.route('/<int:id>/notifications', methods=['POST'])
+@jwt_required
+def update_notifications(id):
+  incoming = request.get_json()
+  notification_id = incoming["notificationId"]
+  notification = Notification.query.get(notification_id)
+
+  notification.status = incoming["status"]
+  db.session.commit()
+
+  return {'msg': 'notification updated successfully'}
+
+# Create notification 
+@user_routes.route('/<int:id>/notifications/create', methods=['POST'])
+@jwt_required
+def create_notifications(id):
+  incoming = request.get_json()
+  if "postId" not in incoming:
+    postId = None
+  else: 
+    postId = incoming["postId"]
+  notification = Notification(post_id=postId,
+                              user_id=id,
+                              friend_id=incoming["friendId"],
+                              type_id=incoming["typeId"],
+                              created_at=incoming["createdAt"],
+                              status=1)
+
+  db.session.add(notification)
+  db.session.commit()
+
+  return {'msg': 'notification created successfully'}
+
+
+  # get one post
+@user_routes.route('/post/<int:id>', methods=['GET'])
+@jwt_required
+def get_one_post(id):
+  post = Post.query \
+             .options(joinedload(Post.comments) \
+                      .joinedload(Comment.owner)) \
+             .options(joinedload(Post.type)) \
+             .options(joinedload(Post.likes)) \
+             .options(joinedload(Post.photos)) \
+             .options(joinedload(Post.tagged_friends)) \
+             .get(id)
+  
+  comments = []
+  likes = []
+  tagged_people = []
+  for comment in post.comments:
+      comm = {**comment.to_dict(), "owner": comment.owner.to_dict()}
+      comments.append(comm)
+  for like in post.likes:
+      lik = like.to_dict()
+      likes.append(lik)
+  for friend in post.tagged_friends:
+      person = friend.users.to_dict()
+      tagged_people.append(person)
+  location = None
+  photo = None
+  if post.location:
+      location = post.location.to_dict()
+  if post.photos:
+      photo = post.photos[0].to_dict()
+  data = {**post.to_dict(),
+      "comments": comments,
+      "type": post.type.to_dict(),
+      "owner": post.owner.to_dict(),
+      "likes": likes,
+      "photo": photo,
+      "location": location,
+      "taggedFriends": tagged_people}
+  print(data)
+  return data

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {useHistory} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {loadUser, login} from '../store/auth';
+import {login} from '../store/auth';
 import '../css/auth.css'
 import logo from '../images/logo.svg';
 export default function LoginPage () {
@@ -11,10 +11,6 @@ export default function LoginPage () {
     const userId = useSelector(state => state.auth.user.id);
 
     const history = useHistory();
-
-    useEffect(()=>{
-        dispatch(loadUser());
-    },[]);
 
     if (userId) history.push('/');
     

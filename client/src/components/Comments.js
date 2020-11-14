@@ -23,6 +23,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SendIcon from '@material-ui/icons/Send';
 import { useConfirm } from 'material-ui-confirm';
 import Fullname from './Fullname';
+import { createNotification } from '../store/user';
 
 const useStyle = makeStyles({
     paper: {
@@ -65,8 +66,15 @@ export default function Comments({ owner, post }) {
             "created_at" : new Date(),
             owner,
         }
+        const notification = {
+            "friendId": post.owner.id,
+            "typeId": 1,
+            "postId": post.id,
+            "createdAt": new Date(),
+        }
+        dispatch(createNotification(notification, id))
         setComment('')
-        setComments([commentObj, ...comments])
+        setComments([...comments, commentObj])
         dispatch(addComment(data, id))
     }
     return (
@@ -118,7 +126,9 @@ const DisplayComments = ({ comment, postId }) => {
     const posted = formatDistanceToNowStrict(new Date(comment.created_at), { addSuffix: true });
 
     useEffect(()=>{
-        dispatch(loadPosts(user.id))
+        if(postSyncNeeded){
+            dispatch(loadPosts(user.id))
+        }
     }, [postSyncNeeded])
 
     const handleClick = (event) => {

@@ -22,7 +22,8 @@ class User(db.Model):
   country = db.Column(db.String(50))
 
   # circles = db.relationship('Circle', back_populates='users', secondary='circle_lists')
-  relationships = db.relationship("Relationship", primaryjoin='User.id == Relationship.friend_id', foreign_keys="Relationship.friend_id", backref='user_friends')
+  friendships= db.relationship("Relationship", primaryjoin='User.id == Relationship.friend_id', foreign_keys="Relationship.friend_id", back_populates="friends")
+  relationships = db.relationship("Relationship", primaryjoin='User.id == Relationship.user_id', foreign_keys="Relationship.user_id", back_populates="person")
   posts = db.relationship("Post", primaryjoin='User.id == Post.user_id', foreign_keys="Post.user_id", backref='user_posts')
   # friends = db.relationship("User", foreign_keys="Relationship.friend_id", secondary="Relationship")
 
@@ -68,8 +69,8 @@ class Relationship(db.Model):
   status = db.Column(db.Integer, nullable=False)
   friends_since = db.Column(db.DateTime, nullable=False)
 
-  person = db.relationship("User", backref = 'user', foreign_keys=user_id)
-  friends = db.relationship("User", backref = 'friends', foreign_keys=friend_id)
+  person = db.relationship("User", back_populates="relationships", foreign_keys=user_id)
+  friends = db.relationship("User", back_populates="friendships", foreign_keys=friend_id)
 
   # status
   # 1: pending friend request

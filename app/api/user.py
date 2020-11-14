@@ -113,16 +113,21 @@ def add_friend(id):
 def update_friend(id):
   incoming = request.get_json()
     
-  friendship= Relationship.query \
-                              .filter(and_(Relationship.user_id==id, 
-                                      Relationship.friend_id==incoming["friendId"])) \
+  relationship = Relationship.query \
+                              .filter(and_(Relationship.user_id==incoming["friendId"], 
+                                      Relationship.friend_id==id)) \
                               .first()
   
   if not incoming["status"]:
-    db.session.delete(friendship)
+    db.session.delete(relationship)
   else:
-    friendship.status = incoming["status"]
-    friendship.friends_since = incoming["since"]
+    relationship.status = incoming["status"]
+    relationship.friends_since = incoming["since"]
+    friendship = Relationship(user_id=id,
+                              friend_id=incoming["friendId"],
+                              status=2,
+                              friends_since=incoming["since"])
+    db.session.add(friendship)
 
   db.session.commit()
 
@@ -181,15 +186,15 @@ def find_all_posts(id):
 def find_all_notifications(id):
   notifications = Notification.query \
                               .filter(Notification.user_id==id) \
-                              .options(joinedload(Notification.friend) \
-                                        .joinedload(User.relationships)) \
-                              .options(joinedload(Notification.type)) \
                               .all()
+                              # .options(joinedload(Notification.friend)) \
+                              # .options(joinedload(Notification.type)) \
   # print(notifications[0].friend)
-  print(notifications[12].friend.relationships)
+  print(notifications[10].friend.relationships)
   data = [{**notification.to_dict(),
           "friend": notification.friend.to_dict(),
-          # "relationship": notification.friend.relationships[0].to_dict() or None,
+          "relationship": notification.friend.relationships[0].to_dict() if len(notification.friend.relationships) else None,
+          "friendship": notification.friend.friendships[0].to_dict() if len(notification.friend.friendships) else None,
           "type": notification.type.to_dict()} for notification in notifications]
 
   return jsonify(data=data)

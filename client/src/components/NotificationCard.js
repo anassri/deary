@@ -72,6 +72,10 @@ export default function NotificationCard({notification}) {
 
         dispatch(updateNotification(data, notification.userId));
     };
+    let relationStatus = null;
+    let friendStatus = null;
+    if (notification.relationship) relationStatus = notification.relationship.status;
+    if (notification.friendship) friendStatus = notification.friendship.status;
 
     return (
         <>
@@ -89,19 +93,19 @@ export default function NotificationCard({notification}) {
                     </div>
                 </div>
                 <div className="notification-right-container">
-                    {notification.typeId === 3 && notification.relationship.status === 2
+                    {notification.typeId === 3 && friendStatus === 2
                     ?   <AddNotificationButton 
                             text={"Friend request accepted"}
                             disabled={true}
                             btnClass={null} />
 
-                    : notification.typeId === 3 && !notification.relationship.status
+                    : notification.typeId === 3 && !friendStatus && !relationStatus
                     ?   <AddNotificationButton 
                             text={"Friend request Denied"}
                             disabled={true}
                             btnClass={null} />
                 
-                    : notification.typeId === 3 && !buttonClicked
+                    : notification.typeId === 3 && relationStatus == 1 && !buttonClicked
                     ?   <div className="buttons-container" >
                             <AddNotificationButton 
                                 text={"Accept"}

@@ -27,10 +27,9 @@ function CheckRelationShip({userId, relationships}){
     let status = 0;
 
     const handleAddPerson = () =>{
-        const date = new Date()
         const data = {
             "friendId": userId,
-            "createdAt": date,
+            "createdAt": new Date(),
         }
         const notification = {
             "friendId": userId,

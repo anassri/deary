@@ -9,6 +9,8 @@ import PersonIcon from '@material-ui/icons/Person';
 import { useHistory, useParams } from 'react-router';
 import { addFriend, createNotification } from '../store/user';
 import FriendAcceptBtns from './FriendAcceptBtns';
+import Friends from './Friends';
+import LeftNavigation from './LeftNavigation';
 const useStyles = makeStyles((theme) => ({
     button: {
         background: "linear-gradient(43deg, rgba(51,221,135,1) 0%, rgba(68,226,141,1) 72%, rgba(100,237,152,1) 87%, rgba(156,255,172,1) 100%)",
@@ -125,18 +127,28 @@ export default function Search(){
     const users = useSelector(state => state.user.users);
     const owner = useSelector(state => state.auth.user);
     const relationships = useSelector(state => state.user.relationships)
-    
+    const friends = useSelector(state => state.user.friends)
+
     if(!users) return null
     if(!relationships) return null
 
     return (
         <>
             <Navigation />
-            <div className="content-container">
-                <Paper className="paper-container">{users.map(user =>
-                    <SearchEntry key={user.id} owner={owner} user={user} relationships={relationships} />
-                )}</Paper>
+            <div className="home-body-container">
+                <div className="left-nav-container">
+                    <LeftNavigation user={owner} />
+                </div>
+                <div className="body-container">
+                    <Paper className="paper-container">{users.map(user =>
+                        <SearchEntry key={user.id} owner={owner} user={user} relationships={relationships} />
+                    )}</Paper>
+                </div>
+                <div className="right-nav-container">
+                    <Friends friends={friends} />
+                </div>
             </div>
+            
         </>
     )
 }

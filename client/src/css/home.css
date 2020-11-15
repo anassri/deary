@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-left: 50px;
+    /* margin-left: 50px; */
 }
 .home-body-container{
     display: flex;

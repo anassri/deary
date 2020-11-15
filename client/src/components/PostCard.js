@@ -92,13 +92,15 @@ export default function PostCard({user, post}){
             setLikeCount((previousCount) => previousCount-1)
             await dispatch(deleteLike(post.id, user.id));
         } else {
-            const notification = {
+            if(user.id !== post.owner.id) {
+                const notification = {
                 "friendId": post.owner.id,
                 "typeId": 2,
                 "postId": post.id,
                 "createdAt": new Date(),
+                }
+                dispatch(createNotification(notification, user.id))
             }
-            dispatch(createNotification(notification, user.id))
             setLikeClicked(true);
             setLikeCount((previousCount) => previousCount+1)
             await dispatch(addLike(post.id, user.id));

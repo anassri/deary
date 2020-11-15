@@ -74,7 +74,8 @@ export function Profile({ user, authUser, posts, friends}){
         setState(user.state);
         setCountry(user.country);
         setOwner(authUser.id === parseInt(id));
-    }, [])
+    }, [id])
+
     useEffect(()=>{
         if (profilePictureFile) savePhoto();
     }, [profilePictureFile]);
@@ -327,6 +328,7 @@ export function Profile({ user, authUser, posts, friends}){
                                 variant="contained" 
                                 className={`add-button`} 
                                 disabled
+                                disableElevation
                                 >Pending Friend Request</Button>
                                 </div>
                             : !owner && !isFriends
@@ -335,6 +337,7 @@ export function Profile({ user, authUser, posts, friends}){
                                 variant="contained" 
                                 className={`${classes.button} add-button`} 
                                 disableElevation 
+                                color="primary"
                                 startIcon={<PersonAddIcon />}
                                 onClick={handleAddPerson}
                                 >Add Friend</Button>

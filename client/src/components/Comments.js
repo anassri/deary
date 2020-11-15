@@ -66,13 +66,15 @@ export default function Comments({ owner, post }) {
             "created_at" : new Date(),
             owner,
         }
-        const notification = {
-            "friendId": post.owner.id,
-            "typeId": 1,
-            "postId": post.id,
-            "createdAt": new Date(),
-        }
-        dispatch(createNotification(notification, id))
+        if (id !== post.owner.id) {
+            const notification = {
+                "friendId": post.owner.id,
+                "typeId": 1,
+                "postId": post.id,
+                "createdAt": new Date(),
+            }
+            dispatch(createNotification(notification, id))
+        };
         setComment('')
         setComments([...comments, commentObj])
         dispatch(addComment(data, id))

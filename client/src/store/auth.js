@@ -2,6 +2,7 @@ import setInLocalStorage from '../utils/setInLocalStorage';
 import getFromLocalStorage from '../utils/getFromLocalStorage';
 import deleteFromLocalStorage from '../utils/deleteFromLocalStorage';
 
+const SET_ERRORS = 'auth/SET_ERRORS';
 const SET_USER = 'auth/SET_USER';
 const SET_TOKEN = 'auth/SET_TOKEN';
 const REMOVE_AUTH = 'auth/REMOVE_AUTH';
@@ -9,6 +10,10 @@ const REMOVE_AUTH = 'auth/REMOVE_AUTH';
 const setUser = user => ({
     type: SET_USER,
     user,
+});
+const setErrors = error => ({
+    type: SET_ERRORS,
+    error,
 });
 
 const setToken = token => ({
@@ -25,7 +30,11 @@ const handleReceivedData = async (res, dispatch) => {
         dispatch(setToken(token));
         dispatch(setUser(user));
         return { status: 200 };
-    } else return { status: 400, message: (await res.json()).msg };
+    } else {
+        const {msg} = await res.json()
+        dispatch(setErrors(msg));
+        return { status: 400, message: msg }
+    };
 }
 
 export const login = (email, password) => async (dispatch, getState) => {
@@ -37,6 +46,7 @@ export const login = (email, password) => async (dispatch, getState) => {
             body: JSON.stringify({ email, password }),   
         });
         handleReceivedData(res, dispatch, getState);
+        
     } catch (e) {
         console.error(e);
         return e;
@@ -101,14 +111,16 @@ export const signup = (firstName, lastName, email, password) => async (dispatch,
     }
 };
 
-export default function authReducer(state = {user:{}}, action) {
+export default function authReducer(state = { user:{} }, action) {
     switch (action.type) {
+        case SET_ERRORS:
+            return { ...state, errors: action.error };
         case SET_USER:
             return { ...state, user: action.user };
         case SET_TOKEN:
             return { ...state, token: action.token };
         case REMOVE_AUTH:
-            return {};
+            return { user: {} };
         default:
             return state;
     }

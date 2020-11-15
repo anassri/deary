@@ -17,24 +17,26 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function Friends({friends}){
+export default function Friends({ friends, userId}){
     const classes = useStyles();
     return (
         <>
             <div className="friends-container-title">
                 Friends
             </div>
-            {friends.map(friend => 
-                <Button key={friend.id} className={classes.button} >
-                    <div className="button-content-container">
-                        <div className="profile-picture-friends">
-                            <ProfilePic user={friend} size={30}/>
+            {friends.map(friend => {
+                if(userId !== friend.id)
+                    return <Button key={friend.id} className={classes.button} >
+                        <div className="button-content-container">
+                            <div className="profile-picture-friends">
+                                <ProfilePic user={friend} size={30}/>
+                            </div>
+                            <div className="fullname friends">
+                                <Fullname user={friend}/>
+                            </div>
                         </div>
-                        <div className="fullname friends">
-                            <Fullname user={friend}/>
-                        </div>
-                    </div>
-                </Button>
+                    </Button>
+            }
             )}
         </>
     )

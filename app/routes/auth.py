@@ -12,12 +12,12 @@ def login():
         return jsonify({"msg": "Missing JSON in request"}), 400
         
     incoming = request.get_json()
-    user = User.query.filter_by(email=incoming['email']).one()
+    user = User.query.filter_by(email=incoming['email']).first()
     if user and user.check_password(incoming['password']):
         token = create_access_token(identity=user.email)
         return jsonify(user=user.to_dict(), token=token)
     else:
-        return {"message": "Incorrect email or password"}, 400
+        return jsonify(msg="Incorrect email or password"), 400
 
 @auth_routes.route('/signup', methods=['POST'])
 def signup():
@@ -34,7 +34,7 @@ def signup():
     try:
         db.session.commit()
     except IntegrityError:
-        return jsonify(message='A user with this email already exists'), 409
+        return jsonify(msg='A user with this email already exists'), 409
 
     token = create_access_token(identity=user.email)
     return jsonify(user=user.to_dict(), token=token)

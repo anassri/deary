@@ -18,10 +18,14 @@ import Navigation from './Navigation';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import { formatDistanceToNowStrict } from 'date-fns';
 import EditIcon from '@material-ui/icons/Edit';
-import { loadUser, editUser, editCover, editPhoto, loadPosts } from '../store/user';
+import { loadUser, editUser, editCover, editPhoto, loadUserPosts, loadFriends } from '../store/user';
 import { useParams } from 'react-router';
 import PostCard from './PostCard';
 import CreatePost from './CreatePost';
+import LeftNavigation from './LeftNavigation';
+import Friends from './Friends';
+import { addFriend, createNotification } from '../store/user';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
@@ -44,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export function Profile({ user, authUser, posts}){
+export function Profile({ user, authUser, posts, friends}){
     const [open, setOpen] = useState(false);
     const [fullName, setFullName] = useState('');
     const [bio, setBio] = useState('');
@@ -132,171 +136,228 @@ export function Profile({ user, authUser, posts}){
         setOpen(false);
 
     }
+    let isFriends = false;
+    let pendingRequest = false;
+    user.relationships.map(relationship =>{
+        if (user.id === relationship.user_id || user.id === relationship.friend_id){
+            if (relationship.status === 2)
+                isFriends = true;
+            else if (relationship.status === 1)
+                pendingRequest = true;
+            
+        }
+
+    })
+    const handleAddPerson = () => {
+        const data = {
+            "since": new Date(),
+            "friendId": user.id,
+            "actionUserId": authUser.id,
+        }
+        const notification = {
+            "friendId": user.id,
+            "typeId": 3,
+            "createdAt": new Date(),
+        }
+        dispatch(createNotification(notification, authUser.id))
+        dispatch(addFriend(authUser.id, data));
+    }
     return (
         <>
             <Navigation />
-            <div className="loading-container">
-                {isLoading ? <CircularProgress /> : null}
-            </div>
-            <div className="profile-container">
-                <div className="top-picture-section-container">
-                    <div className="cover-picture-container">
-                        <img
-                            src={user.coverPicture ? user.coverPicture : coverPicturePlaceholder}
-                            alt="cover placeholder"
-                            className="cover-picture"
-                            height="350"
-                            width="940"
-                        />
-                    </div>
-                    <div className="profile-picture-container">
-                        <img
-                            src={user.profilePicture ? user.profilePicture : profilePicturePlaceholder}
-                            alt="profile placeholder"
-                            className="profile-picture"
-                            height="175"
-                            width="175"
-                        />
-                        {owner 
-                        ? 
-                        <div className="upload-profile-picture-button-container">
-                            <input 
-                                accept="image/png, image/jpeg" 
-                                id="upload-profile-photo" 
-                                type="file" 
-                                style={{ display: 'none' }} 
-                                onChange={handleProfilePicture}
-                                />
-                            <IconButton
-                                variant="contained"
-                                color="default"
-                                className={classes.iconButton}
-                                type="file"
-                                onClick={handlePhotoButton}
-                            >
-                                <PhotoCameraIcon />
-                            </IconButton>
+            <div className="home-body-container profile">
+                <div className="left-nav-container profile">
+                    <LeftNavigation user={user} />
+                </div>
+                <div className="loading-container">
+                    {isLoading ? <CircularProgress /> : null}
+                </div>
+                <div className="profile-container">
+                    <div className="top-picture-section-container">
+                        <div className="cover-picture-container">
+                            <img
+                                src={user.coverPicture ? user.coverPicture : coverPicturePlaceholder}
+                                alt="cover placeholder"
+                                className="cover-picture"
+                                height="350"
+                                width="940"
+                            />
                         </div>
-                        : null
-                        }
-                    </div>
-                    {owner
-                    ?   <div className="upload-cover-photo-container">
-                            <input 
-                                accept="image/png, image/jpeg" 
-                                id="upload-cover-photo" 
-                                type="file" 
-                                style={{ display: 'none' }}
-                                onChange={handleCoverPicture}
-                                />
-                            <Button
-                                variant="contained"
-                                color="default"
-                                type="file"
-                                className={classes.iconButton}
-                                startIcon={<PhotoCameraIcon />}
-                                onClick={handleCoverButton}
-                            >
-                                Upload cover photo
-                            </Button>
-                        </div>
-                    : null
-                    }
-                    <div className="basic-info-container">
-                        <div className="name-header">
-                            <h1>{firstname+' '+lastname}</h1>
-                        </div>
-                        <div className="bio-container">
-                            {user.bio}
-                        </div>
-                        {user.city
-                            ? <div className="location-container">
-                                <LocationOnIcon className="info-icon"/>
-                                <p>{user.city}{user.state ? ', ' + user.state : null}{user.country ? ', ' + user.country : null}</p>
-                            </div>
-                            : null}
-                        <div className="joined-container">
-                            <DateRangeIcon className="info-icon"/>
-                            <p>{joinedAt}</p>
-                        </div>
-                        {owner
-                            ?
-                            <div className="edit-profile-container">
-                                <Button
+                        <div className="profile-picture-container">
+                            <img
+                                src={user.profilePicture ? user.profilePicture : profilePicturePlaceholder}
+                                alt="profile placeholder"
+                                className="profile-picture"
+                                height="175"
+                                width="175"
+                            />
+                            {owner 
+                            ? 
+                            <div className="upload-profile-picture-button-container">
+                                <input 
+                                    accept="image/png, image/jpeg" 
+                                    id="upload-profile-photo" 
+                                    type="file" 
+                                    style={{ display: 'none' }} 
+                                    onChange={handleProfilePicture}
+                                    />
+                                <IconButton
                                     variant="contained"
                                     color="default"
                                     className={classes.iconButton}
-                                    startIcon={<EditIcon />}
-                                    onClick={handleEditOpen}
+                                    type="file"
+                                    onClick={handlePhotoButton}
                                 >
-                                    Edit Profile
-                            </Button>
-                            <Dialog
-                                open={open}
-                                onClose={handleEditClose}
-                                aria-labelledby="alert-dialog-title"
-                                aria-describedby="alert-dialog-description"
-                                maxWidth='md'
-                                fullWidth
-                            >
-                            <DialogTitle id="alert-dialog-title">{"Edit Profile"}</DialogTitle>
-                                <form className="dialog-content-container" onSubmit={handleSaveProfile}>
-                                    <DialogTitle id="alert-dialog-title">{"Full Name"}</DialogTitle>
-                                    <TextField 
-                                        id="fullname-input" 
-                                        value={fullName}
-                                        className={classes.input}
-                                        onChange={e => setFullName(e.target.value)}/>
-                                    <DialogTitle id="alert-dialog-title">{"Bio"}</DialogTitle>
-                                    <TextField 
-                                        id="bio-input" 
-                                        multiline 
-                                        rows={1}
-                                        value={bio}
-                                        fullWidth
-                                        className={classes.input}
-                                        onChange={e => setBio(e.target.value)} />
-                                    <DialogTitle id="alert-dialog-title">{"Location"}</DialogTitle>
-                                    <TextField 
-                                        id="city-input" 
-                                        value={city}
-                                        className={classes.input} 
-                                        onChange={e => setCity(e.target.value)} />
-
-                                    <TextField 
-                                        id="state-input" 
-                                        value={state}
-                                        className={classes.input}
-                                        onChange={e => setState(e.target.value)} />
-
-                                    <TextField 
-                                        id="country-input" 
-                                        value={country}
-                                        className={classes.input}
-                                        onChange={e => setCountry(e.target.value)} />
-
-                                    <DialogActions>
-                                        <Button 
-                                            variant="contained" 
-                                            type="submit"
-                                            color="default" 
-                                            className={classes.iconButton}
-                                            style={{margin: 15}}
-                                            >Save</Button>
-                                    </DialogActions>
-                                </form>
-                            </Dialog>
+                                    <PhotoCameraIcon />
+                                </IconButton>
+                            </div>
+                            : null
+                            }
                         </div>
+                        {owner
+                        ?   <div className="upload-cover-photo-container">
+                                <input 
+                                    accept="image/png, image/jpeg" 
+                                    id="upload-cover-photo" 
+                                    type="file" 
+                                    style={{ display: 'none' }}
+                                    onChange={handleCoverPicture}
+                                    />
+                                <Button
+                                    variant="contained"
+                                    color="default"
+                                    type="file"
+                                    className={classes.iconButton}
+                                    startIcon={<PhotoCameraIcon />}
+                                    onClick={handleCoverButton}
+                                >
+                                    Upload cover photo
+                                </Button>
+                            </div>
                         : null
                         }
+                        <div className="basic-info-container">
+                            <div className="name-header">
+                                <h1>{firstname+' '+lastname}</h1>
+                            </div>
+                            <div className="bio-container">
+                                {user.bio}
+                            </div>
+                            {user.city
+                                ? <div className="location-container">
+                                    <LocationOnIcon className="info-icon"/>
+                                    <p>{user.city}{user.state ? ', ' + user.state : null}{user.country ? ', ' + user.country : null}</p>
+                                </div>
+                                : null}
+                            <div className="joined-container">
+                                <DateRangeIcon className="info-icon"/>
+                                <p>{joinedAt}</p>
+                            </div>
+                            {owner
+                                ?
+                                <div className="edit-profile-container">
+                                    <Button
+                                        variant="contained"
+                                        color="default"
+                                        className={classes.iconButton}
+                                        startIcon={<EditIcon />}
+                                        onClick={handleEditOpen}
+                                    >
+                                        Edit Profile
+                                </Button>
+                                <Dialog
+                                    open={open}
+                                    onClose={handleEditClose}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                    maxWidth='md'
+                                    fullWidth
+                                >
+                                <DialogTitle id="alert-dialog-title">{"Edit Profile"}</DialogTitle>
+                                    <form className="dialog-content-container" onSubmit={handleSaveProfile}>
+                                        <DialogTitle id="alert-dialog-title">{"Full Name"}</DialogTitle>
+                                        <TextField 
+                                            id="fullname-input" 
+                                            value={fullName}
+                                            className={classes.input}
+                                            onChange={e => setFullName(e.target.value)}/>
+                                        <DialogTitle id="alert-dialog-title">{"Bio"}</DialogTitle>
+                                        <TextField 
+                                            id="bio-input" 
+                                            multiline 
+                                            rows={1}
+                                            value={bio}
+                                            fullWidth
+                                            className={classes.input}
+                                            onChange={e => setBio(e.target.value)} />
+                                        <DialogTitle id="alert-dialog-title">{"Location"}</DialogTitle>
+                                        <TextField 
+                                            id="city-input" 
+                                            value={city}
+                                            className={classes.input} 
+                                            onChange={e => setCity(e.target.value)} />
+
+                                        <TextField 
+                                            id="state-input" 
+                                            value={state}
+                                            className={classes.input}
+                                            onChange={e => setState(e.target.value)} />
+
+                                        <TextField 
+                                            id="country-input" 
+                                            value={country}
+                                            className={classes.input}
+                                            onChange={e => setCountry(e.target.value)} />
+
+                                        <DialogActions>
+                                            <Button 
+                                                variant="contained" 
+                                                type="submit"
+                                                color="default" 
+                                                className={classes.iconButton}
+                                                style={{margin: 15}}
+                                                >Save</Button>
+                                        </DialogActions>
+                                    </form>
+                                </Dialog>
+                            </div>
+                            : pendingRequest && !owner && !isFriends
+                            ? <div className="edit-profile-container">
+                                <Button 
+                                variant="contained" 
+                                className={`add-button`} 
+                                disabled
+                                >Pending Friend Request</Button>
+                                </div>
+                            : !owner && !isFriends
+                            ? <div className="edit-profile-container">
+                                <Button 
+                                variant="contained" 
+                                className={`${classes.button} add-button`} 
+                                disableElevation 
+                                startIcon={<PersonAddIcon />}
+                                onClick={handleAddPerson}
+                                >Add Friend</Button>
+                                </div>
+                            : null
+                            }
+                        </div>
+                    </div>
+                        <div className="profile-body-container">
+                        {owner
+                        ?    <div className="create-post-profile">
+                                <CreatePost />
+                            </div>
+                        :   null
+                        }
+                        {isFriends || owner
+                            ? posts.map((post, i)=> <PostCard key={i} post={post} user={user}/>)
+                            : null}
                     </div>
                 </div>
-                    <div className="profile-body-container">
-                        <div className="create-post-profile">
-                            <CreatePost />
-                        </div>
-                    {posts.map(post=><PostCard key={post.id} post={post} user={user}/>)}
-                    </div>
+                <div className="right-nav-container">
+                    <Friends friends={friends} />
+                </div>
             </div>
         </>
     )
@@ -306,6 +367,7 @@ export default function ProfileContainer(){
     const user = useSelector(state => state.user);
     const authUser = useSelector( state => state.auth.user)
     const posts = useSelector(state => state.user.posts);
+    const friends = useSelector(state => state.user.friends)
 
     const sortedPosts = posts.slice().sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
 
@@ -314,8 +376,9 @@ export default function ProfileContainer(){
 
     useEffect(() => {
         dispatch(loadUser(id))
-        dispatch(loadPosts(id));
+        dispatch(loadUserPosts(id));
+        dispatch(loadFriends(authUser.id))        
     }, [id])
     if(!user.id) return null;
-    return <Profile user={user} authUser={authUser} posts={sortedPosts}/>
+    return <Profile user={user} authUser={authUser} posts={sortedPosts} friends={friends}/>
 }

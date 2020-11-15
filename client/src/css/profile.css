@@ -1,9 +1,9 @@
+
 .profile-container{
     background-color: #EFEFEF;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 72px;
 }
 .top-picture-section-container{
     display: flex;

@@ -21,10 +21,14 @@ class User(db.Model):
   state = db.Column(db.String(50))
   country = db.Column(db.String(50))
 
-  # circles = db.relationship('Circle', back_populates='users', secondary='circle_lists')
-  relationships = db.relationship("Relationship", primaryjoin='User.id == Relationship.friend_id', foreign_keys="Relationship.friend_id", backref='user_friends')
+  # relationships= db.relationship("Relationship", primaryjoin='or_(User.id == Relationship.friend_id, User.id == Relationship.user_id)')
+  friendships= db.relationship("Relationship", primaryjoin='User.id == Relationship.friend_id', foreign_keys="Relationship.friend_id", back_populates="friends")
+  relationships = db.relationship("Relationship", primaryjoin='User.id == Relationship.user_id', foreign_keys="Relationship.user_id", back_populates="person")
   posts = db.relationship("Post", primaryjoin='User.id == Post.user_id', foreign_keys="Post.user_id", backref='user_posts')
-  # friends = db.relationship("User", foreign_keys="Relationship.friend_id", secondary="Relationship")
+  comments = db.relationship("Comment", foreign_keys="Comment.user_id", back_populates="owner")
+  likes = db.relationship("Like", foreign_keys="Like.user_id", back_populates="owner")
+  # friends = db.relationship("User", foreign_keys="Relationship.friend_id", secondary="Relationship", back_populates="friends")
+  # friends = db.relationship("User", foreign_keys="Relationship.friend_id", secondary="relationships")
 
   def to_dict(self):
     return {
@@ -65,16 +69,17 @@ class Relationship(db.Model):
   id = db.Column(db.Integer, primary_key = True)
   user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
   friend_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+  action_user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
   status = db.Column(db.Integer, nullable=False)
   friends_since = db.Column(db.DateTime, nullable=False)
 
-  person = db.relationship("User", backref = 'user', foreign_keys=user_id)
-  friends = db.relationship("User", backref = 'friends', foreign_keys=friend_id)
-
+  person = db.relationship("User", back_populates="relationships", foreign_keys=user_id)
+  friends = db.relationship("User", back_populates="friendships", foreign_keys=friend_id)
   # status
   # 1: pending friend request
   # 2: friends, accepted
-  # 3: blocked
+  # 3: Declined,
+  # 4: blocked
 
   def to_dict(self):
     return {
@@ -82,7 +87,8 @@ class Relationship(db.Model):
       "user_id": self.user_id,
       "friend_id": self.friend_id,
       "status": self.status,
-      "friends_since ": self.friends_since,
+      "friends_since": self.friends_since,
+      "action_user_id": self.action_user_id,
     }
 
 class PostType(db.Model):
@@ -110,10 +116,11 @@ class Post(db.Model):
   owner = db.relationship("User", foreign_keys=user_id)
   location = db.relationship("Location", foreign_keys=location_id, back_populates='posts')
   type = db.relationship("PostType", foreign_keys=type_id)
-  comments = db.relationship("Comment", primaryjoin='Post.id == Comment.post_id', foreign_keys="Comment.post_id", backref='post_comments', cascade="all, delete")
-  likes = db.relationship("Like", primaryjoin='Post.id == Like.post_id', foreign_keys="Like.post_id", backref='post_likes', cascade="all, delete")
-  photos = db.relationship("Photo", primaryjoin='Post.id == Photo.post_id', foreign_keys="Photo.post_id", back_populates="posts", cascade="all, delete")
-  tagged_friends = db.relationship("TaggedFriend", primaryjoin='Post.id == TaggedFriend.post_id', foreign_keys="TaggedFriend.post_id", back_populates="posts", cascade="all, delete")
+  comments = db.relationship("Comment", foreign_keys="Comment.post_id", back_populates="post", cascade="all, delete")
+  likes = db.relationship("Like", foreign_keys="Like.post_id", back_populates="post", cascade="all, delete")
+  photos = db.relationship("Photo", foreign_keys="Photo.post_id", back_populates="posts", cascade="all, delete")
+  tagged_friends = db.relationship("TaggedFriend", foreign_keys="TaggedFriend.post_id", back_populates="posts", cascade="all, delete")
+  notifications = db.relationship("Notification", foreign_keys="Notification.post_id", back_populates="posts", cascade="all, delete")
   # tagged_friends = db.relationship("TaggedFriend", lazy="joing", primaryjoin='Post.id == TaggedFriend.post_id', foreign_keys="TaggedFriend.post_id", back_populates="posts", cascade="all, delete")
 
   def to_dict(self):
@@ -134,8 +141,8 @@ class Comment(db.Model):
   user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
   created_at = db.Column(db.DateTime, nullable = False)
 
-  post = db.relationship("Post", foreign_keys=post_id)
-  owner = db.relationship("User", foreign_keys=user_id)
+  post = db.relationship("Post", foreign_keys=post_id, back_populates="comments")
+  owner = db.relationship("User", foreign_keys=user_id, back_populates="comments")
 
   def to_dict(self):
     return {
@@ -153,8 +160,8 @@ class Like(db.Model):
   post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable = False)
   user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
 
-  post = db.relationship("Post", foreign_keys=post_id)
-  owner = db.relationship("User", foreign_keys=user_id)
+  post = db.relationship("Post", foreign_keys=post_id, back_populates="likes")
+  owner = db.relationship("User", foreign_keys=user_id, back_populates="likes")
 
   def to_dict(self):
     return {

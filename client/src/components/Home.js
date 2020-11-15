@@ -33,11 +33,11 @@ export default function Home(){
                 <div className="body-container">
                     <div className="posts-body-container">
                     <CreatePost />
-                        {sortedPosts.map(post => <PostCard key={post.id} user={user} post={post}/>)}
+                        {sortedPosts.map((post, i) => <PostCard key={i} user={user} post={post}/>)}
                     </div>
                 </div>
                 <div className="right-nav-container">
-                    <Friends friends={friends}/>
+                    <Friends friends={friends} />
                 </div>
             </div>
         </>

@@ -13,7 +13,11 @@ user_routes = Blueprint('users', __name__, url_prefix='/api/users')
 @jwt_required
 def find_user(id):
   user = User.query.get(id)
-  data=user.to_dict()
+  data_1 = [relationship.to_dict() for relationship in user.relationships]
+  data_2 = [relationship.to_dict() for relationship in user.friendships]
+  data={**user.to_dict(),
+        "relationships":[*data_1, *data_2]
+        }
   return jsonify(data=data)
 
 # Update information for one user
@@ -77,11 +81,11 @@ def find_users(id, value):
               .filter(or_(User.last_name.ilike('%'+value+'%'), \
                           User.first_name.ilike('%'+value+'%'))) \
               .filter(not_(User.id==id)) \
-              .options(joinedload(User.relationships)) \
               .all()
 
   relationships = Relationship.query \
-                              .filter(Relationship.user_id==id) \
+                              .filter(or_(Relationship.user_id==id, 
+                                          Relationship.friend_id==id)) \
                               .all()
   data=[user.to_dict() for user in users]
   friends=[relationship.to_dict() for relationship in relationships]
@@ -97,7 +101,8 @@ def add_friend(id):
   relationship = Relationship(user_id=id,
                               friend_id=incoming["friendId"],
                               status=1,
-                              friends_since=incoming["createdAt"])
+                              friends_since=incoming["since"],
+                              action_user_id=incoming["actionUserId"])
   db.session.add(relationship)
   db.session.commit()
   relationships= Relationship.query \
@@ -113,16 +118,13 @@ def add_friend(id):
 def update_friend(id):
   incoming = request.get_json()
     
-  friendship= Relationship.query \
-                              .filter(and_(Relationship.user_id==id, 
-                                      Relationship.friend_id==incoming["friendId"])) \
+  relationship = Relationship.query \
+                              .filter(and_(Relationship.user_id==incoming["friendId"], \
+                                      Relationship.friend_id==id)) \
                               .first()
-  
-  if not incoming["status"]:
-    db.session.delete(friendship)
-  else:
-    friendship.status = incoming["status"]
-    friendship.friends_since = incoming["since"]
+  relationship.status = incoming["status"]
+  relationship.friends_since = incoming["since"]
+  relationship.action_user_id = incoming["actionUserId"]
 
   db.session.commit()
 
@@ -134,12 +136,6 @@ def update_friend(id):
 def find_all_posts(id):
     posts = Post.query \
                 .filter(Post.user_id==id) \
-                .options(joinedload(Post.comments) \
-                          .joinedload(Comment.owner)) \
-                .options(joinedload(Post.type)) \
-                .options(joinedload(Post.likes)) \
-                .options(joinedload(Post.photos)) \
-                .options(joinedload(Post.tagged_friends)) \
                 .all()
     
     data=[]
@@ -181,18 +177,17 @@ def find_all_posts(id):
 def find_all_notifications(id):
   notifications = Notification.query \
                               .filter(Notification.user_id==id) \
-                              .options(joinedload(Notification.friend) \
-                                        .joinedload(User.relationships)) \
-                              .options(joinedload(Notification.type)) \
+                              .options(joinedload(Notification.owner, User.relationships)) \
+                              .filter(or_(Relationship.user_id==id, Relationship.friend_id==id)) \
                               .all()
-  # print(notifications[0].friend)
-  # print(notifications[0].friend.relationships)
   data = [{**notification.to_dict(),
           "friend": notification.friend.to_dict(),
-          "relationship": notification.friend.relationships[0].to_dict() or None,
+          "relationship": notification.friend.relationships[0].to_dict() if len(notification.friend.relationships) else None,
           "type": notification.type.to_dict()} for notification in notifications]
 
   return jsonify(data=data)
+
+
 # Update notification status
 @user_routes.route('/<int:id>/notifications', methods=['POST'])
 @jwt_required
@@ -216,8 +211,8 @@ def create_notifications(id):
   else: 
     postId = incoming["postId"]
   notification = Notification(post_id=postId,
-                              user_id=id,
-                              friend_id=incoming["friendId"],
+                              user_id=incoming["friendId"],
+                              friend_id=id,
                               type_id=incoming["typeId"],
                               created_at=incoming["createdAt"],
                               status=1)
@@ -233,12 +228,6 @@ def create_notifications(id):
 @jwt_required
 def get_one_post(id):
   post = Post.query \
-             .options(joinedload(Post.comments) \
-                      .joinedload(Comment.owner)) \
-             .options(joinedload(Post.type)) \
-             .options(joinedload(Post.likes)) \
-             .options(joinedload(Post.photos)) \
-             .options(joinedload(Post.tagged_friends)) \
              .get(id)
   
   comments = []
@@ -268,4 +257,4 @@ def get_one_post(id):
       "location": location,
       "taggedFriends": tagged_people}
   print(data)
-  return data
+  return jsonify(data=data) 

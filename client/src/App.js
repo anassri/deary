@@ -30,9 +30,7 @@ function App() {
     const needLogin = useSelector(state => !state.auth.user.id);
     const [loading, setLoading] = useState(true);
     const csrf = useSelector(state => state.csrf.token)
-    const handleLogout = () =>{
-        dispatch(logout());
-    }
+    
     useEffect(()=>{
         dispatch(restoreCSRF());
         dispatch(loadUser());

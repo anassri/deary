@@ -21,7 +21,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { useDispatch, useSelector } from 'react-redux';
 import { createPost } from '../store/post';
-import { loadPosts as userPosts } from '../store/user';
+import { loadUserPosts } from '../store/user';
 import { loadPosts as friendsPosts } from '../store/post';
 import LoadingPost from './LoadingPost';
 
@@ -151,14 +151,16 @@ export default function CreatePost(){
     }, [searchTerm])
 
     useEffect(()=>{
-        const timeout = setTimeout(() => {
-            setSync(false);
-            setLoading(false);
-            dispatch(userPosts(userId))
-            dispatch(friendsPosts(userId))
-        }, 3000);
-        return () => {
-            clearTimeout(timeout)
+        if(sync){
+            const timeout = setTimeout(() => {
+                setSync(false);
+                setLoading(false);
+                dispatch(loadUserPosts(userId))
+                dispatch(friendsPosts(userId))
+            }, 3000);
+            return () => {
+                clearTimeout(timeout)
+            }
         }
     }, [sync])
 

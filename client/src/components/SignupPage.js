@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadUser, signup } from '../store/auth';
 import '../css/auth.css'
+import Alert from '@material-ui/lab/Alert';
 
 export default function SignupPage() {
     const [email, setEmail] = useState('');
@@ -13,8 +14,14 @@ export default function SignupPage() {
 
     const dispatch = useDispatch();
     const userId = useSelector(state => state.auth.user.id);
+    const serverErrors = useSelector(state => state.auth.errors);
 
     const history = useHistory();
+
+    useEffect(() => {
+        if (serverErrors !== undefined)
+            setErrors([serverErrors]);
+    }, [serverErrors])
 
     useEffect(() => {
         dispatch(loadUser());
@@ -22,18 +29,38 @@ export default function SignupPage() {
 
     if (userId) history.push('/');
 
-    const handleClick = async () => {
+    const validateForm = () => {
+        const intErrors = []
         const name = fullname.split(' ')
-        if (!name[1]) return setErrors('Please enter your full name.')
-        const firstName = name[0];
-        const lastName = name.splice(1).join(' ');
-        const res = await dispatch(signup(firstName, lastName, email, password));
-        if (res.status === 200) history.push('/');
+        if (!name[1]) intErrors.push('Please enter your full name.')
+        if (email.length === 0) intErrors.push('Email is required.');
+        if (password.length === 0) intErrors.push('Password is required.');
+        if (confirmPassword.length === 0) intErrors.push('Confirm password is required.');
+        if (intErrors.length === 0) return true;
+        setErrors([...intErrors]);
+        return false;
+    };
+
+    const handleClick = async (e) => {
+        e.preventDefault();
+        const formIsValid = validateForm();
+        if (formIsValid) {
+            const name = fullname.split(' ')
+            const firstName = name[0];
+            const lastName = name.splice(1).join(' ');
+           dispatch(signup(firstName, lastName, email, password));
+        }
     }
     return (
-        <>  
-            <div>
-                {errors ? <p>{errors}</p> : null}
+        <form onSubmit={handleClick}>  
+            <div className="errors">
+                {errors.length
+                    ? <Alert variant="filled" severity='error'>
+                        <ul>
+                            {errors.map((error, i) => <li key={i}>{error}</li>)}
+                        </ul>
+                    </Alert>
+                    : null}
             </div>
             <div>
                 <input
@@ -72,12 +99,12 @@ export default function SignupPage() {
                     placeholder="Confirm Password" />
             </div>
             <div>
-                <button  className="auth-button" onClick={handleClick}>Sign up</button>
+                <button  className="auth-button" onSubmit={handleClick}>Sign up</button>
             </div>
             <div className="login-signup-links-container">
                 <p>Already have an account? </p><a href="/login" className="link-text"> Log in</a>
             </div>
 
-        </>
+        </form >
     )
 } 

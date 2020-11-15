@@ -8,6 +8,7 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PersonIcon from '@material-ui/icons/Person';
 import { useHistory, useParams } from 'react-router';
 import { addFriend, createNotification } from '../store/user';
+import FriendAcceptBtns from './FriendAcceptBtns';
 const useStyles = makeStyles((theme) => ({
     button: {
         background: "linear-gradient(43deg, rgba(51,221,135,1) 0%, rgba(68,226,141,1) 72%, rgba(100,237,152,1) 87%, rgba(156,255,172,1) 100%)",
@@ -18,22 +19,23 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'start',
     }
 }));
-function CheckRelationShip({userId, relationships}){
+function CheckRelationShip({ownerId, friendId, relationships}){
     const classes = useStyles();
     const history = useHistory();
     const {idq} = useParams();
     const dispatch = useDispatch();
     const id = Number.parseInt(idq[0])
     let status = 0;
+    let action_user = 0;
 
     const handleAddPerson = () =>{
-        const date = new Date()
         const data = {
-            "friendId": userId,
-            "createdAt": date,
+            "since": new Date(),
+            "friendId": friendId,
+            "actionUserId": ownerId,
         }
         const notification = {
-            "friendId": userId,
+            "friendId": friendId,
             "typeId": 3,
             "createdAt": new Date(),
         }
@@ -41,36 +43,47 @@ function CheckRelationShip({userId, relationships}){
         dispatch(addFriend(id, data));
     }
     relationships.map(relation => {
-        if (userId === relation.friend_id) {
+        if ((ownerId === relation.user_id && friendId === relation.friend_id) 
+            || (ownerId === relation.friend_id && friendId === relation.user_id)) {
             status = relation.status  
-            }
-        })
-    if (status ===1)
+            action_user = relation.action_user_id
+        }
+    })
+
+    if (status === 1 && action_user !== ownerId)
+        return <FriendAcceptBtns userId={ownerId} friendId={friendId}/>
+
+    else if (status === 1 && action_user === ownerId)
         return <Button 
                     variant="contained" 
                     className={`add-button`} 
                     disabled
-                    >Pending Request</Button>
+                    >Friend Request Sent</Button>
     else if (status === 2)
     return <Button 
                 variant="contained" 
                 className={`${classes.button} add-button`} 
                 disableElevation 
                 startIcon={<PersonIcon />}
-                onClick={()=> history.push(`/profile/${userId}`)}
+                onClick={()=> history.push(`/profile/${friendId}`)}
                 >View Profile</Button>
-    else if (status === 3)
-        return null
-    return <Button 
+    else if (status === 3 && action_user === ownerId)
+        return <Button
+            variant="contained"
+            className={`add-button`}
+            disabled
+        >Friend Request Declined</Button>
+    else {
+        return <Button 
                 variant="contained" 
                 className={`${classes.button} add-button`} 
                 disableElevation 
                 startIcon={<PersonAddIcon />}
                 onClick={handleAddPerson}
                 >Add Friend</Button>
-    
+    }
 }
-function SearchEntry({user, relationships}){
+function SearchEntry({user, relationships, owner}){
     const history = useHistory();
     return (
         <>
@@ -101,7 +114,7 @@ function SearchEntry({user, relationships}){
                         {user.firstName + " " + user.lastName} </p>
                 </div>
                 <div className="add-button-container">
-                    <CheckRelationShip userId={user.id} relationships={relationships}/>
+                    <CheckRelationShip ownerId={owner.id} friendId={user.id} relationships={relationships}/>
                 </div>
             </div>
             <div className="divider"/>
@@ -110,6 +123,7 @@ function SearchEntry({user, relationships}){
 }
 export default function Search(){
     const users = useSelector(state => state.user.users);
+    const owner = useSelector(state => state.auth.user);
     const relationships = useSelector(state => state.user.relationships)
     
     if(!users) return null
@@ -120,7 +134,7 @@ export default function Search(){
             <Navigation />
             <div className="content-container">
                 <Paper className="paper-container">{users.map(user =>
-                    <SearchEntry key={user.id} user={user} relationships={relationships} />
+                    <SearchEntry key={user.id} owner={owner} user={user} relationships={relationships} />
                 )}</Paper>
             </div>
         </>

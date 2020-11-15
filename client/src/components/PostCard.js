@@ -29,7 +29,7 @@ import Comments from './Comments';
 import { addLike, deleteLike, deletePost } from '../store/post';
 import { useDispatch } from 'react-redux';
 import { useConfirm } from 'material-ui-confirm';
-import { createNotification, loadPosts as userPosts } from '../store/user';
+import { createNotification, loadUserPosts } from '../store/user';
 import { loadPosts as friendsPosts } from '../store/post';
 import Fullname from './Fullname';
 import ProfilePic from './ProfilePic';
@@ -81,7 +81,7 @@ export default function PostCard({user, post}){
     useEffect(() => {
         if(sync){
             setSync(false);
-            dispatch(userPosts(user.id))
+            dispatch(loadUserPosts(user.id))
             dispatch(friendsPosts(user.id))
         }
     }, [sync])

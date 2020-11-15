@@ -128,6 +128,7 @@ const DisplayComments = ({ comment, postId }) => {
     useEffect(()=>{
         if(postSyncNeeded){
             dispatch(loadPosts(user.id))
+            setPostSyncNeeded(false);
         }
     }, [postSyncNeeded])
 

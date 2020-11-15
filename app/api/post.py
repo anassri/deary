@@ -18,46 +18,19 @@ token = Config.GEOCODING_TOKEN
 @jwt_required
 def find_all_posts(id):
     relationships = Relationship.query \
-                        .filter(and_(Relationship.user_id==id, Relationship.status==2)) \
-                        .options(joinedload(Relationship.friends) \
-                                .joinedload(User.posts) \
-                                .joinedload(Post.comments) \
-                                .joinedload(Comment.owner)) \
-                        .options(joinedload(Relationship.friends) \
-                                .joinedload(User.posts) \
-                                .joinedload(Post.type)) \
-                        .options(joinedload(Relationship.friends) \
-                                .joinedload(User.posts) \
-                                .joinedload(Post.owner)) \
-                        .options(joinedload(Relationship.friends) \
-                                .joinedload(User.posts) \
-                                .joinedload(Post.likes)) \
-                        .options(joinedload(Relationship.friends) \
-                                .joinedload(User.posts) \
-                                .joinedload(Post.photos)) \
-                        .options(joinedload(Relationship.friends) \
-                                .joinedload(User.posts) \
-                                .joinedload(Post.location)) \
-                        .options(joinedload(Relationship.friends) \
-                                .joinedload(User.posts) \
-                                .joinedload(Post.tagged_friends) \
-                                .joinedload(TaggedFriend.users)) \
+                        .filter(or_(Relationship.user_id==id, Relationship.friend_id==id)) \
+                        .filter(Relationship.status==2) \
                         .all()
-    posts = Post.query \
+    user_posts = Post.query \
                 .filter(Post.user_id==id) \
-                .options(joinedload(Post.comments) \
-                          .joinedload(Comment.owner)) \
-                .options(joinedload(Post.type)) \
-                .options(joinedload(Post.likes)) \
-                .options(joinedload(Post.photos)) \
-                .options(joinedload(Post.tagged_friends)) \
                 .all()
     
-    user_data=[]
-    for post in posts:
+    data=[]
+    def grab_data(post):
         comments = []
         likes = []
         tagged_people = []
+        # photos = []
         for comment in post.comments:
             comm = {**comment.to_dict(), "owner": comment.owner.to_dict()}
             comments.append(comm)
@@ -81,41 +54,19 @@ def find_all_posts(id):
             "photo": photo,
             "location": location,
             "taggedFriends": tagged_people}
-        user_data.append(dic)
+        data.append(dic)
 
-    friends_data=[]
     for relationship in relationships:
         for post in relationship.friends.posts:
-            comments = []
-            likes = []
-            tagged_people = []
-            # photos = []
-            for comment in post.comments:
-                comm = {**comment.to_dict(), "owner": comment.owner.to_dict()}
-                comments.append(comm)
-            for like in post.likes:
-                lik = like.to_dict()
-                likes.append(lik)
-            for friend in post.tagged_friends:
-                person = friend.users.to_dict()
-                tagged_people.append(person)
-            location = None
-            photo = None
-            if post.location:
-                location = post.location.to_dict()
-            if post.photos:
-                photo = post.photos[0].to_dict()
-            dic = {**post.to_dict(),
-                "comments": comments,
-                "type": post.type.to_dict(),
-                "owner": post.owner.to_dict(),
-                "likes": likes,
-                "photo": photo,
-                "location": location,
-                "taggedFriends": tagged_people}
-            friends_data.append(dic)
+            grab_data(post)
+        for post in relationship.person.posts:
+            if not post.user_id == id:
+                grab_data(post)
+    # for post in user_posts:
+    #     grab_data(post)
+
+            
         
-    data = [*friends_data, *user_data]
     return jsonify(data=data)
 
 # Grab locations autocomplete through external api
@@ -137,29 +88,6 @@ def create_post():
 
     post_type_rec = PostType.query.filter(PostType.type==post_type).first()
     
-    # post = Post(user_id=user_id,
-    #             description=description,
-    #             type_id=post_type_rec.id,
-    #             created_at=created_at)
-    # if "location" in request.form:
-    #     post.location = Location(location=request.form['location'])
-
-    # if "photo" in request.files:
-    #     photo = request.files['photo']
-    #     photo_link = upload_file_to_s3(photo)
-    #     post.photos = Photo(path=photo_link)
-
-    # if "tagged_friends" in request.form:
-    #     tagged_friends = request.form['tagged_friends']
-    #     friends = tagged_friends.split(',')
-    #     friends_list = []
-    #     for friend in friends:
-    #         print(friend)
-    #         friend_id = int(friend)
-    #         tagged_friend = TaggedFriend(user_id=friend_id)
-    #         friends_list.append(tagged_friend)
-    #     post.tagged_friends = friends_list
-
     if "location" in request.form:
         location = request.form['location']
         location_rec = Location(location=location)
@@ -201,6 +129,7 @@ def create_post():
 
     return "done"
 
+# Delete post
 @post_routes.route('/<int:id>/delete', methods=['DELETE'])
 @jwt_required
 def delete_post(id):

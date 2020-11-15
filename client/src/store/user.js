@@ -91,7 +91,7 @@ export const createNotification = (data, id) => async (dispatch, getState) => {
 export const loadFriends = (id) => async dispatch => {
     getFetch(`/api/friends/${id}`, dispatch, setFriends)
 }
-export const loadPosts = (id) => async dispatch => {
+export const loadUserPosts = (id) => async dispatch => {
     getFetch(`/api/users/${id}/profile`, dispatch, setPosts)
 }
 export const loadPost = (id) => async dispatch => {

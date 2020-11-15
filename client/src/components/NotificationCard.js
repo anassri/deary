@@ -4,9 +4,10 @@ import Fullname from './Fullname';
 import { formatDistanceToNowStrict } from 'date-fns';
 import '../css/notification.css';
 import { Button, makeStyles } from '@material-ui/core';
-import { updateFriend, updateNotification } from '../store/user';
+import { updateNotification } from '../store/user';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
+import FriendAcceptBtns from './FriendAcceptBtns';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -46,22 +47,11 @@ const AddNotificationButton = ({ text, disabled, color="secondary", onClick=null
 
 export default function NotificationCard({notification}) {
     const posted = formatDistanceToNowStrict(new Date(notification.createdAt), { addSuffix: true });
-    const [buttonClicked, setButtonClicked] = useState(false);
     const [readStatusClass, setReadStatusClass] = useState("unread-circle");
     const [friendShipStatus, setFriendShipStatus] = useState(0);
-    const classes = useStyles();
+    const {id} = useParams();
+    
     const dispatch = useDispatch();
-
-    useEffect(()=>{
-        const data = {
-            "status": friendShipStatus,
-            "since": new Date,
-            "friendId": notification.friendId
-        };
-        if (buttonClicked){
-            dispatch(updateFriend(data, notification.userId));
-        };
-    }, [buttonClicked]);
 
     const handleRead = () => {
         const data = {
@@ -72,10 +62,14 @@ export default function NotificationCard({notification}) {
 
         dispatch(updateNotification(data, notification.userId));
     };
-    let relationStatus = null;
-    let friendStatus = null;
-    if (notification.relationship) relationStatus = notification.relationship.status;
-    if (notification.friendship) friendStatus = notification.friendship.status;
+    let status = null;
+    let actionUser = null;
+    const userId = parseInt(id);
+    if (notification.relationship) {
+        status = notification.relationship.status;
+        actionUser = notification.relationship.action_user_id;
+    }
+    
 
     return (
         <>
@@ -93,45 +87,21 @@ export default function NotificationCard({notification}) {
                     </div>
                 </div>
                 <div className="notification-right-container">
-                    {notification.typeId === 3 && friendStatus === 2
+                    {notification.typeId === 3 && actionUser === userId && status === 2
                     ?   <AddNotificationButton 
                             text={"Friend request accepted"}
                             disabled={true}
                             btnClass={null} />
 
-                    : notification.typeId === 3 && !friendStatus && !relationStatus
+                    : notification.typeId === 3 && actionUser === userId && status === 3
                     ?   <AddNotificationButton 
                             text={"Friend request Denied"}
                             disabled={true}
                             btnClass={null} />
                 
-                    : notification.typeId === 3 && relationStatus == 1 && !buttonClicked
-                    ?   <div className="buttons-container" >
-                            <AddNotificationButton 
-                                text={"Accept"}
-                                disabled={false}
-                                color="primary"
-                                btnClass={classes.button}
-                                onClick={()=>{
-                                    setFriendShipStatus(2);
-                                    setButtonClicked(true);
-                                }} />
-                            <AddNotificationButton 
-                                text={"Decline"}
-                                disabled={false}
-                                onClick={() => setButtonClicked(true)} />
-                        </div>
-                        : notification.typeId === 3 && buttonClicked
-                        ?   (friendShipStatus === 0 
-                            ? <AddNotificationButton 
-                                text={"Friend request declined"}
-                                disabled={true} 
-                                btnClass={null} />
-                            : <AddNotificationButton 
-                                text={"Friend request accepted"}
-                                disabled={true} 
-                                btnClass={null} />)
-                        : null}
+                    : notification.typeId === 3 && status == 1 
+                    ? <FriendAcceptBtns userId={notification.userId } friendId={notification.friendId} />
+                    : null}
                 </div>
                 <div className="read-indicator-container">
                     {notification.status === 1

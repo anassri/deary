@@ -1,7 +1,11 @@
 .notification-body-container{
+    width: 780px;
     margin: 10px 20px;
     display: flex;
     align-items: center;
+}
+.notification-left-container{
+    width: 8%;
 }
 .read-indicator-container{
     width: 35px;
@@ -23,6 +27,7 @@
 .notification-middle-container{
     font-size: 19px;
     margin-left: 10px;
+    width: 52%;
 }
 .notification-text-container{
     display: flex;
@@ -34,7 +39,7 @@
 }
 .notification-right-container{
     text-align: right;
-    width: 45%;
+    width: 30%;
 }
 .buttons-container{
     display: flex;
@@ -46,4 +51,7 @@
 .post-link{
     font-weight: bold;
     cursor: pointer;
+}
+.read-indicator-container{
+    margin-left: 15px;
 }

@@ -360,6 +360,7 @@ export default function CreatePost(){
                                             <InputBase
                                                 placeholder="Friend..."
                                                 onChange={handleFriendTerm}
+                                                autofocus
                                                 className="friend-field-input"
                                                 inputProps={{ 'aria-label': 'naked' }}
                                             />
@@ -387,6 +388,7 @@ export default function CreatePost(){
                                             <InputBase
                                                 placeholder="Search location..."
                                                 onChange={handleSearchTerm}
+                                                autofocus
                                                 className="search-field-input"
                                                 inputProps={{ 'aria-label': 'naked'}} 
                                                     />

@@ -55,3 +55,16 @@
 .read-indicator-container{
     margin-left: 15px;
 }
+.left-nav-container,.right-nav-container{
+    position: fixed;
+}
+.home-body-container{
+    display: flex;
+    justify-content: center;
+}
+.left-nav-container{
+    left: 0;
+}
+.right-nav-container{
+    right: 0;
+}

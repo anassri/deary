@@ -15,6 +15,7 @@ export default function FriendAcceptBtns({userId, friendId}){
             "friendId": friendId,
             "actionUserId": userId,
         };
+        console.log(data);
         if (buttonClicked) {
             dispatch(updateFriend(data, userId));
         };

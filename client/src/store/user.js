@@ -139,6 +139,7 @@ export const addFriend = (id, data) => async (dispatch, getState) => {
 }
 export const updateFriend = (data, id) => async (dispatch, getState) => {
     const token = getToken();
+    console.log(data)
     try {
         const res = await fetch(`/api/users/${id}/update`, {
             method: 'POST',

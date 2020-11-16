@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Navigation from './Navigation';
 import '../css/search.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,7 +7,7 @@ import profilePicturePlaceholder from '../images/profile-placeholder.png'
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PersonIcon from '@material-ui/icons/Person';
 import { useHistory, useParams } from 'react-router';
-import { addFriend, createNotification } from '../store/user';
+import { addFriend, createNotification, loadUsers } from '../store/user';
 import FriendAcceptBtns from './FriendAcceptBtns';
 import Friends from './Friends';
 import LeftNavigation from './LeftNavigation';
@@ -25,22 +25,34 @@ function CheckRelationShip({ownerId, friendId, relationships}){
     const classes = useStyles();
     const history = useHistory();
     const {idq} = useParams();
+    const {value} = useParams();
     const dispatch = useDispatch();
     const id = Number.parseInt(idq[0])
+    const [sync, setSync] = useState(false);
     let status = 0;
     let action_user = 0;
+
+    useEffect(()=>{
+        if(sync)
+        {
+            setSync(false);
+            dispatch(loadUsers(id, value));
+        }
+    }, [sync]);
 
     const handleAddPerson = () =>{
         const data = {
             "since": new Date(),
             "friendId": friendId,
             "actionUserId": ownerId,
+            
         }
         const notification = {
             "friendId": friendId,
             "typeId": 3,
             "createdAt": new Date(),
         }
+        setSync(true)
         dispatch(createNotification(notification, id))
         dispatch(addFriend(id, data));
     }
@@ -51,7 +63,6 @@ function CheckRelationShip({ownerId, friendId, relationships}){
             action_user = relation.action_user_id
         }
     })
-
     if (status === 1 && action_user !== ownerId)
         return <FriendAcceptBtns userId={ownerId} friendId={friendId}/>
 
@@ -60,6 +71,7 @@ function CheckRelationShip({ownerId, friendId, relationships}){
                     variant="contained" 
                     className={`add-button`} 
                     disabled
+                    disableElevation
                     >Friend Request Sent</Button>
     else if (status === 2)
     return <Button 
@@ -74,8 +86,9 @@ function CheckRelationShip({ownerId, friendId, relationships}){
             variant="contained"
             className={`add-button`}
             disabled
+            disableElevation
         >Friend Request Declined</Button>
-    else {
+    else if (status === 0 && action_user === 0){
         return <Button 
                 variant="contained" 
                 className={`${classes.button} add-button`} 

@@ -7,8 +7,8 @@ import logo from '../images/logo.svg';
 import Alert from '@material-ui/lab/Alert';
 
 export default function LoginPage () {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('ammar@gmail.com');
+    const [password, setPassword] = useState('password');
     const [errors, setErrors] = useState([]);
     const dispatch = useDispatch();
     const userId = useSelector(state => state.auth.user.id);

@@ -58,12 +58,13 @@ def find_all_posts(id):
 
     for relationship in relationships:
         for post in relationship.friends.posts:
-            grab_data(post)
+            if not post.user_id == id:
+                grab_data(post)
         for post in relationship.person.posts:
             if not post.user_id == id:
                 grab_data(post)
-    # for post in user_posts:
-    #     grab_data(post)
+    for post in user_posts:
+        grab_data(post)
 
             
         

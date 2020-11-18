@@ -39,7 +39,8 @@
     border-bottom-left-radius: 10px;
 }
 .body-photo{
-    width: 780px;
+    width: 100%;
+    max-width: 780px;
     height: 100%;
     object-fit: cover;
 }
@@ -141,4 +142,20 @@
 }
 .comments-count-tag{
     margin-left: 30px;
+}
+.input-container{
+    width: 85%;
+}
+.comment-input{
+   max-width: 680px; 
+   width: 100%; 
+}
+
+@media only screen and (min-width: 768px) {
+    .paper-card{
+        width: 100%;
+    }
+    .input-container{
+        width: 87%;
+    }
 }

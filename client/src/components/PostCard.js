@@ -37,9 +37,9 @@ import ProfilePic from './ProfilePic';
 
 const useStyle = makeStyles({
     paper:{
-        width: 780,
+        // width: 780,
         marginBottom: 20,
-        marginRight: 20
+        // marginRight: 20
     },
     inputRoot: {
         backgroundColor: '#EFEFEF',

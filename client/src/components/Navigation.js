@@ -12,7 +12,7 @@ import { useHistory } from 'react-router';
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
         backgroundColor: '#EFEFEF',
-        width: 840,
+        width: '100%',
         height: 52,
         borderRadius: 40,
 
@@ -92,9 +92,8 @@ export default function Navigation(){
                         className="thumb-profile-picture" 
                         height='36' 
                         width='36' 
-                        style={{marginRight: 10}}
                         />
-                    {user.firstName}
+                    <div className="user-profile-name">{user.firstName}</div>
                 </Button>
             </div>
         </div>

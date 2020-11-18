@@ -218,7 +218,7 @@ export default function CreatePost(){
     }
     const handleFriendTerm = (e) => {
         setOpenFriendsDropdown(true);
-        setSearchFriends(e.target.value);
+        setSearchFriends(e.target.value); 
     }
     return (
         <>

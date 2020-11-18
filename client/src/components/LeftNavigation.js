@@ -11,11 +11,16 @@ import { useHistory } from 'react-router-dom';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useDispatch } from 'react-redux';
 import { logout } from '../store/auth';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 
 const useStyles = makeStyles({
     icons: {
         color: '#666',
         textTransform: 'none',
+    },
+    navbar:{
+        width: 700,    
     }
 })
 
@@ -29,46 +34,47 @@ export default function LeftNavigation({user}) {
     }
     return (
         <>
-            <Button className={classes.icons}
-                size="large"
-                startIcon={<HomeIcon />}
-                onClick={() => history.push('/')}
-            >
-                Home</Button>
-            <Button className={classes.icons}
-                size="large"
-                startIcon={<NotificationsIcon />}
-                onClick={() => history.push(`/notifications/${user.id}`)}>
-                Notifications</Button>
-            {/* <Button className={classes.icons}
-                        size="large"
-                        startIcon={<img
-                            src={CirclesIcon}
-                            alt="circles icon"
-                            height="15"
-                            className="nav-icon"
-                        />}>
-                            Circles</Button>
-                    <Button className={classes.icons}
-                        size="large"
-                        startIcon={<ChatIcon />}>
-                            Messages</Button>
-                    <Button className={classes.icons}
-                        size="large"
-                        startIcon={<BookmarkIcon />}>
-                            Bookmarks</Button> */}
-            <Button className={classes.icons}
-                size="large"
-                startIcon={<PersonIcon />}
-                onClick={() => history.push(`/profile/${user.id}`)}
-            >
-                Profile</Button>
-            <Button className={classes.icons}
-                size="large"
-                startIcon={<ExitToAppIcon />}
-                onClick={handleLogout}
-            >
-                Sign out</Button>
+            <div className="left-navigation-desktop">
+                <Button className={classes.icons}
+                    size="large"
+                    startIcon={<HomeIcon />}
+                    onClick={() => history.push('/')}
+                >
+                    Home</Button>
+                <Button className={classes.icons}
+                    size="large"
+                    startIcon={<NotificationsIcon />}
+                    onClick={() => history.push(`/notifications/${user.id}`)}>
+                    Notifications</Button>
+                <Button className={classes.icons}
+                    size="large"
+                    startIcon={<PersonIcon />}
+                    onClick={() => history.push(`/profile/${user.id}`)}
+                >
+                    Profile</Button>
+                <Button className={classes.icons}
+                    size="large"
+                    startIcon={<ExitToAppIcon />}
+                    onClick={handleLogout}
+                >
+                    Sign out</Button>
+            </div>
+            <div className="left-navigation-mobile">
+                <BottomNavigation showLabels className={classes.navbar}>
+                    <BottomNavigationAction label="Home" icon={<HomeIcon/>} 
+                        onClick={() => history.push('/')}
+                        />
+                    <BottomNavigationAction label="Notifications" icon={<NotificationsIcon/>} 
+                        onClick={() => history.push(`/notifications/${user.id}`)}
+                        />
+                    <BottomNavigationAction label="Profile" icon={<PersonIcon/>} 
+                        onClick={() => history.push(`/profile/${user.id}`)}
+                        />
+                    <BottomNavigationAction label="Sign out" icon={<ExitToAppIcon/>} 
+                        onClick={handleLogout}
+                        />
+                </BottomNavigation>
+            </div>
         </>
     );
 }

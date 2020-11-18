@@ -27,13 +27,12 @@ import { createNotification } from '../store/user';
 
 const useStyle = makeStyles({
     paper: {
-        width: 680,
+        // width: 680,
         marginBottom: 20,
         marginRight: 20
     },
     inputRoot: {
         backgroundColor: '#EFEFEF',
-        width: 670,
         height: 52,
         borderRadius: 40,
         padding: 20,
@@ -91,7 +90,7 @@ export default function Comments({ owner, post }) {
                         <div className={classes.comment}>
                             <InputBase
                                 placeholder="Write a comment..."
-                                className={classes.inputRoot}
+                                className={`${classes.inputRoot} comment-input`}
                                 inputProps={{ 'aria-label': 'search' }}
                                 value={comment}
                                 onChange={e => setComment(e.target.value)}

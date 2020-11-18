@@ -14,38 +14,8 @@
     height: 90.5vh;
     margin-top: 5px;
 }
-
-::-webkit-scrollbar { 
-    width: 10px; 
-} 
-
-/* Track */ 
-::-webkit-scrollbar-track { 
-    background:rgba(0,0,0,0); 
-    border-radius: 5px; 
-} 
-
-/* Handle */ 
-::-webkit-scrollbar-thumb { 
-    background: #666; 
-    border-radius: 5px; 
-} 
-
-/* Handle on hover */ 
-::-webkit-scrollbar-thumb:hover { 
-    background: #33DD87; 
-}
-.left-nav-container{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin: 20px;
-}
 .right-nav-container{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px 20px 0 0;
+    display: none;
 }
 .loading-screen{
     position: fixed;
@@ -54,4 +24,42 @@
 }
 .MuiCircularProgress-colorPrimary.MuiCircularProgress-indeterminate{
     color: #33DD87;
+}
+@media only screen and (min-width: 768px) {
+    .right-nav-container{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 20px 0 0;
+    }
+    .left-nav-container{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 20px;
+    }
+    .posts-body-container{
+        height: 90.5vh;
+        margin-top: 5px;
+    }
+    ::-webkit-scrollbar { 
+    width: 10px; 
+    } 
+
+    /* Track */ 
+    ::-webkit-scrollbar-track { 
+        background:rgba(0,0,0,0); 
+        border-radius: 5px; 
+    } 
+
+    /* Handle */ 
+    ::-webkit-scrollbar-thumb { 
+        background: #666; 
+        border-radius: 5px; 
+    } 
+
+    /* Handle on hover */ 
+    ::-webkit-scrollbar-thumb:hover { 
+        background: #33DD87; 
+    }
 }

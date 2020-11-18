@@ -87,7 +87,7 @@ export default function NotificationCard({notification}) {
 
                     : notification.typeId === 3 && actionUser === userId && status === 3
                     ?   <AddNotificationButton 
-                            text={"Friend request Denied"}
+                            text={"Friend request Declined"}
                             disabled={true}
                             btnClass={null} />
                 

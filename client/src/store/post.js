@@ -43,6 +43,22 @@ export const createPost = (data) => async (dispatch, getState) => {
         return e;
     }
 }
+export const editPost = (data, id) => async (dispatch, getState) => {
+    const token = getToken();
+    try {
+        await fetch(`/api/posts/${id}/edit`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'X-CSRFToken': getState().csrf.token
+            },
+            body: data
+        });
+    } catch (e) {
+        console.error(e);
+        return e;
+    }
+}
 export const deletePost = (id) => async (dispatch) => {
     const token = getToken();
     try {

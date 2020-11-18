@@ -109,7 +109,7 @@ export default function Comments({ owner, post }) {
                         </div>
                     </div>
                 </div>
-                {comments.slice(0).reverse().map(comment => <DisplayComments key={comment.id} comment={comment} postId={post.id}/>)}
+                {comments.slice(0).reverse().map(comment => <DisplayComments key={comment.id} comment={comment} postId={post.id} />)}
 
             </div>
         </>
@@ -182,7 +182,8 @@ const DisplayComments = ({ comment, postId }) => {
                                 onClick={() => likeClicked ? setLikeClicked(false) : setLikeClicked(true)} />
                         </div>
                     </div>
-                    <div className="comment-menu-container">
+                    {user.id === comment.owner.id
+                    ? <div className="comment-menu-container">
                         <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                             <MoreVertIcon />
                         </IconButton>
@@ -228,7 +229,10 @@ const DisplayComments = ({ comment, postId }) => {
                                 </Button>
                             </DialogActions>
                         </Dialog>
+
                     </div>
+                    : null
+                }
                 </div>
                 <div className="bottom-comment-side">
                     <p className="comment-timestamp">{posted}</p>

@@ -1,14 +1,16 @@
 .notification-body-container{
-    width: 780px;
     margin: 10px 20px;
     display: flex;
     align-items: center;
 }
+.notification-paper-container{
+    width: 98vw;
+}
 .notification-left-container{
-    width: 8%;
+    width: 14%;
 }
 .read-indicator-container{
-    width: 35px;
+    width: 40px;
 }
 .unread-circle{
     background-color: #33DD87;
@@ -27,11 +29,12 @@
 .notification-middle-container{
     font-size: 19px;
     margin-left: 10px;
-    width: 52%;
+    width:100%;
 }
 .notification-text-container{
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 .notification-text{
     margin-left: 5px;
@@ -39,7 +42,7 @@
 }
 .notification-right-container{
     text-align: right;
-    width: 30%;
+    width: 80%;
 }
 .buttons-container{
     display: flex;
@@ -67,4 +70,30 @@
 }
 .right-nav-container{
     right: 0;
+}
+@media only screen and (min-width: 768px) {
+    .notification-paper-container{
+        width: 780px;   
+    }
+    .notification-left-container{
+        width: 8%;
+    }
+    .read-indicator-container{
+        width: 35px;
+    }
+    .notification-middle-container{
+        font-size: 19px;
+        margin-left: 10px;
+        width: 52%;
+    }
+    .notification-right-container{
+        text-align: right;
+        width: 30%;
+    }
+    .notification-text-container{
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+
+    }
 }

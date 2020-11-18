@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    /* margin-left: 50px; */
+    padding-top: 75px;
 }
 .home-body-container{
     display: flex;
@@ -26,6 +26,9 @@
     color: #33DD87;
 }
 @media only screen and (min-width: 768px) {
+    .body-container{
+        padding-top: 0;
+    }
     .right-nav-container{
         display: flex;
         flex-direction: column;
@@ -37,10 +40,6 @@
         flex-direction: column;
         align-items: flex-start;
         margin: 20px;
-    }
-    .posts-body-container{
-        height: 90.5vh;
-        margin-top: 5px;
     }
     ::-webkit-scrollbar { 
     width: 10px; 

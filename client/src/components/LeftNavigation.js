@@ -20,7 +20,7 @@ const useStyles = makeStyles({
         textTransform: 'none',
     },
     navbar:{
-        width: 700,    
+        width: '100%',    
     }
 })
 
@@ -58,22 +58,6 @@ export default function LeftNavigation({user}) {
                     onClick={handleLogout}
                 >
                     Sign out</Button>
-            </div>
-            <div className="left-navigation-mobile">
-                <BottomNavigation showLabels className={classes.navbar}>
-                    <BottomNavigationAction label="Home" icon={<HomeIcon/>} 
-                        onClick={() => history.push('/')}
-                        />
-                    <BottomNavigationAction label="Notifications" icon={<NotificationsIcon/>} 
-                        onClick={() => history.push(`/notifications/${user.id}`)}
-                        />
-                    <BottomNavigationAction label="Profile" icon={<PersonIcon/>} 
-                        onClick={() => history.push(`/profile/${user.id}`)}
-                        />
-                    <BottomNavigationAction label="Sign out" icon={<ExitToAppIcon/>} 
-                        onClick={handleLogout}
-                        />
-                </BottomNavigation>
             </div>
         </>
     );

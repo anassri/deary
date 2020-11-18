@@ -13,8 +13,15 @@
     align-items: center;
 }
 .paper-container{
-    width: 750px;
+    width: 97vw;
     margin-top: 15px;
+    margin: 15px;
+}
+@media only screen and (min-width: 768px) {
+    .paper-container{
+        width: 750px;
+        margin-top: 15px;
+    }
 }
 .thumbnail-container, .add-button-container{
     margin: 10px 20px;

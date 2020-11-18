@@ -180,8 +180,6 @@ export function Profile({ user, authUser, posts, friends}){
                                 src={user.coverPicture ? user.coverPicture : coverPicturePlaceholder}
                                 alt="cover placeholder"
                                 className="cover-picture"
-                                height="350"
-                                width="940"
                             />
                         </div>
                         <div className="profile-picture-container">

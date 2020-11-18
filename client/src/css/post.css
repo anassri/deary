@@ -144,16 +144,22 @@
     margin-left: 30px;
 }
 .input-container{
-    width: 85%;
+    width: 80%;
 }
 .comment-input{
    max-width: 680px; 
    width: 100%; 
 }
 
+.paper-card{
+    width: 96%;
+    margin: 0 10px;
+}
 @media only screen and (min-width: 768px) {
     .paper-card{
         width: 100%;
+        margin: 0;
+        max-width: 780px;
     }
     .input-container{
         width: 87%;

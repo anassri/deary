@@ -10,9 +10,9 @@ import NotificationCard from './NotificationCard';
 
 const useStyle = makeStyles({
     paper: {
-        width: 780,
+        // width: 780,
         marginTop: 20,
-        marginRight: 40,
+        // marginRight: 40,
         paddingTop: 10
     },
     inputRoot: {
@@ -51,7 +51,7 @@ export default function Notifications(){
                     <LeftNavigation user={user} />
                 </div>
                 <div className="body-container">
-                    <Paper className={classes.paper}>
+                    <Paper className={`${classes.paper} notification-paper-container`}>
                         {sortedPosts.map(notification => 
                         <NotificationCard key={notification.id} notification={notification}
                         />)}

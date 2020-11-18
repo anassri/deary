@@ -43,7 +43,7 @@ const useStyle = makeStyles({
     }
 
 })
-export default function Comments({ owner, post }) {
+export default function Comments({ owner, post, commentCount, setCommentCount }) {
     const classes = useStyle()
     const [comments, setComments] = useState([]);
     useEffect(() => {
@@ -83,6 +83,7 @@ export default function Comments({ owner, post }) {
                 owner,
                 "id": incomingData.data.id
             }
+            setCommentCount(()=>commentCount+1)
             setComments([...comments, commentObj])
         }
     }
@@ -117,13 +118,20 @@ export default function Comments({ owner, post }) {
                         </div>
                     </div>
                 </div>
-                {comments.slice(0).reverse().map(comment => <DisplayComments key={comment.id} comment={comment} comments={comments} setComments={setComments}/>)}
+                {comments.slice(0).reverse().map(comment => 
+                <DisplayComments key={comment.id} 
+                                comment={comment} 
+                                comments={comments} 
+                                setComments={setComments}
+                                commentCount={commentCount} 
+                                setCommentCount={setCommentCount}
+                                />)}
 
             </div>
         </>
     )
 }
-const DisplayComments = ({ comment, comments, setComments }) => {
+const DisplayComments = ({ comment, comments, setComments, commentCount, setCommentCount }) => {
     const user = useSelector(state => state.auth.user)
     const [likeClicked, setLikeClicked] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -159,6 +167,8 @@ const DisplayComments = ({ comment, comments, setComments }) => {
                 dialogProps: { maxWidth: 'sm' } });
             const ind = comments.indexOf(comment);
             setComments([...comments.slice(0,ind), ...comments.slice(ind+1)]);
+
+            setCommentCount(() => commentCount - 1)
             setPostSyncNeeded(true)
             await dispatch(deleteComment(id));
         } catch (e) {

@@ -259,7 +259,7 @@ export default function PostCard({user, post}){
                     </div>
                     <div>
                         {commentClicked 
-                            ? <Comments owner={user} post={post} />
+                            ? <Comments owner={user} post={post} commentCount={commentCount} setCommentCount={setCommentCount}/>
                             : null
                         }
                     </div>

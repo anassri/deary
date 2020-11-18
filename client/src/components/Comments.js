@@ -65,7 +65,7 @@ export default function Comments({ owner, post, commentCount, setCommentCount })
             "created_at" : new Date(),
             owner,
         }
-        if (id !== post.owner.id) {
+        // if (id !== post.owner.id) {
             const notification = {
                 "friendId": post.owner.id,
                 "typeId": 1,
@@ -73,7 +73,7 @@ export default function Comments({ owner, post, commentCount, setCommentCount })
                 "createdAt": new Date(),
             }
             dispatch(createNotification(notification, id))
-        };
+        // };
         setComment('')
         const incomingData = await dispatch(addComment(data, id))
         if (incomingData){
@@ -194,13 +194,13 @@ const DisplayComments = ({ comment, comments, setComments, commentCount, setComm
                                 <p className="comment">{comment.comment}</p>
                             </div>
                         </div>
-                        <div className="right-comment-side">
+                        {/* <div className="right-comment-side">
                             <ThumbUpAltIcon
                                 className="comment-like-button"
                                 style={{ cursor: 'pointer' }}
                                 color={likeClicked ? "primary" : "secondary"}
                                 onClick={() => likeClicked ? setLikeClicked(false) : setLikeClicked(true)} />
-                        </div>
+                        </div> */}
                     </div>
                     {user.id === comment.owner.id
                     ? <div className="comment-menu-container">

@@ -53,7 +53,7 @@ export default function Notifications(){
                 <div className="body-container">
                     <Paper className={`${classes.paper} notification-paper-container`}>
                         {sortedPosts.map(notification => 
-                        <NotificationCard key={notification.id} notification={notification}
+                            <NotificationCard key={notification.id} notification={notification}
                         />)}
                     </Paper>
                 </div>

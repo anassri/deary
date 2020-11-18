@@ -44,7 +44,7 @@ export default function NotificationCard({notification}) {
     const {id} = useParams();
     
     const dispatch = useDispatch();
-
+ 
     const handleRead = () => {
         const data = {
             "notificationId": notification.id,

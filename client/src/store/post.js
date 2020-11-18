@@ -89,7 +89,6 @@ export const addComment = (data, id) => async (dispatch, getState) => {
         });
         if(res.ok){
             const data = res.json();
-            console.log(data);
             return data;
         }
     } catch (e) {

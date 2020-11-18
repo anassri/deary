@@ -77,11 +77,17 @@ def update_profile_photo(id):
 @user_routes.route('/<int:id>q=<string:value>', methods=['GET'])
 @jwt_required
 def find_users(id, value):
-  users = User.query \
-              .filter(or_(User.last_name.ilike('%'+value+'%'), \
-                          User.first_name.ilike('%'+value+'%'))) \
-              .filter(not_(User.id==id)) \
-              .all()
+  if value == "all":
+    users = User.query \
+                .filter(not_(User.id==id)) \
+                .all()
+  else:
+    users = User.query \
+                .filter(or_(User.last_name.ilike('%'+value+'%'), \
+                            User.first_name.ilike('%'+value+'%'))) \
+                .filter(not_(User.id==id)) \
+                .all()
+
 
   relationships = Relationship.query \
                               .filter(or_(Relationship.user_id==id, 

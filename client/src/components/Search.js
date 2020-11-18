@@ -29,8 +29,7 @@ function CheckRelationShip({ownerId, friendId, relationships}){
     const dispatch = useDispatch();
     const id = Number.parseInt(idq[0])
     const [sync, setSync] = useState(false);
-    let status = 0;
-    let action_user = 0;
+    
 
     useEffect(()=>{
         if(sync)
@@ -56,9 +55,14 @@ function CheckRelationShip({ownerId, friendId, relationships}){
         dispatch(createNotification(notification, id))
         dispatch(addFriend(id, data));
     }
+    let status = 0;
+    let action_user = 0;
     relationships.map(relation => {
-        if ((ownerId === relation.user_id && friendId === relation.friend_id) 
-            || (ownerId === relation.friend_id && friendId === relation.user_id)) {
+        if ((ownerId === relation.user_id 
+            && friendId === relation.friend_id) 
+            || (ownerId === relation.friend_id 
+            && friendId === relation.user_id)) {
+
             status = relation.status  
             action_user = relation.action_user_id
         }

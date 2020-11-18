@@ -261,6 +261,23 @@ class Notification(db.Model):
       "createdAt": self.created_at,
     }
 
+# class CommentLike(db.Model):
+#   __tablename__ = "comment_likes"
+
+#   id = db.Column(db.Integer, primary_key = True)
+#   comment_id = db.Column(db.Integer, db.ForeignKey("comments.id"), nullable = False)
+#   user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
+
+#   comment = db.relationship("Comment", foreign_keys=comment_id, cascade="all, delete")
+#   owner = db.relationship("User", foreign_keys=user_id)
+
+#   def to_dict(self):
+#     return {
+#       "id": self.id,
+#       "comment_id": self.comment_id,
+#       "user_id": self.user_id,
+#     } 
+
 
 # class Video(db.Model):
 #   __tablename__ = "videos"
@@ -280,23 +297,6 @@ class Notification(db.Model):
 
 
 
-
-# class CommentLike(db.Model):
-#   __tablename__ = "comment_likes"
-
-#   id = db.Column(db.Integer, primary_key = True)
-#   comment_id = db.Column(db.Integer, db.ForeignKey("comments.id"), nullable = False)
-#   user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
-
-#   comment = db.relationship("Comment", foreign_keys=comment_id, cascade="all, delete")
-#   owner = db.relationship("User", foreign_keys=user_id)
-
-#   def to_dict(self):
-#     return {
-#       "id": self.id,
-#       "comment_id": self.comment_id,
-#       "user_id": self.user_id,
-#     } 
 
 # class MoodType(db.Model):
 #   __tablename__ = 'mood_types'

@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import '../css/post.css';
 import { Paper, 
-    Button, 
     makeStyles,
-    TextField,
-    Dialog,
-    DialogActions,
-    DialogContent, 
     IconButton,
-    DialogTitle,
     MenuItem,
     Menu,  } from '@material-ui/core/';
 import { formatDistanceToNowStrict } from 'date-fns';
@@ -61,12 +55,10 @@ export default function PostCard({user, post}){
     const [likeCount, setLikeCount] = useState(0);
     const [commentCount, setCommentCount] = useState(0);
     const [commentClicked, setCommentClicked] = useState(false);
-    const dispatch = useDispatch()
-    const classes = useStyle()
-    // console.log(post.created_at);
+    const dispatch = useDispatch();
+    const classes = useStyle();
     const posted = formatDistanceToNowStrict(new Date(post.created_at), { addSuffix: true });
     const [sync, setSync] = useState(false);
-    const [descriptionArea, setDescriptionArea] = useState('')
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const confirm = useConfirm();
@@ -196,7 +188,7 @@ export default function PostCard({user, post}){
                                 <MenuItem onClick={handleDelete} style={{ color: '#FF0000' }}>Delete</MenuItem>
                             </Menu>
 
-                            <EditPostContainer post={post} setOpen={setOpen} open={open}/>
+                            <EditPostContainer post={post} setOpen={setOpen} open={open} userId={user.id}/>
                             
                         </div>
                     : null}

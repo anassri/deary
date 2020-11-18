@@ -78,7 +78,7 @@ export const deletePost = (id) => async (dispatch) => {
 export const addComment = (data, id) => async (dispatch, getState) => {
     const token = getToken();
     try {
-        await fetch(`/api/comments/${id}/create`, {
+        const res = await fetch(`/api/comments/${id}/create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -87,6 +87,11 @@ export const addComment = (data, id) => async (dispatch, getState) => {
             },
             body: JSON.stringify(data)
         });
+        if(res.ok){
+            const data = res.json();
+            console.log(data);
+            return data;
+        }
     } catch (e) {
         console.error(e);
         return e;
@@ -144,7 +149,7 @@ export const editComment = (data, id) => async (dispatch, getState) => {
         return e;
     }
 }
-export const deleteComment = (id, postId) => async (dispatch, getState) => {
+export const deleteComment = (id) => async (dispatch, getState) => {
     const token = getToken();
     try {
         await fetch(`/api/comments/${id}/delete`, {

@@ -159,9 +159,10 @@ def edit_post(id):
     else:
         post.location_id = None
 
-        tagged = TaggedFriend.query.filter(TaggedFriend.post_id==id).all()
-        if tagged:
-            db.session.delete(tagged)
+    tagged = TaggedFriend.query.filter(TaggedFriend.post_id==id).all()
+    if tagged:
+        for tag in tagged:
+            db.session.delete(tag)
             db.session.commit()
 
     if "tagged_friends" in request.form:

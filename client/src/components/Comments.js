@@ -52,7 +52,7 @@ export default function Comments({ owner, post }) {
 
     const [comment, setComment] = useState('');
     const dispatch = useDispatch()
-    const handleComment = () => {
+    const handleComment = async () => {
         const id = owner.id;
         const postId = post.id;
         const data = {
@@ -75,8 +75,16 @@ export default function Comments({ owner, post }) {
             dispatch(createNotification(notification, id))
         };
         setComment('')
-        setComments([...comments, commentObj])
-        dispatch(addComment(data, id))
+        const incomingData = await dispatch(addComment(data, id))
+        if (incomingData){
+            const commentObj = {
+                comment,
+                "created_at": new Date(),
+                owner,
+                "id": incomingData.data.id
+            }
+            setComments([...comments, commentObj])
+        }
     }
     return (
         <>
@@ -109,13 +117,13 @@ export default function Comments({ owner, post }) {
                         </div>
                     </div>
                 </div>
-                {comments.slice(0).reverse().map(comment => <DisplayComments key={comment.id} comment={comment} postId={post.id} />)}
+                {comments.slice(0).reverse().map(comment => <DisplayComments key={comment.id} comment={comment} comments={comments} setComments={setComments}/>)}
 
             </div>
         </>
     )
 }
-const DisplayComments = ({ comment, postId }) => {
+const DisplayComments = ({ comment, comments, setComments }) => {
     const user = useSelector(state => state.auth.user)
     const [likeClicked, setLikeClicked] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -128,8 +136,8 @@ const DisplayComments = ({ comment, postId }) => {
 
     useEffect(()=>{
         if(postSyncNeeded){
-            dispatch(loadPosts(user.id))
             setPostSyncNeeded(false);
+            dispatch(loadPosts(user.id));
         }
     }, [postSyncNeeded])
 
@@ -149,8 +157,10 @@ const DisplayComments = ({ comment, postId }) => {
                 confirmationText: 'Delete',
                 cancellationText: 'Cancel',
                 dialogProps: { maxWidth: 'sm' } });
-            await dispatch(deleteComment(id, postId));
+            const ind = comments.indexOf(comment);
+            setComments([...comments.slice(0,ind), ...comments.slice(ind+1)]);
             setPostSyncNeeded(true)
+            await dispatch(deleteComment(id));
         } catch (e) {
             console.error(e);
         }

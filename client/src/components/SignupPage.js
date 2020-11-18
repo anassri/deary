@@ -36,6 +36,7 @@ export default function SignupPage() {
         if (email.length === 0) intErrors.push('Email is required.');
         if (password.length === 0) intErrors.push('Password is required.');
         if (confirmPassword.length === 0) intErrors.push('Confirm password is required.');
+        if (confirmPassword !== password) intErrors.push('Password must match');
         if (intErrors.length === 0) return true;
         setErrors([...intErrors]);
         return false;

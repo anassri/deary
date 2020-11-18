@@ -2,17 +2,12 @@ import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Button } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
-import CirclesIcon from '../images/circles.svg';
-import ChatIcon from '@material-ui/icons/Chat';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import BookmarkIcon from '@material-ui/icons/Bookmark';
 import PersonIcon from '@material-ui/icons/Person';
 import { useHistory } from 'react-router-dom';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useDispatch } from 'react-redux';
 import { logout } from '../store/auth';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 
 const useStyles = makeStyles({
     icons: {

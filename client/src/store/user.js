@@ -46,7 +46,7 @@ const getToken = () => {
 const postFetch = async (data, path, getState) =>{
     const token = getToken();
     try {
-        const res = await fetch(path, {
+        await fetch(path, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ export const updateFriend = (data, id) => async (dispatch, getState) => {
     const token = getToken();
     console.log(data)
     try {
-        const res = await fetch(`/api/users/${id}/update`, {
+        await fetch(`/api/users/${id}/update`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 
                         Authorization: `Bearer ${token}`,

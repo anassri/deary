@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ProfilePic from './ProfilePic';
 import Fullname from './Fullname';
 import { formatDistanceToNowStrict } from 'date-fns';
@@ -8,14 +8,6 @@ import { updateNotification } from '../store/user';
 import { useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import FriendAcceptBtns from './FriendAcceptBtns';
-
-const useStyles = makeStyles((theme) => ({
-    button: {
-        background: "linear-gradient(43deg, rgba(51,221,135,1) 0%, rgba(68,226,141,1) 72%, rgba(100,237,152,1) 87%, rgba(156,255,172,1) 100%)",
-        color: "#fff",
-        marginLeft: 10,
-    }
-}));
 
 const NotificationType = ({ type, postId}) => {
     const history = useHistory()
@@ -48,7 +40,7 @@ const AddNotificationButton = ({ text, disabled, color="secondary", onClick=null
 export default function NotificationCard({notification}) {
     const posted = formatDistanceToNowStrict(new Date(notification.createdAt), { addSuffix: true });
     const [readStatusClass, setReadStatusClass] = useState("unread-circle");
-    const [friendShipStatus, setFriendShipStatus] = useState(0);
+    // const [friendShipStatus, setFriendShipStatus] = useState(0);
     const {id} = useParams();
     
     const dispatch = useDispatch();
@@ -99,7 +91,7 @@ export default function NotificationCard({notification}) {
                             disabled={true}
                             btnClass={null} />
                 
-                    : notification.typeId === 3 && status == 1 
+                    : notification.typeId === 3 && status === 1 
                     ? <FriendAcceptBtns userId={notification.userId } friendId={notification.friendId} />
                     : null}
                 </div>

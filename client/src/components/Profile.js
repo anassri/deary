@@ -57,7 +57,6 @@ export function Profile({ user, authUser, posts, friends}){
     const [country, setCountry] = useState('');
     const [profilePictureFile, setProfilePictureFile] = useState(null);
     const [coverPictureFile, setCoverPictureFile] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
     const [owner, setOwner] = useState(false);
     const [errors, setErrors] = useState(null);
     const dispatch = useDispatch();
@@ -169,9 +168,6 @@ export function Profile({ user, authUser, posts, friends}){
             <div className="home-body-container profile">
                 <div className="left-nav-container profile">
                     <LeftNavigation user={user} />
-                </div>
-                <div className="loading-container">
-                    {isLoading ? <CircularProgress /> : null}
                 </div>
                 <div className="profile-container">
                     <div className="top-picture-section-container">

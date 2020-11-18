@@ -3,7 +3,6 @@ import {useHistory} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {login} from '../store/auth';
 import '../css/auth.css'
-import logo from '../images/logo.svg';
 import Alert from '@material-ui/lab/Alert';
 
 export default function LoginPage () {
@@ -39,6 +38,7 @@ export default function LoginPage () {
             dispatch(login(email, password));
     }
     return (
+        <>
         <form onSubmit={handleClick}>
             <div className="errors">
                 {errors.length 
@@ -74,5 +74,6 @@ export default function LoginPage () {
                 <p>Need an account? </p><a href="/signup" className="link-text">Sign up</a>
             </div>
         </form>
+        </>
     )
 } 

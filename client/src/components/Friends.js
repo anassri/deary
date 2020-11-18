@@ -36,6 +36,7 @@ export default function Friends({ friends, userId}){
                             </div>
                         </div>
                     </Button>
+                return null;
             }
             )}
         </>

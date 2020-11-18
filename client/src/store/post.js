@@ -30,7 +30,7 @@ export const loadPosts = (id) => async dispatch => {
 export const createPost = (data) => async (dispatch, getState) => {
     const token = getToken();
     try {
-        const res = await fetch("/api/posts/", {
+        await fetch("/api/posts/", {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -46,7 +46,7 @@ export const createPost = (data) => async (dispatch, getState) => {
 export const deletePost = (id) => async (dispatch) => {
     const token = getToken();
     try {
-        const res = await fetch(`/api/posts/${id}/delete`, {
+        await fetch(`/api/posts/${id}/delete`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export const deletePost = (id) => async (dispatch) => {
 export const addComment = (data, id) => async (dispatch, getState) => {
     const token = getToken();
     try {
-        const res = await fetch(`/api/comments/${id}/create`, {
+        await fetch(`/api/comments/${id}/create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ export const addComment = (data, id) => async (dispatch, getState) => {
 export const addLike = (data, id) => async (dispatch, getState) => {
     const token = getToken();
     try {
-        const res = await fetch(`/api/likes/${id}/add`, {
+        await fetch(`/api/likes/${id}/add`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ export const addLike = (data, id) => async (dispatch, getState) => {
 export const deleteLike = (data, id) => async (dispatch, getState) => {
     const token = getToken();
     try {
-        const res = await fetch(`/api/likes/${id}/delete`, {
+        await fetch(`/api/likes/${id}/delete`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ export const deleteLike = (data, id) => async (dispatch, getState) => {
 export const editComment = (data, id) => async (dispatch, getState) => {
     const token = getToken();
     try {
-        const res = await fetch(`/api/comments/${id}/edit`, {
+        await fetch(`/api/comments/${id}/edit`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -131,7 +131,7 @@ export const editComment = (data, id) => async (dispatch, getState) => {
 export const deleteComment = (id, postId) => async (dispatch, getState) => {
     const token = getToken();
     try {
-        const res = await fetch(`/api/comments/${id}/delete`, {
+        await fetch(`/api/comments/${id}/delete`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

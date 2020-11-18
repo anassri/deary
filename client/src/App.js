@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BrowserRouter, Switch, Route,Redirect, useLocation } from 'react-router-dom';
+import { BrowserRouter, Switch, Route,Redirect } from 'react-router-dom';
 import AuthContainer from './components/AuthContainer';
 import Home from './components/Home';
 import Search from './components/Search';
@@ -10,7 +10,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import theme from './theme';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ConfirmProvider } from 'material-ui-confirm';
-import { logout, loadUser } from './store/auth';
+import { loadUser } from './store/auth';
 import { restoreCSRF } from './store/csrf';
 import Post from './components/Post';
 import CircularProgress from '@material-ui/core/CircularProgress';

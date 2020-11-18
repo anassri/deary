@@ -10,10 +10,7 @@ import profilePicturePlaceholder from '../images/profile-placeholder.png'
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import HomeIcon from '@material-ui/icons/Home';
-import CirclesIcon from '../images/circles.svg';
-import ChatIcon from '@material-ui/icons/Chat';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import BookmarkIcon from '@material-ui/icons/Bookmark';
 import PersonIcon from '@material-ui/icons/Person';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { logout } from '../store/auth';
@@ -74,7 +71,7 @@ export default function Navigation(){
                             placeholder="Search Deary…"
                             className={classes.inputRoot}
                             inputProps={{ 'aria-label': 'search' }}
-                            onKeyDown={e => e.keyCode == 13 ? handleSearchButton() : null }
+                            onKeyDown={e => e.keyCode === 13 ? handleSearchButton() : null }
                             startAdornment={
                                 <InputAdornment position="start">
                                     <SearchIcon className={classes.icon}/>

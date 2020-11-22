@@ -17,6 +17,12 @@
     margin-top: 15px;
     margin: 15px;
 }
+.no-results{
+    color: #666;
+    opacity: 0.3;
+    font-size: 40px;
+    margin-top: 20px;
+}
 @media only screen and (min-width: 768px) {
     .paper-container{
         width: 750px;

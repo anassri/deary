@@ -107,7 +107,7 @@
     align-items: center;
 }
 .comment-area{
-    width: 86%;
+    width: 80%;
     text-align: left;
 }
 .comment-timestamp{
@@ -152,11 +152,11 @@
 }
 
 .paper-card{
-    width: 96%;
-    margin: 0 10px;
+    width: 100vw;
+    margin: 0 100px;
 }
 .post-body-container{
-    width: 100vw;
+    width: 90vw;
     margin: 20px 10px;
 }
 @media only screen and (min-width: 768px) {
@@ -170,5 +170,8 @@
     }
     .input-container{
         width: 87%;
+    }
+    .comment-area{
+        width: 86%;
     }
 }

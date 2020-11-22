@@ -284,7 +284,7 @@ export default function CreatePost(){
                                     
                                 </div>
                                 <div className="description-input-container">
-                                    <form className="form-container">
+                                    <form className="create-form-container">
                                         <textarea 
                                             type="text"
                                             placeholder="Write a description..."

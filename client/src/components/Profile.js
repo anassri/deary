@@ -338,7 +338,9 @@ export function Profile({ user, authUser, posts, friends}){
                         :   null
                         }
                         {isFriends || owner
-                            ? posts.map((post)=> <PostCard key={post.id} post={post} user={user}/>)
+                            ? (posts.length 
+                                ? posts.map((post)=> <PostCard key={post.id} post={post} user={user}/>)
+                                : <h1 className="no-results"> No posts.</h1>)
                             : null}
                     </div>
                 </div>

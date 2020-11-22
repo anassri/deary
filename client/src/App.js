@@ -56,7 +56,7 @@ function App() {
                             <Switch>
                                 <Route path="/login" component={AuthContainer}/>
                                 <Route path="/signup" component={AuthContainer}/>
-                                <PrivateRoute path="/search/:idq=:value" needLogin={needLogin} component={Search} />
+                                <PrivateRoute path="/search/:id?q=:value" needLogin={needLogin} component={Search} />
                                 <PrivateRoute path="/profile/:id" needLogin={needLogin} component={Profile} />
                                 <PrivateRoute path="/notifications/:id" needLogin={needLogin} component={Notifications} />
                                 <PrivateRoute path="/post/:id" needLogin={needLogin} component={Post} />

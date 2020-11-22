@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     },
     icon:{
         marginLeft: 17,
-        marginRight: 17,
+        marginRight: "10%",
         // fontSize: 60
     }
 }));
@@ -63,7 +63,7 @@ export default function Navigation(){
         <div className="navigation-container">
             <div className="top-part-nav">
                 <div className="logo-container">
-                    <img src={logo} alt='website logo' height='55' onClick={handleLogoClick} style={{cursor: 'pointer'}}/>
+                    <img src={logo} alt='website logo' height='55' onClick={handleLogoClick} style={{ cursor: 'pointer'}}/>
                 </div>
                 <div className="search-container">
                     <div className={classes.search}>

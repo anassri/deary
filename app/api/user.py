@@ -186,10 +186,32 @@ def find_all_notifications(id):
                               .options(joinedload(Notification.owner, User.relationships)) \
                               .filter(or_(Relationship.user_id==id, Relationship.friend_id==id)) \
                               .all()
-  data = [{**notification.to_dict(),
-          "friend": notification.friend.to_dict(),
-          "relationship": notification.friend.relationships[0].to_dict() if len(notification.friend.relationships) else None,
-          "type": notification.type.to_dict()} for notification in notifications]
+  relationships = Relationship.query \
+                              .filter(or_(Relationship.user_id==id, Relationship.friend_id==id)) \
+                              .all()
+
+  # data = [{**notification.to_dict(),
+  #         "friend": notification.friend.to_dict(),
+  #         "relationship": notification.friend.relationships[0].to_dict() if len(notification.friend.relationships) else None,
+  #         "type": notification.type.to_dict()} for notification in notifications]
+
+  data=[]
+  for notification in notifications:
+    relation = {}
+    if relationships:
+      for relationship in relationships:
+        if (relationship.user_id == notification.friend_id \
+            or relationship.friend_id == notification.friend_id) \
+            and (relationship.user_id == id \
+            or relationship.friend_id == id):
+            relation={**relationship.to_dict()}
+    dic = {
+      **notification.to_dict(),
+      "friend": notification.friend.to_dict(),
+      "relationship": {**relation},
+      "type": notification.type.to_dict()
+    }
+    data.append(dic)
 
   return jsonify(data=data)
 
@@ -211,7 +233,9 @@ def update_notifications(id):
 @user_routes.route('/<int:id>/notifications/create', methods=['POST'])
 @jwt_required
 def create_notifications(id):
+
   incoming = request.get_json()
+
   if "postId" not in incoming:
     postId = None
   else: 

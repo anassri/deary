@@ -51,11 +51,15 @@ export default function Notifications(){
                     <LeftNavigation user={user} />
                 </div>
                 <div className="body-container">
-                    <Paper className={`${classes.paper} notification-paper-container`}>
-                        {sortedPosts.map(notification => 
-                            <NotificationCard key={notification.id} notification={notification}
-                        />)}
-                    </Paper>
+                    {sortedPosts.length
+                    ?   <Paper className={`${classes.paper} notification-paper-container`}>
+                            {sortedPosts.map(notification => 
+                                <NotificationCard key={notification.id} notification={notification}
+                            />)}
+                        </Paper>
+                    : <h1 className="no-results">No notifications.</h1>
+                    }
+                    
                 </div>
                 <div className="right-nav-container">
                     <Friends friends={friends} />

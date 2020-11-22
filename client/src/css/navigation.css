@@ -31,7 +31,7 @@
     cursor: pointer;
     box-sizing: border-box;
     width: 100px;
-    padding: 10px 15px;
+    padding: 10px 10px;
 }
 .nav-icons:hover{
     background-color: #EFEFEF;
@@ -42,14 +42,13 @@
     box-shadow: 0 1px 2px 0 rgba(0,0,0,0.2);
     background-color: #fff;
     position: fixed;
-    width: 100%;
+    width: 100vw;
     z-index: 1;
 }
 .mobile-nav-bar{
     margin: 10px 0;
     display: flex;
     justify-content: space-evenly;
-
 }
 @media only screen and (min-width: 770px) {
     .mobile-nav-bar{

@@ -24,10 +24,9 @@ const useStyles = makeStyles((theme) => ({
 function CheckRelationShip({ownerId, friendId, relationships}){
     const classes = useStyles();
     const history = useHistory();
-    const {idq} = useParams();
+    const {id} = useParams();
     const {value} = useParams();
     const dispatch = useDispatch();
-    const id = Number.parseInt(idq[0])
     const [sync, setSync] = useState(false);
     
 
@@ -157,10 +156,15 @@ export default function Search(){
                     <LeftNavigation user={owner} />
                 </div>
                 <div className="body-container">
-                    <Paper className="paper-container">{users.map(user =>
-                        <SearchEntry key={user.id} owner={owner} user={user} relationships={relationships} />
-                    )}</Paper>
-                </div>
+                    {users.length
+                    ?   <Paper className="paper-container">
+                            {users.map(user =>
+                            <SearchEntry key={user.id} owner={owner} user={user} relationships={relationships} />
+                            )}
+                        </Paper>
+                    : <h1 className="no-results">No results found.</h1>
+                    }
+               </div>
                 <div className="right-nav-container">
                     <Friends friends={friends} />
                 </div>

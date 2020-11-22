@@ -15,7 +15,6 @@ export default function FriendAcceptBtns({userId, friendId}){
             "friendId": friendId,
             "actionUserId": userId,
         };
-        console.log(data);
         if (buttonClicked) {
             dispatch(updateFriend(data, userId));
         };
@@ -45,7 +44,7 @@ export default function FriendAcceptBtns({userId, friendId}){
                             setButtonClicked(true);
                         }}
                     >Accept</Button>
-                    <Button
+                    <Button 
                         variant="contained"
                         className={`add-button`}
                         color='secondary'

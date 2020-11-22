@@ -46,7 +46,7 @@ const getToken = () => {
 const postFetch = async (data, path, getState) =>{
     const token = getToken();
     try {
-        const res = await fetch(path, {
+        await fetch(path, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -139,9 +139,8 @@ export const addFriend = (id, data) => async (dispatch, getState) => {
 }
 export const updateFriend = (data, id) => async (dispatch, getState) => {
     const token = getToken();
-    console.log(data)
     try {
-        const res = await fetch(`/api/users/${id}/update`, {
+        await fetch(`/api/users/${id}/update`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 
                         Authorization: `Bearer ${token}`,
@@ -157,7 +156,7 @@ export const updateFriend = (data, id) => async (dispatch, getState) => {
 export const editUser = (data, id) => async (dispatch, getState) => {
     const token = getToken();
     try {
-        console.log(data)
+        
         const res = await fetch(`/api/users/${id}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 
@@ -167,7 +166,7 @@ export const editUser = (data, id) => async (dispatch, getState) => {
         });
         if (res.ok) {
             const data = await res.json();
-            console.log(data)
+            
             dispatch(setUser(data));
         }
     } catch (e) {
@@ -178,7 +177,6 @@ export const editUser = (data, id) => async (dispatch, getState) => {
 const updateUser = async (path, data, dispatch, getState) =>{
     const token = getToken();
     try {
-        console.log(data)
         const res = await fetch(path, {
             method: 'POST',
             headers: { Authorization: `Bearer ${token}`, 

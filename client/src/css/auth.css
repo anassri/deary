@@ -1,24 +1,40 @@
 .auth-container{
-    display: flex;
+    display: block;
 }
-.graphics-container {
-    background: url('../images/login-bg.svg') no-repeat left center fixed;
-    width: 66%;
-    height: 100vh;
-    min-height: 100vh;
-}
+.graphics-container{
+        display: none;
+    }
 .form-area-container {
+    background-color: #fff;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 40%;
-    /* max-width: 30%; */
-    padding: 0 100px;
+    height: 100vh;
 }
-.form-container > form{
-    width: 325px;
+.top-container{
+    width: 63%;
+    max-width: 330px;
+    text-align: left;
+}
+/* @media only screen and (min-width: 600px) { */
+/* tablet portrait */
+/* } */
+/* @media only screen and (min-width: 768px) { */
+/* tablet portrait */
+/* } */
+/* @media only screen and (min-width: 992px) { */
+/* laptops portrait */
+/* } */
+
+
+.form-container {
+    /* width: 100%; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* max-width: 500px; */
 }
 .auth-button{
     cursor: pointer;
@@ -41,7 +57,7 @@
 }
 
 .text-field{
-    width: 100%;
+    width: 200px;
     margin: 5px 0;
     height: 30px;
     border: none;
@@ -60,9 +76,42 @@
     align-items: center;
     justify-content: space-around;
 }
-.form-area-container{
-    background-color: #fff;
-}
 .errors{
     margin: 10px 0;
 }
+
+@media only screen and (min-width: 768px) {
+    .auth-container{
+        display: flex;
+    }
+    .graphics-container {
+        display: flex;
+        background: url('../images/login-bg.svg') no-repeat left center fixed;
+        background-size: cover;
+        width: 100vw;
+        justify-content: center;
+        align-items: center;
+    }
+    .form-area-container {
+        width: 40%;
+        padding: 0 100px; 
+    }
+    .top-container{
+        width: 100%;
+    }
+    .bullet-point{
+        display: flex;
+        justify-content: flex-start;
+        color: #fff;
+        font-size: 18px;    
+        margin-top: 25px;
+    }
+    .graphics-points-container{
+        margin-bottom: 400px;
+        margin-left: 300px;
+
+    }
+    .text-field{
+        width: 300px;
+    }
+}   

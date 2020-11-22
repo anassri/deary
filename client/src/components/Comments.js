@@ -27,13 +27,12 @@ import { createNotification } from '../store/user';
 
 const useStyle = makeStyles({
     paper: {
-        width: 680,
+        // width: 680,
         marginBottom: 20,
         marginRight: 20
     },
     inputRoot: {
         backgroundColor: '#EFEFEF',
-        width: 670,
         height: 52,
         borderRadius: 40,
         padding: 20,
@@ -44,7 +43,7 @@ const useStyle = makeStyles({
     }
 
 })
-export default function Comments({ owner, post }) {
+export default function Comments({ owner, post, commentCount, setCommentCount }) {
     const classes = useStyle()
     const [comments, setComments] = useState([]);
     useEffect(() => {
@@ -53,7 +52,7 @@ export default function Comments({ owner, post }) {
 
     const [comment, setComment] = useState('');
     const dispatch = useDispatch()
-    const handleComment = () => {
+    const handleComment = async () => {
         const id = owner.id;
         const postId = post.id;
         const data = {
@@ -66,7 +65,7 @@ export default function Comments({ owner, post }) {
             "created_at" : new Date(),
             owner,
         }
-        if (id !== post.owner.id) {
+        // if (id !== post.owner.id) {
             const notification = {
                 "friendId": post.owner.id,
                 "typeId": 1,
@@ -74,10 +73,19 @@ export default function Comments({ owner, post }) {
                 "createdAt": new Date(),
             }
             dispatch(createNotification(notification, id))
-        };
+        // };
         setComment('')
-        setComments([...comments, commentObj])
-        dispatch(addComment(data, id))
+        const incomingData = await dispatch(addComment(data, id))
+        if (incomingData){
+            const commentObj = {
+                comment,
+                "created_at": new Date(),
+                owner,
+                "id": incomingData.data.id
+            }
+            setCommentCount(()=>commentCount+1)
+            setComments([...comments, commentObj])
+        }
     }
     return (
         <>
@@ -91,7 +99,7 @@ export default function Comments({ owner, post }) {
                         <div className={classes.comment}>
                             <InputBase
                                 placeholder="Write a comment..."
-                                className={classes.inputRoot}
+                                className={`${classes.inputRoot} comment-input`}
                                 inputProps={{ 'aria-label': 'search' }}
                                 value={comment}
                                 onChange={e => setComment(e.target.value)}
@@ -110,13 +118,20 @@ export default function Comments({ owner, post }) {
                         </div>
                     </div>
                 </div>
-                {comments.slice(0).reverse().map(comment => <DisplayComments key={comment.id} comment={comment} postId={post.id}/>)}
+                {comments.slice(0).reverse().map(comment => 
+                <DisplayComments key={comment.id} 
+                                comment={comment} 
+                                comments={comments} 
+                                setComments={setComments}
+                                commentCount={commentCount} 
+                                setCommentCount={setCommentCount}
+                                />)}
 
             </div>
         </>
     )
 }
-const DisplayComments = ({ comment, postId }) => {
+const DisplayComments = ({ comment, comments, setComments, commentCount, setCommentCount }) => {
     const user = useSelector(state => state.auth.user)
     const [likeClicked, setLikeClicked] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -129,8 +144,8 @@ const DisplayComments = ({ comment, postId }) => {
 
     useEffect(()=>{
         if(postSyncNeeded){
-            dispatch(loadPosts(user.id))
             setPostSyncNeeded(false);
+            dispatch(loadPosts(user.id));
         }
     }, [postSyncNeeded])
 
@@ -150,8 +165,12 @@ const DisplayComments = ({ comment, postId }) => {
                 confirmationText: 'Delete',
                 cancellationText: 'Cancel',
                 dialogProps: { maxWidth: 'sm' } });
-            await dispatch(deleteComment(id, postId));
+            const ind = comments.indexOf(comment);
+            setComments([...comments.slice(0,ind), ...comments.slice(ind+1)]);
+
+            setCommentCount(() => commentCount - 1)
             setPostSyncNeeded(true)
+            await dispatch(deleteComment(id));
         } catch (e) {
             console.error(e);
         }
@@ -175,15 +194,16 @@ const DisplayComments = ({ comment, postId }) => {
                                 <p className="comment">{comment.comment}</p>
                             </div>
                         </div>
-                        <div className="right-comment-side">
+                        {/* <div className="right-comment-side">
                             <ThumbUpAltIcon
                                 className="comment-like-button"
                                 style={{ cursor: 'pointer' }}
                                 color={likeClicked ? "primary" : "secondary"}
                                 onClick={() => likeClicked ? setLikeClicked(false) : setLikeClicked(true)} />
-                        </div>
+                        </div> */}
                     </div>
-                    <div className="comment-menu-container">
+                    {user.id === comment.owner.id
+                    ? <div className="comment-menu-container">
                         <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                             <MoreVertIcon />
                         </IconButton>
@@ -229,7 +249,10 @@ const DisplayComments = ({ comment, postId }) => {
                                 </Button>
                             </DialogActions>
                         </Dialog>
+
                     </div>
+                    : null
+                }
                 </div>
                 <div className="bottom-comment-side">
                     <p className="comment-timestamp">{posted}</p>

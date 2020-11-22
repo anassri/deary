@@ -31,7 +31,7 @@ export default function Post(){
                     <LeftNavigation user={user} />
                 </div>
                 <div className="body-container">
-                    <div className="posts-body-container">
+                    <div className="post-body-container">
                         <PostCard user={user} post={post} />
                     </div>
                 </div>

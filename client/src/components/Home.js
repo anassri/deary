@@ -5,7 +5,6 @@ import PostCard from './PostCard';
 import '../css/home.css';
 import { loadPosts } from '../store/post';
 import { loadFriends } from '../store/user';
-import { makeStyles } from '@material-ui/styles';
 import Friends from './Friends';
 import CreatePost from './CreatePost';
 import LeftNavigation from './LeftNavigation';

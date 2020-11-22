@@ -58,12 +58,13 @@ def find_all_posts(id):
 
     for relationship in relationships:
         for post in relationship.friends.posts:
-            grab_data(post)
+            if not post.user_id == id:
+                grab_data(post)
         for post in relationship.person.posts:
             if not post.user_id == id:
                 grab_data(post)
-    # for post in user_posts:
-    #     grab_data(post)
+    for post in user_posts:
+        grab_data(post)
 
             
         
@@ -139,3 +140,41 @@ def delete_post(id):
     return jsonify({"msg": 'Post deleted'})
 
     
+# edit post
+@post_routes.route('/<int:id>/edit', methods=['POST'])
+@jwt_required
+def edit_post(id):
+    description = request.form['description']
+    post = Post.query.get(id)
+    post.description = description
+
+    if "location" in request.form:
+        location = request.form['location']
+        current_location = Location.query.get(post.location_id)
+        if location != current_location.location:
+            location_rec = Location(location=location)
+            db.session.add(location_rec) 
+            db.session.commit()
+            post.location_id = location_rec.id
+    else:
+        post.location_id = None
+
+    tagged = TaggedFriend.query.filter(TaggedFriend.post_id==id).all()
+    if tagged:
+        for tag in tagged:
+            db.session.delete(tag)
+            db.session.commit()
+
+    if "tagged_friends" in request.form:
+        tagged_friends = request.form['tagged_friends']
+        friends = tagged_friends.split(',')
+        for friend in friends:
+            friend_id = int(friend)
+            tagged_friend = TaggedFriend(user_id=friend_id,
+                                            post_id=post.id)
+            db.session.add(tagged_friend) 
+            db.session.commit()
+        
+    db.session.commit()
+
+    return "done"

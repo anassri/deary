@@ -4,6 +4,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 75px;
 }
 .top-picture-section-container{
     display: flex;
@@ -11,13 +12,13 @@
     position: relative;
     background-color: #fff;
     height: 550px;
-    width: 940px;
+    width: 100vw;
     box-shadow: 0 1px 2px 0 rgba(0,0,0,0.2);
     margin-bottom: 10px;
 }
 .cover-picture{
     object-fit: cover;
-    max-width: 940px;
+    width: 100%;
     max-height: 350px;
 }
 .profile-picture{
@@ -25,17 +26,17 @@
     border-radius: 50%;
     border: 5px solid #fff;
     position: absolute;
-    top: 40%;
+    top: 20%;
     left: 5%;
 }
 .upload-cover-photo-container{
     position: absolute;
-    top: 52%;
-    right: 4%;
+    top: 45%;
+    right: 5%;
 }
 .basic-info-container{
     margin-left: 5%;
-    margin-top: 50px;
+    margin-top: 100px;
 }
 .location-container, .joined-container{
     display: flex;
@@ -48,8 +49,8 @@
 }
 .upload-profile-picture-button-container{
     position: absolute;
-    top: 63%;
-    left: 19%;
+    top: 43%;
+    left: 25%;
 }
 .edit-profile-container{
     position: absolute;
@@ -65,12 +66,39 @@
     z-index: 1;
 }
 .profile-body-container{
-    display: flex;
-    flex-direction: column;
-    /* margin-top: 100px; */
-    align-items: center;
-    margin-left: 20px;
+    /* display: flex;
+    justify-content: center; */
+    width: 100vw;
+    max-width: 780px;
+    /* margin: 20px 10px; */
 }
-.create-post-profile{
-    padding-right: 20px;
+@media only screen and (min-width: 768px) {
+    
+    .create-post-profile{
+        padding-right: 20px;
+    }
+    .profile-container{
+        margin-top: 0;
+    }
+    .top-picture-section-container{
+        width: 940px;
+    }
+    .cover-picture{
+        height: 100%;
+        max-width: 940px;
+    }
+    .profile-picture{
+        top: 40%;
+    }
+    .upload-profile-picture-button-container{
+        top: 63%;
+        left: 19%;
+    }
+    .upload-cover-photo-container{
+        top: 52%;
+        right: 4%;
+    }
+    .basic-info-container{
+        margin-top: 50px;
+    }
 }

@@ -39,7 +39,8 @@
     border-bottom-left-radius: 10px;
 }
 .body-photo{
-    width: 780px;
+    width: 100%;
+    max-width: 780px;
     height: 100%;
     object-fit: cover;
 }
@@ -106,7 +107,7 @@
     align-items: center;
 }
 .comment-area{
-    width: 86%;
+    width: 80%;
     text-align: left;
 }
 .comment-timestamp{
@@ -141,4 +142,36 @@
 }
 .comments-count-tag{
     margin-left: 30px;
+}
+.input-container{
+    width: 80%;
+}
+.comment-input{
+   max-width: 680px; 
+   width: 100%; 
+}
+
+.paper-card{
+    width: 100vw;
+    margin: 0 100px;
+}
+.post-body-container{
+    width: 90vw;
+    margin: 20px 10px;
+}
+@media only screen and (min-width: 768px) {
+    .post-body-container{
+        max-width: 780px;
+    }
+    .paper-card{
+        width: 100%;
+        margin: 0;
+        max-width: 780px;
+    }
+    .input-container{
+        width: 87%;
+    }
+    .comment-area{
+        width: 86%;
+    }
 }

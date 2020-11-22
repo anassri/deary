@@ -27,9 +27,8 @@ def create_comment(id):
                             created_at=incoming["created_at"])
     db.session.add(comment)
     db.session.commit()
-
-    data = query_comments(incoming["postId"])
-    return jsonify(data=data)
+    
+    return jsonify(data=comment.to_dict())
 
 @comment_routes.route('/<int:id>', methods=['GET'])
 @jwt_required

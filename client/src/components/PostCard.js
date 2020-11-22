@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import '../css/post.css';
 import { Paper, 
-    Button, 
     makeStyles,
-    TextField,
-    Dialog,
-    DialogActions,
-    DialogContent, 
     IconButton,
-    DialogTitle,
     MenuItem,
     Menu,  } from '@material-ui/core/';
 import { formatDistanceToNowStrict } from 'date-fns';
@@ -33,13 +27,14 @@ import { createNotification, loadUserPosts } from '../store/user';
 import { loadPosts as friendsPosts } from '../store/post';
 import Fullname from './Fullname';
 import ProfilePic from './ProfilePic';
+import EditPostContainer from './EditPostContainer';
 
 
 const useStyle = makeStyles({
     paper:{
-        width: 780,
+        // width: 780,
         marginBottom: 20,
-        marginRight: 20
+        // marginRight: 20
     },
     inputRoot: {
         backgroundColor: '#EFEFEF',
@@ -60,12 +55,10 @@ export default function PostCard({user, post}){
     const [likeCount, setLikeCount] = useState(0);
     const [commentCount, setCommentCount] = useState(0);
     const [commentClicked, setCommentClicked] = useState(false);
-    const dispatch = useDispatch()
-    const classes = useStyle()
-    // console.log(post.created_at);
+    const dispatch = useDispatch();
+    const classes = useStyle();
     const posted = formatDistanceToNowStrict(new Date(post.created_at), { addSuffix: true });
     const [sync, setSync] = useState(false);
-    const [descriptionArea, setDescriptionArea] = useState('')
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const confirm = useConfirm();
@@ -92,7 +85,7 @@ export default function PostCard({user, post}){
             setLikeCount((previousCount) => previousCount-1)
             await dispatch(deleteLike(post.id, user.id));
         } else {
-            if(user.id !== post.owner.id) {
+            // if(user.id !== post.owner.id) {
                 const notification = {
                 "friendId": post.owner.id,
                 "typeId": 2,
@@ -100,7 +93,7 @@ export default function PostCard({user, post}){
                 "createdAt": new Date(),
                 }
                 dispatch(createNotification(notification, user.id))
-            }
+            // }
             setLikeClicked(true);
             setLikeCount((previousCount) => previousCount+1)
             await dispatch(addLike(post.id, user.id));
@@ -128,10 +121,7 @@ export default function PostCard({user, post}){
             console.error(e);
         }
     };
-    const handleEdit = () => {
-        setOpen(false);
-        // dispatch(editComment(commentArea, comment.id))
-    };
+    
 
     const eventsIcons = {
         "work": <WorkIcon className={classes.icons}/>,
@@ -197,35 +187,9 @@ export default function PostCard({user, post}){
                                 }}>Edit</MenuItem>
                                 <MenuItem onClick={handleDelete} style={{ color: '#FF0000' }}>Delete</MenuItem>
                             </Menu>
-                            <Dialog
-                                open={open}
-                                onClose={handleClose}
-                                maxWidth='sm'
-                                fullWidth
-                                aria-labelledby="form-dialog-title">
-                                <DialogTitle id="form-dialog-title">
-                                    Edit Comment</DialogTitle>
-                                <DialogContent>
-                                    <TextField
-                                        autoFocus
-                                        margin="dense"
-                                        id="name"
-                                        type="email"
-                                        value={descriptionArea}
-                                        onChange={e => setDescriptionArea(e.target.value)}
-                                        maxWidth='md'
-                                        fullWidth
-                                    />
-                                </DialogContent>
-                                <DialogActions>
-                                    <Button onClick={() => setOpen(false)} color="primary">
-                                        Cancel
-                                    </Button>
-                                    <Button onClick={handleEdit} color="primary">
-                                        Edit
-                                    </Button>
-                                </DialogActions>
-                            </Dialog>
+
+                            <EditPostContainer post={post} setOpen={setOpen} open={open} userId={user.id}/>
+                            
                         </div>
                     : null}
                     
@@ -295,7 +259,7 @@ export default function PostCard({user, post}){
                     </div>
                     <div>
                         {commentClicked 
-                            ? <Comments owner={user} post={post} />
+                            ? <Comments owner={user} post={post} commentCount={commentCount} setCommentCount={setCommentCount}/>
                             : null
                         }
                     </div>

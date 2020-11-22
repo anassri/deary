@@ -1,10 +1,9 @@
 .create-post-container{
-    width: 780px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
-    margin: 15px 0;
-    
+    margin: 15px 100px;
+    width: 100vw;
 }
 .expand-create-button-container{
     padding: 20px;
@@ -13,8 +12,6 @@
     cursor: pointer;
 }
 .create-button-icon{
-    width: 70px;
-    height: 70px;
     border-radius: 50%;
     background: linear-gradient(43deg, rgba(51,221,135,1) 0%, rgba(68,226,141,1) 72%, rgba(100,237,152,1) 87%, rgba(156,255,172,1) 100%);
     display: flex;
@@ -51,7 +48,7 @@
     margin: 5px;
     display: flex;
 }
-.form-container{
+.create-form-container{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -131,4 +128,14 @@
 }
 .friend-dropdown-container{
     width: 250px;
+}
+@media only screen and (min-width: 768px) {
+    .create-post-container{
+        width: 780px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+        margin: 15px 0;
+    }
+
 }

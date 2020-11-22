@@ -12,7 +12,6 @@ import {
     Dialog, 
     DialogTitle, 
     TextField, 
-    CircularProgress,
     DialogActions } from '@material-ui/core';
 import Navigation from './Navigation';
 import DateRangeIcon from '@material-ui/icons/DateRange';
@@ -57,7 +56,6 @@ export function Profile({ user, authUser, posts, friends}){
     const [country, setCountry] = useState('');
     const [profilePictureFile, setProfilePictureFile] = useState(null);
     const [coverPictureFile, setCoverPictureFile] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
     const [owner, setOwner] = useState(false);
     const [errors, setErrors] = useState(null);
     const dispatch = useDispatch();
@@ -92,19 +90,7 @@ export function Profile({ user, authUser, posts, friends}){
     const handlePhotoButton = () => {
         document.getElementById("upload-profile-photo").click();
     }
-    const handleEditOpen = () => {
-        setOpen(true);
-    }
-    const handleEditClose = () => {
-        setOpen(false);
-    }
-    const handleProfilePicture =  (e) =>{
-        setProfilePictureFile(e.target.files[0]);
-    }
-    const handleCoverPicture = async (e) =>{
-        setCoverPictureFile(e.target.files[0]);
-    }
-
+    
     const handleSaveProfile = (e) =>{
         e.preventDefault();
         saveData();
@@ -170,9 +156,6 @@ export function Profile({ user, authUser, posts, friends}){
                 <div className="left-nav-container profile">
                     <LeftNavigation user={user} />
                 </div>
-                <div className="loading-container">
-                    {isLoading ? <CircularProgress /> : null}
-                </div>
                 <div className="profile-container">
                     <div className="top-picture-section-container">
                         <div className="cover-picture-container">
@@ -180,8 +163,6 @@ export function Profile({ user, authUser, posts, friends}){
                                 src={user.coverPicture ? user.coverPicture : coverPicturePlaceholder}
                                 alt="cover placeholder"
                                 className="cover-picture"
-                                height="350"
-                                width="940"
                             />
                         </div>
                         <div className="profile-picture-container">
@@ -200,7 +181,7 @@ export function Profile({ user, authUser, posts, friends}){
                                     id="upload-profile-photo" 
                                     type="file" 
                                     style={{ display: 'none' }} 
-                                    onChange={handleProfilePicture}
+                                    onChange={(e) => setProfilePictureFile(e.target.files[0])}
                                     />
                                 <IconButton
                                     variant="contained"
@@ -222,7 +203,7 @@ export function Profile({ user, authUser, posts, friends}){
                                     id="upload-cover-photo" 
                                     type="file" 
                                     style={{ display: 'none' }}
-                                    onChange={handleCoverPicture}
+                                    onChange={(e) => setCoverPictureFile(e.target.files[0])}
                                     />
                                 <Button
                                     variant="contained"
@@ -262,13 +243,13 @@ export function Profile({ user, authUser, posts, friends}){
                                         color="default"
                                         className={classes.iconButton}
                                         startIcon={<EditIcon />}
-                                        onClick={handleEditOpen}
+                                        onClick={() => setOpen(true)}
                                     >
                                         Edit Profile
                                 </Button>
                                 <Dialog
                                     open={open}
-                                    onClose={handleEditClose}
+                                    onClose={() => setOpen(false)}
                                     aria-labelledby="alert-dialog-title"
                                     aria-describedby="alert-dialog-description"
                                     maxWidth='md'
@@ -295,18 +276,21 @@ export function Profile({ user, authUser, posts, friends}){
                                         <TextField 
                                             id="city-input" 
                                             value={city}
+                                            label="City"
                                             className={classes.input} 
                                             onChange={e => setCity(e.target.value)} />
 
                                         <TextField 
                                             id="state-input" 
                                             value={state}
+                                            label="State"
                                             className={classes.input}
                                             onChange={e => setState(e.target.value)} />
 
                                         <TextField 
                                             id="country-input" 
                                             value={country}
+                                            label="Country"
                                             className={classes.input}
                                             onChange={e => setCountry(e.target.value)} />
 
@@ -354,7 +338,9 @@ export function Profile({ user, authUser, posts, friends}){
                         :   null
                         }
                         {isFriends || owner
-                            ? posts.map((post, i)=> <PostCard key={i} post={post} user={user}/>)
+                            ? (posts.length 
+                                ? posts.map((post)=> <PostCard key={post.id} post={post} user={user}/>)
+                                : <h1 className="no-results"> No posts.</h1>)
                             : null}
                     </div>
                 </div>

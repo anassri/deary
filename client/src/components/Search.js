@@ -106,30 +106,32 @@ function SearchEntry({user, relationships, owner}){
     return (
         <>
             <div className="entry-container">
-                <div className="thumbnail-container" style={{cursor: 'pointer'}}>
-                    {user.profilePicture 
-                        ? <img
-                            src={user.profilePicture}
-                            alt="profile placeholder"
-                            className="thumbnail-image"
-                            height='60'
-                            width='60'
-                            onClick={()=> history.push(`/profile/${user.id}`)}
-                            />
-                        : <img
-                            src={profilePicturePlaceholder}
-                            alt="profile placeholder"
-                            className="thumbnail-image"
-                            height='60'
-                            width='60'
-                            onClick={() => history.push(`/profile/${user.id}`)}
-                        />}
-                </div>
-                <div className="name-container">
-                    <p className="fullname search" 
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => history.push(`/profile/${user.id}`)}>
-                        {user.firstName + " " + user.lastName} </p>
+                <div className="search-left">
+                    <div className="thumbnail-container" style={{cursor: 'pointer'}}>
+                        {user.profilePicture 
+                            ? <img
+                                src={user.profilePicture}
+                                alt="profile placeholder"
+                                className="thumbnail-image"
+                                height='60'
+                                width='60'
+                                onClick={()=> history.push(`/profile/${user.id}`)}
+                                />
+                            : <img
+                                src={profilePicturePlaceholder}
+                                alt="profile placeholder"
+                                className="thumbnail-image"
+                                height='60'
+                                width='60'
+                                onClick={() => history.push(`/profile/${user.id}`)}
+                            />}
+                    </div>
+                    <div className="name-container">
+                        <p className="fullname search" 
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => history.push(`/profile/${user.id}`)}>
+                            {user.firstName + " " + user.lastName} </p>
+                    </div>
                 </div>
                 <div className="add-button-container">
                     <CheckRelationShip ownerId={owner.id} friendId={user.id} relationships={relationships}/>

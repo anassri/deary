@@ -13,6 +13,7 @@
 .posts-body-container{
     height: 90.5vh;
     margin-top: 5px;
+    width: 100vw;
 }
 .right-nav-container{
     display: none;
@@ -28,6 +29,9 @@
 @media only screen and (min-width: 768px) {
     .body-container{
         padding-top: 0;
+    }
+    .posts-body-container{
+        width: 100%;
     }
     .right-nav-container{
         display: flex;

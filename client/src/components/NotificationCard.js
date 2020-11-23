@@ -66,16 +66,18 @@ export default function NotificationCard({notification}) {
     return (
         <>
             <div className="notification-body-container">
-                <div className="notification-left-container">
-                    <ProfilePic user={notification.friend} />
-                </div>
-                <div className="notification-middle-container">
-                    <div className="notification-text-container">
-                        <Fullname user={notification.friend} />
-                        <NotificationType type={notification.type.type} postId={notification.postId}/>
+                <div className="notification-first-container">
+                    <div className="notification-left-container">
+                        <ProfilePic user={notification.friend} />
                     </div>
-                    <div className="time-container">
-                        <p className="post-timestamp">{posted}</p>
+                    <div className="notification-middle-container">
+                        <div className="notification-text-container">
+                            <Fullname user={notification.friend} />
+                            <NotificationType type={notification.type.type} postId={notification.postId}/>
+                        </div>
+                        <div className="time-container">
+                            <p className="post-timestamp">{posted}</p>
+                        </div>
                     </div>
                 </div>
                 <div className="notification-right-container">

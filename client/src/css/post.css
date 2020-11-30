@@ -50,14 +50,8 @@
     padding: 0 20px;
     padding-bottom: 12px;
 }
-.button-section{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.footer-left-side, .footer-right-side{
-    margin: 20px 35px
-}
+
+
 .footer-buttons{
     margin-right: 30px;
 }
@@ -152,14 +146,30 @@
 }
 
 .paper-card{
-    width: 100vw;
-    margin: 0 100px;
+    margin: 0 10px;
 }
 .post-body-container{
     width: 90vw;
     margin: 20px 10px;
 }
+.button-section{
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    padding: 0 0 10px 0;
+}
+.footer-left-side, .footer-right-side{
+    margin: 10px 35px 0 35px;
+}
 @media only screen and (min-width: 768px) {
+    .button-section{
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .footer-left-side, .footer-right-side{
+        margin: 20px 35px;
+    }
     .post-body-container{
         max-width: 780px;
     }

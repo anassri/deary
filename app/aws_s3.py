@@ -19,7 +19,6 @@ bucket = Config.S3_BUCKET
 
 #This function posts to aws and returns a photo url
 def upload_file_to_s3(file, acl="public-read"):
-    print('bucket and file', file, bucket)
     ext = file.filename.split('.')[1]
     new_file_name = get_random_name(20) + '.' + ext
     try:

@@ -30,7 +30,7 @@ def signup():
         created_at=datetime.now(),
     ) 
     db.session.add(user)
-
+    
     try:
         db.session.commit()
     except IntegrityError:

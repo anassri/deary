@@ -7,9 +7,15 @@
     align-items: center;
 }
 .entry-container{
-    box-sizing: border-box;
-    display: grid;
-    grid-template-columns: 100px auto auto;
+    /* box-sizing: border-box; */
+    display: flex;
+    /* grid-template-columns: 100px auto auto; */
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+.search-left{
+    display: flex;
     align-items: center;
 }
 .paper-container{

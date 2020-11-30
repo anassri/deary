@@ -31,12 +31,12 @@
 }
 .upload-cover-photo-container{
     position: absolute;
-    top: 45%;
+    top: 78%;
     right: 5%;
 }
 .basic-info-container{
     margin-left: 5%;
-    margin-top: 100px;
+    margin-top: 160px;
 }
 .location-container, .joined-container{
     display: flex;
@@ -50,7 +50,7 @@
 .upload-profile-picture-button-container{
     position: absolute;
     top: 43%;
-    left: 25%;
+    left: 45%;
 }
 .edit-profile-container{
     position: absolute;
@@ -66,11 +66,8 @@
     z-index: 1;
 }
 .profile-body-container{
-    /* display: flex;
-    justify-content: center; */
     width: 100vw;
     max-width: 780px;
-    /* margin: 20px 10px; */
 }
 @media only screen and (min-width: 768px) {
     

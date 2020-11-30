@@ -32,9 +32,12 @@ export default function SignupPage() {
     const validateForm = () => {
         const intErrors = []
         const name = fullname.split(' ')
+        let re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+
         if (!name[1]) intErrors.push('Please enter your full name.')
         if (email.length === 0) intErrors.push('Email is required.');
         if (password.length === 0) intErrors.push('Password is required.');
+        if (!re.test(password)) intErrors.push('Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 8 characters long')
         if (confirmPassword.length === 0) intErrors.push('Confirm password is required.');
         if (confirmPassword !== password) intErrors.push('Password must match');
         if (intErrors.length === 0) return true;

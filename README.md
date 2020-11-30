@@ -69,10 +69,18 @@ However, the decision to incorporate a few Material UI components was to save ti
 ![end-result mockup](./graphics/end-result.png)
 
 
+### Responsive Design
+Deary is built with responsiveness in mind. The app can be used both in a browser and on mobile phones.
+
+Mobile view
+![mobile view](./graphics/mobile-view.png)
+
 ### Location IQ
 
 The [Location IQ API](https://locationiq.com/) is a nice added feature that helps give location suggestions in case the user wants to add a location to a post. A drop down is displayed with different location based on the the characaters typed in.
 
+### Date-fns
+The [Date-fns](https://date-fns.org/) library is used to make time easier to read with words instead of the datetime format JavaScript provides.
 
 ## Backend Overview
 Deary uses a Python/Flask server with PostgreSQL as the database. The backend is fairly simple in comparison to the frontend. It sends the frontend to the client, receives requests and sends data to the frontend. Here is a breakdown of the backend technologies.

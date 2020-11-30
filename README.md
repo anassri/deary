@@ -5,8 +5,8 @@
 * [Deary Summary](#deary-summary)
 * [Technologies Used](#technologies-used)
 * [Frontend Overview](#frontend-overview)
-* Backend Overview
-* Next Steps
+* [Backend Overview](#backend-overview)
+* [Next Steps](#next-steps)
 
 ## Deary Summary
 Deary is a social media website modeled after Facebook. Its objective is to help you stay in touch with the people you  care about. Deary makes it easy to let your close friends and family know about your life events, minor or major. 

@@ -50,7 +50,13 @@
     display: flex;
     justify-content: space-evenly;
 }
+.navigation-container{
+    position: fixed;
+}
 @media only screen and (min-width: 770px) {
+    .navigation-container{
+        position: relative;
+    }
     .mobile-nav-bar{
         display: none;
     }

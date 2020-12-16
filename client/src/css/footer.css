@@ -1,0 +1,43 @@
+.about-me-container{
+       display: none;
+    }
+@media only screen and (min-width: 768px) {
+
+    .left-navigatoin-container{
+        display: flex;
+        flex-direction: column;
+        height: 88vh;
+        justify-content: space-between;
+    }
+    .about-me-container{
+        display: block;
+        max-width: 300px;
+        margin-left: 10px;
+    }
+    .about-me-title{
+        font-weight: 500;
+    }
+    .about-me-title{
+        opacity: 0.6;
+    }
+    .about-me{
+        opacity: 1;
+        
+    }
+    .social-link{
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+    }
+    .social-media{
+        margin-right: 10px;
+        margin-top: 10px;
+        font-size: 20px;
+        cursor: pointer;
+        color: rgba(0,0,0,0.4);
+        transition: color 0.2s;
+    }
+    .social-media:hover{
+        color: rgba(0,0,0,1);
+    }
+}

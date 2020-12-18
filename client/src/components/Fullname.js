@@ -9,11 +9,9 @@ export default function Fullname({ user }) {
     const history = useHistory()
 
     return (
-        // <div className="name-container">
         <p className="fullname"
             style={{ cursor: 'pointer' }}
             onClick={() => history.push(`/profile/${user.id}`)}>
             {firstname + " " + lastname} </p>
-        // </div>
     )
 }

@@ -10,9 +10,7 @@ import NotificationCard from './NotificationCard';
 
 const useStyle = makeStyles({
     paper: {
-        // width: 780,
         marginTop: 20,
-        // marginRight: 40,
         paddingTop: 10
     },
     inputRoot: {

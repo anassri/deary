@@ -40,7 +40,6 @@ const AddNotificationButton = ({ text, disabled, color="secondary", onClick=null
 export default function NotificationCard({notification}) {
     const posted = formatDistanceToNowStrict(new Date(notification.createdAt), { addSuffix: true });
     const [readStatusClass, setReadStatusClass] = useState("unread-circle");
-    // const [friendShipStatus, setFriendShipStatus] = useState(0);
     const {id} = useParams();
     
     const dispatch = useDispatch();

@@ -2,15 +2,6 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
 }
-@media only screen and (min-width: 600px) {
-/* tablet portrait */
-}
-@media only screen and (min-width: 768px) {
-/* tablet portrait */
-}
-@media only screen and (min-width: 992px) {
-/* laptops portrait */
-}
 @media only screen and (max-width: 768px) {
     body {
         margin: 0 auto;

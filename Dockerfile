@@ -24,7 +24,7 @@ RUN ["cp", "-r", "app/static/static/media", "app/static"]
 ENV FLASK_APP=app
 ENV FLASK_ENV=production
 ENV SQLALCHEMY_ECHO=True
-ENV REACT_APP_BASE_URL=https://deary.onrender.com/
+ENV REACT_APP_BASE_URL=https://deary-social.herokuapp.com/
 
 EXPOSE 8000
 
